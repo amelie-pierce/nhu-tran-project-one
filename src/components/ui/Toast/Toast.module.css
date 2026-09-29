@@ -1,0 +1,31 @@
+.toast {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-s);
+    border-radius: var(--radius-s);
+}
+
+.close {
+    cursor: pointer;
+}
+
+.success {
+    background-color: var(--color-teal-200);
+}
+
+.warning {
+    background-color: var(--color-yellow-200);
+}
+
+.error {
+    background-color: var(--color-red-200);
+}
+
+.container {
+    position: fixed;
+    top: calc(var(--header-height) + var(--spacing-xs));
+    right: var(--spacing-s);
+    z-index: 1000;
+}

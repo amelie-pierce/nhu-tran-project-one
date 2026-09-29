@@ -17,6 +17,7 @@
     --page-padding-x: var(--spacing-xxxl);
     --page-padding-y: var(--spacing-xl);
     --section-padding-y: var(--spacing-s);
+    --header-height: 82px;
 
     /* Button */
     --button-square-size-s: 33px;
@@ -55,5 +56,6 @@
 
         --page-padding-x: var(--spacing-m);
         --page-padding-y: var(--spacing-s);
+        --header-height: 72px;
     }
 }

@@ -1,5 +1,5 @@
 .footer {
-    padding: var(--section-padding-y) var(--page-padding-x);
+    padding: var(--page-padding-y) var(--page-padding-x);
     background-color: var(--color-pink-100);
     display: grid;
     grid-template-columns: 1fr 2fr;
