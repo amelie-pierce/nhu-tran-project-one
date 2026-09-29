@@ -1,8 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { getProducts } from "../../apis/product/getProduct";
 import Pagination from "../../components/ui/Pagination";
 
 const Product = () => {
+    const [currentPage, setCurrentPage] = useState(1);
+
     const {
         data: products,
         isLoading,
@@ -29,7 +32,11 @@ const Product = () => {
                     <div>{product.price}</div>
                 </div>
             ))}
-            <Pagination />
+            <Pagination
+                currentPage={currentPage}
+                totalPage={100}
+                onPageChange={setCurrentPage}
+            />
         </div>
     );
 }

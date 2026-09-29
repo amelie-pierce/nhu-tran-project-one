@@ -18,6 +18,11 @@
     --page-padding-y: var(--spacing-xl);
     --section-padding-y: var(--spacing-s);
 
+    /* Button */
+    --button-square-size-s: 33px;
+    --button-square-size-m: 35px;
+    --button-square-size-l: 37px;
+
     /* Color */
     --foreground: var(--color-black);
     --background: var(--color-white);

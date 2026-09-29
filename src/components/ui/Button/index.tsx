@@ -2,25 +2,30 @@ import styles from "./Button.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 
-type Props = {
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     variant?: "primary" | "secondary" | "border-black";
-    children: React.ReactNode;
     icon?: IconProp;
-    disabled?: boolean;
-    className?: string;
+    square?: boolean;
 };
 
 const Button = ({
     variant = "primary",
     children,
-    icon,
-    disabled = false,
     className,
+    icon,
+    square = false,
+    ...props
 }: Props) => {
     return (
         <button
-            disabled={disabled}
-            className={`bold ${styles.btn} ${styles[`btn-${variant}`]} ${className}`}
+            {...props}
+            className={`
+                bold
+                ${styles.btn}
+                ${styles[`btn-${variant}`]}
+                ${square ? styles.square : ""}
+                ${className}
+            `}
         >
             {children}
 
@@ -28,4 +33,5 @@ const Button = ({
         </button>
     );
 };
+
 export default Button;

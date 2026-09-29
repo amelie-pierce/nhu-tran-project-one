@@ -4,7 +4,15 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--spacing-xs);
+}
+
+.square {
+    padding: var(--spacing-xs);
+    aspect-ratio: 1 / 1;
+    width: var(--button-square-size-l);
+    height: var(--button-square-size-l);
 }
 
 /* Primary */
@@ -54,8 +62,20 @@
     cursor: not-allowed;
 }
 
+@media (max-width: 768px) {
+    .square {
+        width: var(--button-square-size-m);
+        height: var(--button-square-size-m);
+    }
+}
+
 @media (max-width: 375px) {
     .btn {
         gap: var(--spacing-xxs);
+    }
+
+    .square {
+        width: var(--button-square-size-s);
+        height: var(--button-square-size-s);
     }
 }

@@ -1,38 +1,44 @@
-import { useState } from 'react'
-import Input from '../Input'
+import Input from "../Input";
 
 const STEP = 1
 const MIN = 1
 const MAX = 99
 
-const InputNumber = () => {
-    const [value, setValue] = useState("1")
+type Props = {
+    value: number
+    max: number
+    onChange: (value: number) => void
+};
 
+const InputNumber = ({
+    value,
+    max = MAX,
+    onChange,
+}: Props) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value
 
         if (input === "") {
-            setValue(String(MIN))
             return
         }
 
-        const number = Number(input)
+        const number = Number(input);
 
         if (!Number.isInteger(number)) {
             return;
         }
 
-        if (number > MAX) {
-            setValue(String(MAX))
+        if (number > max) {
+            onChange(max)
             return
         }
 
         if (number < MIN) {
-            setValue(String(MIN))
+            onChange(MIN)
             return
         }
 
-        setValue(String(number))
+        onChange(number)
     }
 
     return (
@@ -40,7 +46,7 @@ const InputNumber = () => {
             type="number"
             inputMode="numeric"
             min={MIN}
-            max={MAX}
+            max={max}
             step={STEP}
             value={value}
             onChange={handleChange}
