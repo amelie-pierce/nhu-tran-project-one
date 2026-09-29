@@ -1,8 +1,8 @@
 .pagination-container {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--spacing-s);
     flex-wrap: wrap;
 }
 
@@ -11,4 +11,18 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
+}
+
+@media (max-width: 375px) {
+
+    .pagination-container {
+        justify-content: center;
+        gap: var(--spacing-xs);
+    }
+
+    .pagination-go-to-page,
+    .pagination-navigation {
+        gap: var(--spacing-xxs);
+    }
+
 }
