@@ -2,7 +2,6 @@ import { Link } from "react-router";
 import { faRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
-import Text from "../../ui/Text"
 import styles from "./Header.module.css";
 import Button from "../../ui/Button";
 
@@ -15,28 +14,28 @@ const Header = () => {
                     alt="logo"
                     className={styles["logo-header"]}
                 />
-                <Link to="/product">
-                    <Text weight="bold">Product</Text>
+                <Link to="/product" className="bold">
+                    Product
                 </Link>
 
-                <Link to="/about-me">
-                    <Text weight="bold">About</Text>
+                <Link to="/about-me" className="bold">
+                    About
                 </Link>
 
-                <Link to="/compare-product">
-                    <Text weight="bold">Compare</Text>
+                <Link to="/compare-product" className="bold">
+                    Compare
                 </Link>
             </nav>
             <div className={styles["icon-header"]}>
-                <Button title="Login" />
+                <Button>Login</Button>
                 <div className={styles["cart-wrapper"]}>
                     <FontAwesomeIcon
                         icon={faCartShopping}
                         className={styles.icon}
                     />
 
-                    <div className={styles["cart-number"]}>
-                        <Text variant="caption" weight="bold">9+</Text>
+                    <div className={`${styles["cart-number"]} caption bold`}>
+                        9+
                     </div>
                 </div>
                 <FontAwesomeIcon

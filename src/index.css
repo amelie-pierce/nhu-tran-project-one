@@ -19,6 +19,9 @@ body {
   flex-direction: column;
   color: var(--foreground);
   background: var(--background);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  font-weight: var(--weight-regular);
 }
 
 * {

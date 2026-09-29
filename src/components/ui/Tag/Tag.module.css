@@ -7,6 +7,10 @@
     border-radius: var(--radius-xl);
 }
 
+.icon-remove {
+    cursor: pointer;
+}
+
 @media (max-width: 768px) {
     .tag {
         gap: var(--spacing-xs);

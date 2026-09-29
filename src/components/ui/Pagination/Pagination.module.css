@@ -1,0 +1,14 @@
+.pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-s);
+    flex-wrap: wrap;
+}
+
+.pagination-go-to-page,
+.pagination-navigation {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}

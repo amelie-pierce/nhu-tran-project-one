@@ -1,21 +1,31 @@
 import styles from "./Button.module.css";
-import Text from "../Text";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 type Props = {
     variant?: "primary" | "secondary" | "border-black";
-    title: string;
+    children: React.ReactNode;
     icon?: IconProp;
+    disabled?: boolean;
+    className?: string;
 };
 
-const Button = ({ variant = "primary", title, icon }: Props) => {
+const Button = ({
+    variant = "primary",
+    children,
+    icon,
+    disabled = false,
+    className,
+}: Props) => {
     return (
-        <button className={`hover-shadow ${styles.btn} ${styles[`btn-${variant}`]}`}>
-            <Text weight="bold">{title}</Text>
+        <button
+            disabled={disabled}
+            className={`bold ${styles.btn} ${styles[`btn-${variant}`]} ${className}`}
+        >
+            {children}
+
             {icon && <FontAwesomeIcon icon={icon} />}
         </button>
     );
 };
-
 export default Button;

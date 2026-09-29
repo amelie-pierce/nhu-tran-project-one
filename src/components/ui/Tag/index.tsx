@@ -1,42 +1,37 @@
 import styles from "./Tag.module.css";
-import Text from "../Text";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import type { IconProp } from "@fortawesome/fontawesome-svg-core";
+import type { ReactNode } from "react";
 
 type Props = {
     variant?: "white" | "light-pink" | "purple" | "light-purple" | "peach" | "green";
-    title: string;
-    icon?: IconProp;
+    children: ReactNode;
     onClick?: () => void;
-    onIconClick?: () => void;
+    onRemove?: () => void;
 };
 
 const Tag = ({
     variant = "white",
-    title,
-    icon = faXmark,
+    children,
     onClick,
-    onIconClick,
+    onRemove,
 }: Props) => {
     return (
         <div
-            className={`${onClick || onIconClick ? "hover-shadow" : ""} ${styles.tag} ${styles[`tag-${variant}`]}`}
+            className={`${onClick || onRemove ? "hover-shadow" : ""} ${styles.tag} ${styles[`tag-${variant}`]}`}
             onClick={onClick}
         >
-            <Text weight="bold">{title}</Text>
+            {children}
 
-            {!!onIconClick && (
-                <button
-                    type="button"
-                    className={styles.icon}
+            {onRemove && (
+                <FontAwesomeIcon
+                    icon={faXmark}
+                    className={styles["icon-remove"]}
                     onClick={(e) => {
                         e.stopPropagation();
-                        onIconClick?.();
+                        onRemove();
                     }}
-                >
-                    <FontAwesomeIcon icon={icon} />
-                </button>
+                />
             )}
         </div>
     );

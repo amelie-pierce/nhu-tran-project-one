@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "../../apis/product/getProduct";
+import Pagination from "../../components/ui/Pagination";
 
 const Product = () => {
     const {
@@ -28,6 +29,7 @@ const Product = () => {
                     <div>{product.price}</div>
                 </div>
             ))}
+            <Pagination />
         </div>
     );
 }

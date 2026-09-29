@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { faFacebook, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { faPhone } from "@fortawesome/free-solid-svg-icons";
-import Text from "../../ui/Text";
 import styles from "./Footer.module.css";
 
 const Footer = () => {
@@ -16,38 +15,29 @@ const Footer = () => {
                         alt="logo"
                         className={styles["logo-footer"]}
                     />
-                    <Text color="primary">Beauty & skincare</Text>
+                    <div className="text-primary">Beauty & skincare</div>
                 </div>
             </div>
             <div className={styles["footer-content"]}>
                 <div className={styles["footer-section"]}>
-                    <Text color="primary" weight="bold">
+                    <div className="bold text-primary">
                         SHOP
-                    </Text>
+                    </div>
                     <Link to="/product">
-                        <Text>
-                            Product Catalog
-                        </Text>
+                        Product Catalog
                     </Link>
                     <Link to="/compare-product">
-                        <Text>
-                            Compare Products
-                        </Text>
+                        Compare Products
                     </Link>
                     <Link to="/cart">
-                        <Text>
-                            Cart
-                        </Text>
+                        Cart
                     </Link>
                 </div>
                 <div className={styles["footer-section"]}>
-                    <Text color="primary" weight="bold">
-                        ABOUT
-                    </Text>
+                    <div className="bold text-primary">                        ABOUT
+                    </div>
                     <Link to="/about-me">
-                        <Text>
-                            About Me
-                        </Text>
+                        About Me
                     </Link>
                     <div className={styles["social-media"]}>
                         <a href="mailto:ntran2@strongtie.com" className={styles["social-link"]}>
