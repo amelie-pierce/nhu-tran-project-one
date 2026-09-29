@@ -5,10 +5,11 @@ type Props = {
     className?: string
     variant?: "heading" | "title" | "body" | "caption"
     weight?: "regular" | "bold"
+    color?: "primary"
 }
-const Text = ({ children, className, variant = "body", weight = "regular" }: Props) => {
+const Text = ({ children, className, variant = "body", weight = "regular", color }: Props) => {
     return (
-        <div className={`${styles[variant]} ${styles[weight]} ${className || ""}`}>
+        <div className={`${styles[variant]} ${styles[weight]} ${color ? styles[`color-${color}`] : ""} ${className || ""}`} >
             {children}
         </div>
     );

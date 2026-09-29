@@ -1,17 +1,21 @@
 .heading {
     font-size: var(--font-size-heading);
+    line-height: var(--line-height-heading);
 }
 
 .title {
     font-size: var(--font-size-title);
+    line-height: var(--line-height-title);
 }
 
 .body {
     font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
 }
 
 .caption {
     font-size: var(--font-size-caption);
+    line-height: var(--line-height-caption);
 }
 
 .regular {
@@ -20,4 +24,8 @@
 
 .bold {
     font-weight: var(--weight-bold);
+}
+
+.color-primary {
+    color: var(--color-pink--700);
 }

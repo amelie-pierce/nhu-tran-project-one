@@ -2,14 +2,20 @@
 
 :root {
     /* Font size */
-    --font-size-heading: var(--font-size-ml);
-    --font-size-title: var(--font-size-m);
-    --font-size-body: var(--font-size-xs);
+    --font-size-heading: var(--font-size-xxl);
+    --font-size-title: var(--font-size-l);
+    --font-size-body: var(--font-size-m);
     --font-size-caption: var(--font-size-xxs);
 
+    /* Line height */
+    --line-height-heading: var(--line-height-xxl);
+    --line-height-title: var(--line-height-l);
+    --line-height-body: var(--line-height-s);
+    --line-height-caption: var(--line-height-xxxs);
+
     /* Layout */
-    --page-padding-x: var(--spacing-m);
-    --page-padding-y: var(--spacing-s);
+    --page-padding-x: var(--spacing-xxxl);
+    --page-padding-y: var(--spacing-xl);
     --section-padding-y: var(--spacing-s);
 
     /* Color */
@@ -17,24 +23,32 @@
     --background: var(--color-white);
 }
 
-@media (min-width: 768px) {
+@media (max-width: 768px) {
     :root {
         --font-size-heading: var(--font-size-xl);
         --font-size-title: var(--font-size-ml);
         --font-size-body: var(--font-size-s);
+
+        --line-height-heading: var(--line-height-xl);
+        --line-height-title: var(--line-height-m);
+        --line-height-body: var(--line-height-xs);
 
         --page-padding-x: var(--spacing-xl);
         --page-padding-y: var(--spacing-l);
     }
 }
 
-@media (min-width: 1440px) {
+@media (max-width: 375px) {
     :root {
-        --font-size-heading: var(--font-size-xxl);
-        --font-size-title: var(--font-size-l);
-        --font-size-body: var(--font-size-m);
+        --font-size-heading: var(--font-size-ml);
+        --font-size-title: var(--font-size-m);
+        --font-size-body: var(--font-size-xs);
 
-        --page-padding-x: var(--spacing-xxxl);
-        --page-padding-y: var(--spacing-xl);
+        --line-height-heading: var(--line-height-m);
+        --line-height-title: var(--line-height-s);
+        --line-height-body: var(--line-height-xxs);
+
+        --page-padding-x: var(--spacing-m);
+        --page-padding-y: var(--spacing-s);
     }
 }

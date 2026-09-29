@@ -9,12 +9,11 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  font-family: "Inter", sans-serif;
   font-weight: var(--weight-regular);
-  line-height: normal;
 }
 
 body {
-  font-family: "Inter", sans-serif;
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -26,9 +25,4 @@ body {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-}
-
-a {
-  color: var(--foreground);
-  text-decoration: none;
 }

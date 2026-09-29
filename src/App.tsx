@@ -1,12 +1,16 @@
-import './App.css'
-import Header from './components/layout/Header/Header'
+import MainLayout from './components/layout/MainLayout'
+import { Routes, Route } from "react-router";
+
+import "./styles/global.css"
 
 function App() {
-  return (
-    <>
-      <Header />
-    </>
-  )
+    return (
+        <Routes>
+            <Route element={<MainLayout />}>
+                <Route path="/" element={<></>} />
+            </Route>
+        </Routes>
+    );
 }
 
-export default App
+export default App;

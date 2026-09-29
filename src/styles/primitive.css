@@ -11,7 +11,7 @@
     --radius-s: 8px;
     --radius-sm: 12px;
     --radius-m: 16px;
-    --radius-xl: 100px;
+    --radius-xl: 100%;
 
     /* font size */
     --font-size-xxs: 10px;
@@ -23,6 +23,15 @@
     --font-size-xl: 32px;
     --font-size-xxl: 36px;
 
+    /* line height */
+    --line-height-xxxs: 12px;
+    --line-height-xxs: 15px;
+    --line-height-xs: 17px;
+    --line-height-s: 19px;
+    --line-height-m: 24px;
+    --line-height-l: 29px;
+    --line-height-xl: 39px;
+    --line-height-xxl: 44px;
 
     /* spacing */
     --spacing-xxxs: 2px;

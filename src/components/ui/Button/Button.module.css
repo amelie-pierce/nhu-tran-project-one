@@ -1,0 +1,46 @@
+.btn {
+    padding: var(--spacing-xs) var(--spacing-s);
+    border-radius: var(--radius-s);
+    cursor: pointer;
+}
+
+/* Primary */
+.btn-primary {
+    background-color: var(--color-pink--700);
+    border: 1px solid var(--color-pink--700);
+    color: var(--color-white);
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus {
+    background-color: var(--color-pink--800);
+    border: 1px solid var(--color-pink--800);
+}
+
+/* Secondary */
+.btn-secondary {
+    background-color: var(--color-pink--50);
+    border: 1px solid var(--color-pink--700);
+    color: var(--color-pink--700);
+}
+
+.btn-secondary:hover,
+.btn-secondary:active,
+.btn-secondary:focus {
+    background-color: var(--color-pink--400);
+    border: 1px solid var(--color-pink--400);
+    color: var(--color-white);
+}
+
+.btn-secondary:focus {
+    outline: 2px solid var(--color-black);
+    outline-offset: 2px;
+}
+
+/* Border Black */
+.btn-border-black {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-black);
+    color: var(--color-black);
+}
