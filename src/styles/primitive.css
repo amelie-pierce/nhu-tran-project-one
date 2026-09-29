@@ -11,7 +11,7 @@
     --radius-s: 8px;
     --radius-sm: 12px;
     --radius-m: 16px;
-    --radius-xl: 100%;
+    --radius-xl: 100px;
 
     /* font size */
     --font-size-xxs: 10px;
@@ -65,15 +65,15 @@
     --color-red-500: #FF0000;
     --color-red-600: #E20000;
 
-    --color-pink--10: #FFF8FA;
-    --color-pink--30: #FFF7FB;
-    --color-pink--50: #FFF5F6;
-    --color-pink--100: #FFDAE6;
-    --color-pink--200: #FF91B2;
-    --color-pink--300: #F05684;
-    --color-pink--400: #DE5981;
-    --color-pink--700: #9D174D;
-    --color-pink--800: #831843;
+    --color-pink-10: #FFF8FA;
+    --color-pink-30: #FFF7FB;
+    --color-pink-50: #FFF5F6;
+    --color-pink-100: #FFDAE6;
+    --color-pink-200: #FF91B2;
+    --color-pink-300: #F05684;
+    --color-pink-400: #DE5981;
+    --color-pink-700: #9D174D;
+    --color-pink-800: #831843;
 
     --color-mauve-100: #F5D8E7;
 

@@ -1,6 +1,6 @@
 .footer {
     padding: var(--section-padding-y) var(--page-padding-x);
-    background-color: var(--color-pink--100);
+    background-color: var(--color-pink-100);
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: var(--spacing-l);
