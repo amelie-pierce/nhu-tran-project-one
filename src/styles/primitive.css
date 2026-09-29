@@ -1,0 +1,93 @@
+:root {
+    /* font weight */
+    --weight-regular: 400;
+    --weight-bold: 700;
+
+    /* stroke */
+    --stroke-thin: 1px;
+
+    /* radius */
+    --radius-xs: 2px;
+    --radius-s: 8px;
+    --radius-sm: 12px;
+    --radius-m: 16px;
+    --radius-xl: 100px;
+
+    /* font size */
+    --font-size-xxs: 10px;
+    --font-size-xs: 12px;
+    --font-size-s: 14px;
+    --font-size-m: 16px;
+    --font-size-ml: 20px;
+    --font-size-l: 24px;
+    --font-size-xl: 32px;
+    --font-size-xxl: 36px;
+
+
+    /* spacing */
+    --spacing-xxxs: 2px;
+    --spacing-xxs: 4px;
+    --spacing-xs: 8px;
+    --spacing-s: 16px;
+    --spacing-sm: 20px;
+    --spacing-m: 24px;
+    --spacing-l: 36px;
+    --spacing-xl: 64px;
+    --spacing-xxl: 96px;
+    --spacing-xxxl: 128px;
+
+    /* color */
+    --color-black: #000000;
+    --color-white: #FFFFFF;
+
+    --color-gray-100: #F5F5F5;
+    --color-gray-500: #CCCCCC;
+    --color-gray-600: #8B8B8B;
+    --color-gray-700: #767676;
+    --color-gray-800: #4F4F4F;
+
+    --color-yellow-200: #F7F5CC;
+    --color-yellow-500: #C1AA00;
+
+    --color-orange-300: #E89B83;
+    --color-orange-700: #D73300;
+
+    --color-red-200: #FFAFAF;
+    --color-red-500: #FF0000;
+    --color-red-600: #E20000;
+
+    --color-pink--10: #FFF8FA;
+    --color-pink--30: #FFF7FB;
+    --color-pink--50: #FFF5F6;
+    --color-pink--100: #FFDAE6;
+    --color-pink--200: #FF91B2;
+    --color-pink--300: #F05684;
+    --color-pink--400: #DE5981;
+    --color-pink--700: #9D174D;
+    --color-pink--800: #831843;
+
+    --color-mauve-100: #F5D8E7;
+
+    --color-purple-50: #FCF7FF;
+    --color-purple-100: #E9D5FF;
+    --color-purple-200: #C7BCD9;
+    --color-purple-500: #8B5CF6;
+    --color-purple-700: #332171;
+
+    --color-blue-500: #0075FF;
+    --color-blue-700: #005CC8;
+
+    --color-cyan-300: #7FE3E3;
+
+    --color-teal-200: #C1F1DD;
+    --color-teal-300: #7FE3C2;
+    --color-teal-700: #468671;
+    --color-teal-800: #005252;
+
+    --color-green-100: #EAFBE9;
+    --color-green-200: #CAF497;
+    --color-green-500: #008B51;
+    --color-green-600: #4C8B00;
+    --color-green-700: #396800;
+    --color-green-800: #27603D;
+}

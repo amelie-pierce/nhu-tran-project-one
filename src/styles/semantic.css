@@ -1,0 +1,40 @@
+@import "./primitive.css";
+
+:root {
+    /* Font size */
+    --font-size-heading: var(--font-size-ml);
+    --font-size-title: var(--font-size-m);
+    --font-size-body: var(--font-size-xs);
+    --font-size-caption: var(--font-size-xxs);
+
+    /* Layout */
+    --page-padding-x: var(--spacing-m);
+    --page-padding-y: var(--spacing-s);
+    --section-padding-y: var(--spacing-s);
+
+    /* Color */
+    --foreground: var(--color-black);
+    --background: var(--color-white);
+}
+
+@media (min-width: 768px) {
+    :root {
+        --font-size-heading: var(--font-size-xl);
+        --font-size-title: var(--font-size-ml);
+        --font-size-body: var(--font-size-s);
+
+        --page-padding-x: var(--spacing-xl);
+        --page-padding-y: var(--spacing-l);
+    }
+}
+
+@media (min-width: 1440px) {
+    :root {
+        --font-size-heading: var(--font-size-xxl);
+        --font-size-title: var(--font-size-l);
+        --font-size-body: var(--font-size-m);
+
+        --page-padding-x: var(--spacing-xxxl);
+        --page-padding-y: var(--spacing-xl);
+    }
+}

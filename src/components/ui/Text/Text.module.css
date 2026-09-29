@@ -1,0 +1,23 @@
+.heading {
+    font-size: var(--font-size-heading);
+}
+
+.title {
+    font-size: var(--font-size-title);
+}
+
+.body {
+    font-size: var(--font-size-body);
+}
+
+.caption {
+    font-size: var(--font-size-caption);
+}
+
+.regular {
+    font-weight: var(--weight-regular);
+}
+
+.bold {
+    font-weight: var(--weight-bold);
+}
