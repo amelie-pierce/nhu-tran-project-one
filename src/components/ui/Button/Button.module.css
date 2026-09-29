@@ -48,6 +48,12 @@
     color: var(--color-black);
 }
 
+.btn-border-black:disabled {
+    border-color: var(--color-gray-500);
+    color: var(--color-gray-500);
+    cursor: not-allowed;
+}
+
 @media (max-width: 375px) {
     .btn {
         gap: var(--spacing-xxs);
