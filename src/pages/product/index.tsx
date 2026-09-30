@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
+import styles from "./Product.module.css"
 import { useMemo, useState } from "react"
 import { useScreenWidth } from "../../hooks/useScreenWidth"
 import Pagination from "../../components/ui/Pagination/Pagination"
@@ -41,7 +42,7 @@ const Product = () => {
     }
 
     return (
-        <div>
+        <div className={styles["product-container"]}>
             {products?.data?.map((product) => (
                 <ProductItem product={product} />
             ))}

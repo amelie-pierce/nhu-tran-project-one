@@ -1,10 +1,12 @@
 import ProductActions from "./components/ProductActions/ProductActions"
 import { useParams } from "react-router"
+import styles from "./ProductDetail.module.css"
 import { useQuery } from "@tanstack/react-query"
 import {
     getProductDetail,
     QUERY_KEY_PRODUCT_DETAIL,
 } from "../../apis/product/getProductDetail"
+import Breadcumb from "../../components/ui/Breadcrumb/Breadcrumb"
 
 const ProductDetail = () => {
     const { id } = useParams()
@@ -21,9 +23,15 @@ const ProductDetail = () => {
     }
 
     return (
-        <>
-            <ProductActions product={data} />
-        </>
+        <div>
+            <Breadcumb
+                title="PRODUCT DETAILS"
+                currentPage={data?.category_name || ""}
+            />
+            <div className={styles["product-detail-container"]}>
+                <ProductActions product={data} />
+            </div>
+        </div>
     )
 }
 
