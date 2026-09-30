@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import { useScreenWidth } from "../../hooks/useScreenWidth"
 import Pagination from "../../components/ui/Pagination/Pagination"
 import {
     QUERY_KEY_PRODUCTS,
@@ -8,6 +9,13 @@ import {
 
 const Product = () => {
     const [currentPage, setCurrentPage] = useState(1)
+    const screenWidth = useScreenWidth()
+
+    const limit = useMemo(() => {
+        if (screenWidth >= 1440) return 8
+        if (screenWidth >= 768) return 9
+        return 4
+    }, [screenWidth])
 
     const {
         data: products,
@@ -15,8 +23,12 @@ const Product = () => {
         isError,
         error,
     } = useQuery({
-        queryKey: [QUERY_KEY_PRODUCTS],
-        queryFn: getListProduct,
+        queryKey: [QUERY_KEY_PRODUCTS, currentPage, limit],
+        queryFn: () =>
+            getListProduct({
+                page: currentPage,
+                limit: limit,
+            }),
     })
 
     if (isLoading) {
@@ -29,7 +41,7 @@ const Product = () => {
 
     return (
         <div>
-            {products?.map((product) => (
+            {products?.data?.map((product) => (
                 <div key={product.id}>
                     <div>{product.name}</div>
                     <div>{product.price}</div>
@@ -37,7 +49,7 @@ const Product = () => {
             ))}
             <Pagination
                 currentPage={currentPage}
-                totalPage={100}
+                totalPage={products?.totalPage ?? 1}
                 onPageChange={setCurrentPage}
             />
         </div>
