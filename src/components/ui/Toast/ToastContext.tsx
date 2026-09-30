@@ -5,6 +5,7 @@ import Toast from "./Toast"
 type Variant = "success" | "warning" | "error"
 
 type ToastData = {
+    id?: number
     message: string
     variant: Variant
 }
@@ -24,9 +25,14 @@ export const ToastProvider = ({ children }: Props) => {
 
     const showToast = ({ message, variant = "success" }: ToastData) => {
         setToast({
+            id: Date.now(),
             message,
             variant,
         })
+
+        setTimeout(() => {
+            setToast(null)
+        }, 3000)
     }
 
     return (
@@ -35,7 +41,13 @@ export const ToastProvider = ({ children }: Props) => {
 
             {toast && (
                 <div className={styles.container}>
-                    <Toast variant={toast.variant}>{toast.message}</Toast>
+                    <Toast
+                        key={toast.id}
+                        variant={toast.variant}
+                        onClose={() => setToast(null)}
+                    >
+                        {toast.message}
+                    </Toast>
                 </div>
             )}
         </ToastContext.Provider>

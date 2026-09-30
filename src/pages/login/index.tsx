@@ -13,7 +13,7 @@ const Login = () => {
     const signInMutation = useMutation({
         mutationFn: signIn,
         onSuccess: (data) => {
-            showToast({ message: "Login successful", variant: "error" })
+            showToast({ message: "Login successful", variant: "success" })
         },
         onError: (error) => {
             showToast({ message: "Login failed", variant: "error" })
