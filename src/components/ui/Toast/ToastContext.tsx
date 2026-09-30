@@ -10,7 +10,7 @@ type ToastData = {
 }
 
 type ToastContextType = {
-    showToast: (message: string, variant?: Variant) => void
+    showToast: ({ message, variant }: ToastData) => void
 }
 
 const ToastContext = createContext<ToastContextType | null>(null)
@@ -22,7 +22,7 @@ type Props = {
 export const ToastProvider = ({ children }: Props) => {
     const [toast, setToast] = useState<ToastData | null>(null)
 
-    const showToast = (message: string, variant: Variant = "success") => {
+    const showToast = ({ message, variant = "success" }: ToastData) => {
         setToast({
             message,
             variant,

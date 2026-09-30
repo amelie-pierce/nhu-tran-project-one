@@ -14,4 +14,8 @@
 
 .main {
     flex: 1;
+    padding: var(--page-padding-y) var(--page-padding-x);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

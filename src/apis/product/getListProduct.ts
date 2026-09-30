@@ -5,7 +5,7 @@ export async function getListProduct(): Promise<Product[]> {
     const { data, error } = await supabase.from("product").select("*")
 
     if (error) {
-        throw new Error(error.message)
+        throw error
     }
 
     return data ?? []

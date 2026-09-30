@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react"
 import { FormContext } from "./FormContext"
 
-type Props = {
+type Props<T extends Record<string, string>> = {
     children?: React.ReactNode
-    initialValues?: Record<string, string>
-    validate?: (values: Record<string, string>) => Record<string, string> | null
-    onSubmit?: (values: Record<string, string>) => void
+    initialValues?: T
+    validate?: (values: T) => Record<string, string> | null
+    onSubmit?: (values: T) => void
     className?: string
 }
 
-const Form = ({
+const Form = <T extends Record<string, string>>({
     children,
     validate,
-    initialValues = {},
+    initialValues = {} as T,
     onSubmit,
     className,
-}: Props) => {
-    const [values, setValues] = useState<Record<string, string>>(initialValues)
+}: Props<T>) => {
+    const [values, setValues] = useState<T>(initialValues)
     const [errors, setErrors] = useState<Record<string, string> | null>(null)
 
     useEffect(() => {

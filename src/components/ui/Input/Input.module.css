@@ -4,3 +4,7 @@
     padding: var(--spacing-xs) var(--spacing-s);
     font-size: var(--font-size-body);
 }
+
+.input::placeholder {
+    color: var(--color-gray-500);
+}

@@ -4,8 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons"
 import styles from "./Header.module.css"
 import Button from "../../ui/Button/Button"
+import { useNavigate } from "react-router"
 
 const Header = () => {
+    const navigate = useNavigate()
+
     return (
         <header className={styles.header}>
             <nav className={styles["menu-header"]}>
@@ -27,7 +30,7 @@ const Header = () => {
                 </Link>
             </nav>
             <div className={styles["icon-header"]}>
-                <Button>Login</Button>
+                <Button onClick={() => navigate("/login")}>Login</Button>
                 <div className={styles["cart-wrapper"]}>
                     <FontAwesomeIcon
                         icon={faCartShopping}

@@ -5,7 +5,7 @@ export async function getListCategory(): Promise<Category[]> {
     const { data, error } = await supabase.from("category").select("*")
 
     if (error) {
-        throw new Error(error.message)
+        throw error
     }
 
     return data ?? []
