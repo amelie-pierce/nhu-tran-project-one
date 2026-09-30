@@ -1,0 +1,25 @@
+.form-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.form-item-label {
+    display: flex;
+    gap: var(--spacing-xxs);
+}
+
+.form-item-input {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xxs);
+}
+
+.form-item-required,
+.form-item-error {
+    color: var(--color-red-500);
+}
+
+.form-item-error {
+    font-size: var(--font-size-xs);
+}
