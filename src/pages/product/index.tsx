@@ -6,6 +6,7 @@ import {
     QUERY_KEY_PRODUCTS,
     getListProduct,
 } from "../../apis/product/getListProduct"
+import ProductItem from "./components/ProductItem/ProductItem"
 
 const Product = () => {
     const [currentPage, setCurrentPage] = useState(1)
@@ -42,10 +43,7 @@ const Product = () => {
     return (
         <div>
             {products?.data?.map((product) => (
-                <div key={product.id}>
-                    <div>{product.name}</div>
-                    <div>{product.price}</div>
-                </div>
+                <ProductItem product={product} />
             ))}
             <Pagination
                 currentPage={currentPage}
