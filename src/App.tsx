@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router"
 import AuthRoute from "./components/auth/AuthRoute"
 import GuestRoute from "./components/auth/GuestRoute"
 import Product from "./pages/product"
+import ProductDetail from "./pages/product-detail"
 import Login from "./pages/login"
 
 import "./index.css"
@@ -14,6 +15,7 @@ function App() {
         <Routes>
             <Route element={<MainLayout />}>
                 <Route path="/" element={<Product />} />
+                <Route path="/product/:id" element={<ProductDetail />} />
                 <Route
                     path="/login"
                     element={

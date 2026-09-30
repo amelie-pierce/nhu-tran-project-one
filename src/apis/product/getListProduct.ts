@@ -15,10 +15,10 @@ type GetListProductResponse = {
     currentPage: number
 }
 
-export async function getListProduct({
-    page,
-    limit,
-}: GetListProductRequest): Promise<GetListProductResponse> {
+export async function getListProduct(
+    params: GetListProductRequest
+): Promise<GetListProductResponse> {
+    const { page, limit } = params
     const from = (page - 1) * limit
     const to = page * limit - 1
 

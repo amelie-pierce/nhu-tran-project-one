@@ -6,7 +6,7 @@ const MAX = 99
 
 type Props = {
     value: number
-    max: number
+    max?: number
     onChange: (value: number) => void
 }
 
