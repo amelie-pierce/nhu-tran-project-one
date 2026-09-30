@@ -1,14 +1,17 @@
 import { useQuery } from "@tanstack/react-query"
-import { Navigate } from "react-router"
-import { getUser } from "../../apis/auth/getUser"
+import { Navigate, useLocation } from "react-router"
+import { getUser, QUERY_KEY_USER } from "../../apis/auth/getUser"
 
 type Props = {
     children: React.ReactNode
 }
 
 const GuestRoute = ({ children }: Props) => {
+    const location = useLocation()
+    const action = location.state
+
     const { data: user, isLoading } = useQuery({
-        queryKey: ["user"],
+        queryKey: [QUERY_KEY_USER],
         queryFn: getUser,
     })
 
@@ -17,7 +20,7 @@ const GuestRoute = ({ children }: Props) => {
     }
 
     if (user) {
-        return <Navigate to="/" replace />
+        return <Navigate to={action?.redirectTo || "/"} replace />
     }
 
     return <>{children}</>

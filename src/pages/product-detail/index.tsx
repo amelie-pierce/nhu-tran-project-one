@@ -16,7 +16,7 @@ const ProductDetail = () => {
         enabled: !!id,
     })
 
-    if (!data && !isLoading) {
+    if (!data) {
         return <div>Product not found</div>
     }
 

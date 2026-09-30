@@ -1,4 +1,7 @@
+import { useCallback } from "react"
+import { useLocation } from "react-router"
 import styles from "./Login.module.css"
+import { useAddToCart } from "../../hooks/useAddToCart"
 import Form from "../../components/ui/Form/Form"
 import FormItem from "../../components/ui/Form/FormItem"
 import Input from "../../components/ui/Input/Input"
@@ -13,15 +16,29 @@ const Login = () => {
     const { showToast } = useToast()
     const navigate = useNavigate()
     const queryClient = useQueryClient()
+    const { handleAddToCart } = useAddToCart()
+
+    const location = useLocation()
+    const action = location.state
+
+    const handleRedirectAfterLogin = useCallback(() => {
+        if (!action) {
+            navigate("/")
+            return
+        }
+
+        if (action.type === "add") {
+            handleAddToCart(action.productId, action.quantity)
+        }
+        navigate(action.redirectTo)
+    }, [action, handleAddToCart, navigate])
 
     const signInMutation = useMutation({
         mutationFn: signIn,
-        onSuccess: () => {
+        onSuccess: (data) => {
             showToast({ message: "Login successful", variant: "success" })
-            navigate("/")
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEY_USER],
-            })
+            queryClient.setQueryData([QUERY_KEY_USER], data.user)
+            handleRedirectAfterLogin()
         },
         onError: () => {
             showToast({ message: "Login failed", variant: "error" })
