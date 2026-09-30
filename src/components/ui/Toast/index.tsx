@@ -1,10 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faXmark } from "@fortawesome/free-solid-svg-icons"
-import { useEffect, useState, type ReactNode } from "react"
+import { useEffect, useState } from "react"
 import styles from "./Toast.module.css"
 
 type Props = {
-    children: ReactNode
+    children: React.ReactNode
     variant?: "success" | "warning" | "error"
     duration?: number
 }

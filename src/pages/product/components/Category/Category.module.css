@@ -1,0 +1,10 @@
+.category-container {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    gap: var(--spacing-xs);
+}
+
+.category-button {
+    border-radius: var(--radius-xl);
+}

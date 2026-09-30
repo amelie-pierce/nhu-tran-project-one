@@ -44,11 +44,6 @@
     color: var(--color-white);
 }
 
-.btn-secondary:focus {
-    outline: 2px solid var(--color-black);
-    outline-offset: 2px;
-}
-
 /* Border Black */
 .btn-border-black {
     background-color: var(--color-white);

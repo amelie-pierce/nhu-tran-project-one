@@ -1,12 +1,11 @@
 import styles from "./Tag.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faXmark } from "@fortawesome/free-solid-svg-icons"
-import type { ReactNode } from "react"
 
 type Props = {
     variant?:
         "white" | "light-pink" | "purple" | "light-purple" | "peach" | "green"
-    children: ReactNode
+    children: React.ReactNode
     onClick?: () => void
     onRemove?: () => void
 }

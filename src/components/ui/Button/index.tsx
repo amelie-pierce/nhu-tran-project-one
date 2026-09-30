@@ -2,7 +2,7 @@ import styles from "./Button.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import type { IconProp } from "@fortawesome/fontawesome-svg-core"
 
-type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+type Props = React.ComponentProps<"button"> & {
     variant?: "primary" | "secondary" | "border-black"
     icon?: IconProp
     square?: boolean
@@ -20,7 +20,7 @@ const Button = ({
         <button
             {...props}
             className={`
-                bold
+                bold hover-shadow
                 ${styles.btn}
                 ${styles[`btn-${variant}`]}
                 ${square ? styles.square : ""}

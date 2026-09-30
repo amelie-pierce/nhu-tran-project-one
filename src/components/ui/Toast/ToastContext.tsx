@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, type ReactNode } from "react"
+import { createContext, useContext, useState } from "react"
+import styles from "./Toast.module.css"
 import Toast from "."
-import styles from "../components/ui/Toast/Toast.module.css"
 
 type Variant = "success" | "warning" | "error"
 
@@ -16,7 +16,7 @@ type ToastContextType = {
 const ToastContext = createContext<ToastContextType | null>(null)
 
 type Props = {
-    children: ReactNode
+    children: React.ReactNode
 }
 
 export const ToastProvider = ({ children }: Props) => {
