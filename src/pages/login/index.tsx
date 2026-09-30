@@ -3,19 +3,27 @@ import Form from "../../components/ui/Form/Form"
 import FormItem from "../../components/ui/Form/FormItem"
 import Input from "../../components/ui/Input/Input"
 import Button from "../../components/ui/Button/Button"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useNavigate } from "react-router"
 import { signIn, type SignInRequest } from "../../apis/auth/signIn"
+import { QUERY_KEY_USER } from "../../apis/auth/getUser"
 import { useToast } from "../../components/ui/Toast/ToastContext"
 
 const Login = () => {
     const { showToast } = useToast()
+    const navigate = useNavigate()
+    const queryClient = useQueryClient()
 
     const signInMutation = useMutation({
         mutationFn: signIn,
-        onSuccess: (data) => {
+        onSuccess: () => {
             showToast({ message: "Login successful", variant: "success" })
+            navigate("/")
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEY_USER],
+            })
         },
-        onError: (error) => {
+        onError: () => {
             showToast({ message: "Login failed", variant: "error" })
         },
     })
