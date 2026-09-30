@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
-import { getProducts } from "../../apis/product/getProduct"
-import Pagination from "../../components/ui/Pagination"
+import Pagination from "../../components/ui/Pagination/Pagination"
+import { QUERY_KEY_PRODUCTS } from "./constant"
+import { getListProduct } from "../../apis/product/getListProduct"
 
 const Product = () => {
     const [currentPage, setCurrentPage] = useState(1)
@@ -12,8 +13,8 @@ const Product = () => {
         isError,
         error,
     } = useQuery({
-        queryKey: ["products"],
-        queryFn: getProducts,
+        queryKey: [QUERY_KEY_PRODUCTS],
+        queryFn: getListProduct,
     })
 
     if (isLoading) {

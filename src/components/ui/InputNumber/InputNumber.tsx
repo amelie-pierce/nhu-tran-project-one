@@ -1,4 +1,4 @@
-import Input from "../Input"
+import Input from "../Input/Input"
 
 const STEP = 1
 const MIN = 1

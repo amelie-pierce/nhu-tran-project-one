@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faChevronRight, faEllipsis } from "@fortawesome/free-solid-svg-icons"
 import { useState } from "react"
-import Button from "../Button"
-import InputNumber from "../InputNumber"
+import Button from "../Button/Button"
+import InputNumber from "../InputNumber/InputNumber"
 import styles from "./Pagination.module.css"
 
 type Props = {

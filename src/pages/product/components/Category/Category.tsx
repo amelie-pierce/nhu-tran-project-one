@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import Button from "../../../../components/ui/Button"
+import Button from "../../../../components/ui/Button/Button"
 import { QUERY_KEY_CATEGORIES } from "../../constant"
 import { getListCategory } from "../../../../apis/category/getListCategory"
 import styles from "./Category.module.css"

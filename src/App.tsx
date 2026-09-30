@@ -1,4 +1,4 @@
-import MainLayout from "./components/layout/MainLayout"
+import MainLayout from "./components/layout/MainLayout/MainLayout"
 import { Routes, Route } from "react-router"
 import Product from "./pages/product"
 

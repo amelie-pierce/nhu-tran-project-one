@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react"
 import styles from "./Toast.module.css"
-import Toast from "."
+import Toast from "./Toast"
 
 type Variant = "success" | "warning" | "error"
 
