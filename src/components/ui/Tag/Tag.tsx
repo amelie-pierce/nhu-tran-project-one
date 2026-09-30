@@ -13,7 +13,7 @@ type Props = {
 const Tag = ({ variant = "white", children, onClick, onRemove }: Props) => {
     return (
         <div
-            className={`${onClick || onRemove ? "hover-shadow" : ""} ${styles.tag} ${styles[`tag-${variant}`]}`}
+            className={`${onClick || onRemove ? "hover-shadow cursor-pointer" : ""} ${styles.tag} ${styles[`tag-${variant}`]}`}
             onClick={onClick}
         >
             {children}

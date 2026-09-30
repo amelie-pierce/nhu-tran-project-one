@@ -11,3 +11,7 @@ a {
 .hover-shadow:hover {
     box-shadow: 0 0 4px var(--color-gray-600);
 }
+
+.cursor-pointer {
+    cursor: pointer;
+}
