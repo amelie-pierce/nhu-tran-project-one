@@ -1,4 +1,4 @@
-import Input from "../Input";
+import Input from "../Input"
 
 const STEP = 1
 const MIN = 1
@@ -8,13 +8,9 @@ type Props = {
     value: number
     max: number
     onChange: (value: number) => void
-};
+}
 
-const InputNumber = ({
-    value,
-    max = MAX,
-    onChange,
-}: Props) => {
+const InputNumber = ({ value, max = MAX, onChange }: Props) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value
 
@@ -22,10 +18,10 @@ const InputNumber = ({
             return
         }
 
-        const number = Number(input);
+        const number = Number(input)
 
         if (!Number.isInteger(number)) {
-            return;
+            return
         }
 
         if (number > max) {

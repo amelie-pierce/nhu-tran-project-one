@@ -1,9 +1,9 @@
-import { Link } from "react-router";
-import { faRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
-import styles from "./Header.module.css";
-import Button from "../../ui/Button";
+import { Link } from "react-router"
+import { faRightToBracket } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCartShopping } from "@fortawesome/free-solid-svg-icons"
+import styles from "./Header.module.css"
+import Button from "../../ui/Button"
 
 const Header = () => {
     return (

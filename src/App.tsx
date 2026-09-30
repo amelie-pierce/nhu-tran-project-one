@@ -1,8 +1,8 @@
-import MainLayout from './components/layout/MainLayout'
-import { Routes, Route } from "react-router";
-import Product from './pages/product';
+import MainLayout from "./components/layout/MainLayout"
+import { Routes, Route } from "react-router"
+import Product from "./pages/product"
 
-import './index.css'
+import "./index.css"
 import "./styles/global.css"
 import "./styles/typography.css"
 
@@ -13,7 +13,7 @@ function App() {
                 <Route path="/" element={<Product />} />
             </Route>
         </Routes>
-    );
+    )
 }
 
-export default App;
+export default App

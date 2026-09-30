@@ -1,12 +1,12 @@
-import styles from "./Button.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { IconProp } from "@fortawesome/fontawesome-svg-core";
+import styles from "./Button.module.css"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import type { IconProp } from "@fortawesome/fontawesome-svg-core"
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-    variant?: "primary" | "secondary" | "border-black";
-    icon?: IconProp;
-    square?: boolean;
-};
+    variant?: "primary" | "secondary" | "border-black"
+    icon?: IconProp
+    square?: boolean
+}
 
 const Button = ({
     variant = "primary",
@@ -31,7 +31,7 @@ const Button = ({
 
             {icon && <FontAwesomeIcon icon={icon} />}
         </button>
-    );
-};
+    )
+}
 
-export default Button;
+export default Button

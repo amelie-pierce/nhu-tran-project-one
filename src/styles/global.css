@@ -1,13 +1,13 @@
 button,
 input {
-  font: inherit;
+    font: inherit;
 }
 
 a {
-  color: var(--foreground);
-  text-decoration: none;
+    color: var(--foreground);
+    text-decoration: none;
 }
 
 .hover-shadow:hover {
-  box-shadow: 0 0 4px var(--color-gray-600);
+    box-shadow: 0 0 4px var(--color-gray-600);
 }

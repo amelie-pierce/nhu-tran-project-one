@@ -1,9 +1,9 @@
-import { Link } from "react-router";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import { faFacebook, faLinkedin } from "@fortawesome/free-brands-svg-icons";
-import { faPhone } from "@fortawesome/free-solid-svg-icons";
-import styles from "./Footer.module.css";
+import { Link } from "react-router"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons"
+import { faFacebook, faLinkedin } from "@fortawesome/free-brands-svg-icons"
+import { faPhone } from "@fortawesome/free-solid-svg-icons"
+import styles from "./Footer.module.css"
 
 const Footer = () => {
     return (
@@ -20,45 +20,46 @@ const Footer = () => {
             </div>
             <div className={styles["footer-content"]}>
                 <div className={styles["footer-section"]}>
-                    <div className="bold text-primary">
-                        SHOP
-                    </div>
-                    <Link to="/product">
-                        Product Catalog
-                    </Link>
-                    <Link to="/compare-product">
-                        Compare Products
-                    </Link>
-                    <Link to="/cart">
-                        Cart
-                    </Link>
+                    <div className="bold text-primary">SHOP</div>
+                    <Link to="/product">Product Catalog</Link>
+                    <Link to="/compare-product">Compare Products</Link>
+                    <Link to="/cart">Cart</Link>
                 </div>
                 <div className={styles["footer-section"]}>
-                    <div className="bold text-primary">                        ABOUT
-                    </div>
-                    <Link to="/about-me">
-                        About Me
-                    </Link>
+                    <div className="bold text-primary"> ABOUT</div>
+                    <Link to="/about-me">About Me</Link>
                     <div className={styles["social-media"]}>
-                        <a href="mailto:ntran2@strongtie.com" className={styles["social-link"]}>
+                        <a
+                            href="mailto:ntran2@strongtie.com"
+                            className={styles["social-link"]}
+                        >
                             <FontAwesomeIcon
                                 className={styles["social-icon"]}
                                 icon={faEnvelope}
                             />
                         </a>
-                        <a href="https://www.facebook.com/trntnhu/" className={styles["social-link"]}>
+                        <a
+                            href="https://www.facebook.com/trntnhu/"
+                            className={styles["social-link"]}
+                        >
                             <FontAwesomeIcon
                                 className={styles["social-icon"]}
                                 icon={faFacebook}
                             />
                         </a>
-                        <a href="https://vn.linkedin.com/in/trntnhu" className={styles["social-link"]}>
+                        <a
+                            href="https://vn.linkedin.com/in/trntnhu"
+                            className={styles["social-link"]}
+                        >
                             <FontAwesomeIcon
                                 className={styles["social-icon"]}
                                 icon={faLinkedin}
                             />
                         </a>
-                        <a href="tel:+84942275188" className={styles["social-link"]}>
+                        <a
+                            href="tel:+84942275188"
+                            className={styles["social-link"]}
+                        >
                             <FontAwesomeIcon
                                 className={styles["social-icon"]}
                                 icon={faPhone}
