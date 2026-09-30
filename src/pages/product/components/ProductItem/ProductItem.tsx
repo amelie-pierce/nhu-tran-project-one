@@ -1,8 +1,8 @@
 import Button from "../../../../components/ui/Button/Button"
 import Tag from "../../../../components/ui/Tag/Tag"
 import type { Product } from "../../../../types/product"
-import { addToCart } from "../../../../utils/cartStorage"
-import { toggleCompare } from "../../../../utils/compareStorage"
+import { addToCart } from "../../../../storages/cartStorage"
+import { toggleCompare } from "../../../../storages/compareStorage"
 
 interface Props {
     product: Product
