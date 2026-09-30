@@ -1,5 +1,7 @@
 import MainLayout from "./components/layout/MainLayout/MainLayout"
 import { Routes, Route } from "react-router"
+import AuthRoute from "./components/auth/AuthRoute"
+import GuestRoute from "./components/auth/GuestRoute"
 import Product from "./pages/product"
 import Login from "./pages/login"
 
@@ -12,7 +14,22 @@ function App() {
         <Routes>
             <Route element={<MainLayout />}>
                 <Route path="/" element={<Product />} />
-                <Route path="/login" element={<Login />} />
+                <Route
+                    path="/login"
+                    element={
+                        <GuestRoute>
+                            <Login />
+                        </GuestRoute>
+                    }
+                />
+                <Route
+                    path="/checkout"
+                    element={
+                        <AuthRoute>
+                            <Product />
+                        </AuthRoute>
+                    }
+                />
             </Route>
         </Routes>
     )
