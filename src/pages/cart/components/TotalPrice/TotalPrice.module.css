@@ -1,0 +1,23 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: var(--section-padding-y) var(--page-padding-x);
+    gap: var(--spacing-s);
+    background-color: var(--color-pink-50);
+}
+
+.total-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.buy-button {
+    width: 100%;
+}
+
+@media (max-width: 375px) {
+    .wrapper {
+        gap: var(--spacing-xs);
+    }
+}
