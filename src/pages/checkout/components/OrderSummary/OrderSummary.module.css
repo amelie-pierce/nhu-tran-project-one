@@ -1,8 +1,8 @@
 .order-summary-container {
+    flex: 1;
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
     gap: var(--spacing-s);
     padding: var(--spacing-s) var(--spacing-m);
     background-color: var(--color-gray-100);
@@ -11,8 +11,14 @@
 }
 
 .order-items-container {
-    /* flex: 1; */
+    flex: 1;
     overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+}
+
+.summary-container {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-s);
