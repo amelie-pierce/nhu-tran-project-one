@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
+import { getCompare } from "../../storages/compareStorage"
 import styles from "./Product.module.css"
 import { useMemo, useState } from "react"
 import { useScreenWidth } from "../../hooks/useScreenWidth"
@@ -11,6 +12,8 @@ import ProductItem from "./components/ProductItem/ProductItem"
 
 const Product = () => {
     const [currentPage, setCurrentPage] = useState(1)
+    const [listCompare, setListCompare] = useState(getCompare())
+
     const screenWidth = useScreenWidth()
 
     const limit = useMemo(() => {
@@ -43,9 +46,16 @@ const Product = () => {
 
     return (
         <div className={styles["product-container"]}>
-            {products?.data?.map((product) => (
-                <ProductItem product={product} />
-            ))}
+            <div className={styles["product-list"]}>
+                {products?.data?.map((product) => (
+                    <ProductItem
+                        key={product.id}
+                        product={product}
+                        listCompare={listCompare}
+                        setListCompare={setListCompare}
+                    />
+                ))}
+            </div>
             <Pagination
                 currentPage={currentPage}
                 totalPage={products?.totalPage ?? 1}

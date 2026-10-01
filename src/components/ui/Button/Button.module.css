@@ -1,11 +1,22 @@
 .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
     padding: var(--spacing-xs) var(--spacing-s);
     border-radius: var(--radius-s);
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     gap: var(--spacing-xs);
+}
+
+.icon {
+    display: inline-flex;
+    height: 19px;
+}
+
+.icon svg {
+    width: auto;
+    height: 19px;
 }
 
 .square {
@@ -62,15 +73,22 @@
         width: var(--button-square-size-m);
         height: var(--button-square-size-m);
     }
+    .icon,
+    .icon svg {
+        height: 17px;
+    }
 }
 
 @media (max-width: 375px) {
     .btn {
         gap: var(--spacing-xxs);
     }
-
     .square {
         width: var(--button-square-size-s);
         height: var(--button-square-size-s);
+    }
+    .icon,
+    .icon svg {
+        height: 15px;
     }
 }

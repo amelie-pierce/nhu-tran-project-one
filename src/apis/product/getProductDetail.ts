@@ -12,12 +12,20 @@ export async function getProductDetail(
 ): Promise<Product> {
     const { data, error } = await supabase
         .from("product")
-        .select("*")
+        .select(
+            `
+            *,
+            category (
+                name
+            )
+            `
+        )
         .eq("id", params.id)
+        .single()
 
     if (error) {
         throw error
     }
 
-    return data?.[0] ?? null
+    return data
 }

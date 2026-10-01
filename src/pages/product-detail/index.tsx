@@ -26,7 +26,7 @@ const ProductDetail = () => {
         <div>
             <Breadcumb
                 title="PRODUCT DETAILS"
-                currentPage={data?.category_name || ""}
+                currentPage={data?.category?.name || ""}
             />
             <div className={styles["product-detail-container"]}>
                 <ProductActions product={data} />

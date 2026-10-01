@@ -1,10 +1,8 @@
 import styles from "./Button.module.css"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import type { IconProp } from "@fortawesome/fontawesome-svg-core"
 
 type Props = React.ComponentProps<"button"> & {
     variant?: "primary" | "secondary" | "border-black"
-    icon?: IconProp
+    icon?: React.ReactElement
     square?: boolean
 }
 
@@ -29,7 +27,7 @@ const Button = ({
         >
             {children}
 
-            {icon && <FontAwesomeIcon icon={icon} />}
+            {icon && <span className={styles.icon}>{icon}</span>}
         </button>
     )
 }

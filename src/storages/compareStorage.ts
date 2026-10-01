@@ -5,13 +5,14 @@ export const getCompare = (): number[] => {
     return data ? JSON.parse(data) : []
 }
 
-export const toggleCompare = (id: number) => {
+export const toggleCompare = (id: number): number[] => {
     const compare = getCompare()
-    if (compare.includes(id)) {
-        const newCompare = compare.filter((item) => item !== id)
-        localStorage.setItem(COMPARE_STORAGE_KEY, JSON.stringify(newCompare))
-    } else {
-        compare.push(id)
-        localStorage.setItem(COMPARE_STORAGE_KEY, JSON.stringify(compare))
-    }
+
+    const newCompare = compare.includes(id)
+        ? compare.filter((item) => item !== id)
+        : [...compare, id]
+
+    localStorage.setItem(COMPARE_STORAGE_KEY, JSON.stringify(newCompare))
+
+    return newCompare
 }

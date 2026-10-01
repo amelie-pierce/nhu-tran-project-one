@@ -24,7 +24,15 @@ export async function getListProduct(
 
     const { data, error, count } = await supabase
         .from("product")
-        .select("*", { count: "exact" })
+        .select(
+            `
+            *,
+            category (
+                name
+            )
+            `,
+            { count: "exact" }
+        )
         .range(from, to)
 
     if (error) {

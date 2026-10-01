@@ -1,3 +1,23 @@
 .product-container {
     padding: var(--page-padding-y) var(--page-padding-x);
 }
+
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-l);
+}
+
+@media (max-width: 1400px) {
+    .product-list {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-m);
+    }
+}
+
+@media (max-width: 700px) {
+    .product-list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-s);
+    }
+}
