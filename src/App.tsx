@@ -7,6 +7,7 @@ import ProductDetail from "./pages/product-detail"
 import Login from "./pages/login"
 import Checkout from "./pages/checkout"
 import Cart from "./pages/cart"
+import Payment from "./pages/payment"
 
 import "./index.css"
 import "./styles/global.css"
@@ -20,6 +21,7 @@ function App() {
                 <Route path="/product" element={<Product />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/cart" element={<Cart />} />
+                <Route path="/payment" element={<Payment />} />
                 <Route
                     path="/login"
                     element={
