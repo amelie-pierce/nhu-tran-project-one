@@ -6,6 +6,7 @@ import Product from "./pages/product"
 import ProductDetail from "./pages/product-detail"
 import Login from "./pages/login"
 import Checkout from "./pages/checkout"
+import Cart from "./pages/cart"
 
 import "./index.css"
 import "./styles/global.css"
@@ -18,6 +19,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/product" replace />} />
                 <Route path="/product" element={<Product />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/cart" element={<Cart />} />
                 <Route
                     path="/login"
                     element={
