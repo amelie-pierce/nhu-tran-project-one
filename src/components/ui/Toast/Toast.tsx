@@ -15,7 +15,7 @@ const Toast = ({ children, variant = "success", onClose }: Props) => {
 
             <FontAwesomeIcon
                 icon={faXmark}
-                className={styles.close}
+                className={styles["close-icon"]}
                 onClick={onClose}
             />
         </div>

@@ -18,19 +18,13 @@
     gap: var(--spacing-m);
 }
 
-.icon {
-    height: 24px;
-    width: auto;
-}
-
 .cart-wrapper {
     position: relative;
     display: inline-flex;
 }
 
 .icon {
-    height: 24px;
-    width: auto;
+    font-size: 24px;
 }
 
 .cart-number {
@@ -66,7 +60,7 @@
     }
 
     .icon {
-        height: 18px;
+        font-size: 18px;
     }
 
     .cart-number {

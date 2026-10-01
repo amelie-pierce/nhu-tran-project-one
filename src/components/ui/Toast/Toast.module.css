@@ -7,8 +7,9 @@
     border-radius: var(--radius-s);
 }
 
-.close {
+.close-icon {
     cursor: pointer;
+    font-size: 12px;
 }
 
 .success {

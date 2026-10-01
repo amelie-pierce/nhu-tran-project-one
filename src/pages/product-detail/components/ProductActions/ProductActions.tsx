@@ -4,6 +4,9 @@ import InputNumber from "../../../../components/ui/InputNumber/InputNumber"
 import Button from "../../../../components/ui/Button/Button"
 import { useProductAction } from "../../../../hooks/useProductAction"
 import { useLocation } from "react-router"
+import styles from "./ProductActions.module.css"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCartShopping, faCreditCard } from "@fortawesome/free-solid-svg-icons"
 
 type Props = {
     product: Product
@@ -15,9 +18,14 @@ const ProductActions = ({ product }: Props) => {
     const location = useLocation()
 
     return (
-        <>
-            <InputNumber value={quantity} onChange={setQuantity} />
+        <div className={styles["product-detail-actions"]}>
+            <InputNumber
+                value={quantity}
+                onChange={setQuantity}
+                className={styles["action-item"]}
+            />
             <Button
+                variant="secondary"
                 onClick={() =>
                     handleProductAction({
                         type: "add",
@@ -26,8 +34,15 @@ const ProductActions = ({ product }: Props) => {
                         redirectTo: location.pathname + location.search,
                     })
                 }
+                className={styles["action-item"]}
+                icon={
+                    <FontAwesomeIcon
+                        icon={faCartShopping}
+                        className={styles["action-icon"]}
+                    />
+                }
             >
-                Add to Cart
+                Add to cart
             </Button>
             <Button
                 onClick={() =>
@@ -38,10 +53,17 @@ const ProductActions = ({ product }: Props) => {
                         redirectTo: "/checkout",
                     })
                 }
+                className={styles["action-item"]}
+                icon={
+                    <FontAwesomeIcon
+                        icon={faCreditCard}
+                        className={styles["action-icon"]}
+                    />
+                }
             >
-                Buy
+                Buy now
             </Button>
-        </>
+        </div>
     )
 }
 

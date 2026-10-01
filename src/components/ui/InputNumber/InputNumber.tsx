@@ -8,9 +8,10 @@ type Props = {
     value: number
     max?: number
     onChange: (value: number) => void
+    className?: string
 }
 
-const InputNumber = ({ value, max = MAX, onChange }: Props) => {
+const InputNumber = ({ value, max = MAX, onChange, ...props }: Props) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value
 
@@ -46,6 +47,7 @@ const InputNumber = ({ value, max = MAX, onChange }: Props) => {
             step={STEP}
             value={value}
             onChange={handleChange}
+            {...props}
         />
     )
 }

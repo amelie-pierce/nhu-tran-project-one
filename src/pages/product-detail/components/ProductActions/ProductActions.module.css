@@ -1,0 +1,31 @@
+.product-detail-actions {
+    width: 100%;
+    display: flex;
+    gap: var(--spacing-s);
+}
+
+.action-item {
+    width: 100%;
+}
+
+.action-icon {
+    font-size: 19px;
+}
+
+@media (max-width: 768px) {
+    .product-detail-actions {
+        flex-direction: column;
+    }
+    .action-icon {
+        font-size: 17px;
+    }
+}
+
+@media (max-width: 375px) {
+    .product-detail-actions {
+        gap: var(--spacing-xs);
+    }
+    .action-icon {
+        font-size: 15px;
+    }
+}

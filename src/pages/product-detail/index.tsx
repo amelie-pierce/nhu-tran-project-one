@@ -1,4 +1,5 @@
 import ProductActions from "./components/ProductActions/ProductActions"
+import ProductInfo from "./components/ProductInfo/ProductInfo"
 import { useParams } from "react-router"
 import styles from "./ProductDetail.module.css"
 import { useQuery } from "@tanstack/react-query"
@@ -28,8 +29,9 @@ const ProductDetail = () => {
                 title="PRODUCT DETAILS"
                 currentPage={data?.category?.name || ""}
             />
+
             <div className={styles["product-detail-container"]}>
-                <ProductActions product={data} />
+                <ProductInfo product={data} />
             </div>
         </div>
     )

@@ -46,8 +46,7 @@
 }
 
 .social-icon {
-    height: 19px;
-    width: auto;
+    font-size: 19px;
 }
 
 @media (max-width: 768px) {

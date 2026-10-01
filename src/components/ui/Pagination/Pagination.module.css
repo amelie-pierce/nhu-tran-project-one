@@ -14,6 +14,14 @@
     gap: var(--spacing-xs);
 }
 
+.chevron-icon {
+    font-size: 14px;
+}
+
+.ellipsis-icon {
+    font-size: 5px;
+}
+
 @media (max-width: 375px) {
     .pagination-container {
         justify-content: center;

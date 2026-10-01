@@ -18,3 +18,7 @@
 .breadcumb-current {
     color: var(--color-pink-700);
 }
+
+.home-icon {
+    font-size: 16px;
+}

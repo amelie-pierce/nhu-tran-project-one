@@ -21,7 +21,7 @@ const Tag = ({ variant = "white", children, onClick, onRemove }: Props) => {
             {onRemove && (
                 <FontAwesomeIcon
                     icon={faXmark}
-                    className={styles["icon-remove"]}
+                    className={styles["remove-icon"]}
                     onClick={(e) => {
                         e.stopPropagation()
                         onRemove()
