@@ -9,9 +9,10 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons"
 
 type Props = {
     cart: CartProduct
+    onRemove: () => void
 }
 
-const CartItem = ({ cart }: Props) => {
+const CartItem = ({ cart, onRemove }: Props) => {
     const [quantity, setQuantity] = useState(cart.quantity)
 
     const handleChangeQuantity = (value: number) => {
@@ -40,6 +41,7 @@ const CartItem = ({ cart }: Props) => {
             <Button
                 variant="secondary"
                 icon={<FontAwesomeIcon icon={faTrash} />}
+                onClick={onRemove}
             />
         </div>
     )

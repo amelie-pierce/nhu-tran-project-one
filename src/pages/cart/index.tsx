@@ -1,19 +1,29 @@
-import { getCart } from "../../storages/cartStorage"
+import { getCart, removeFromCart } from "../../storages/cartStorage"
+import type { CartProduct } from "../../types/cart"
 import TotalPrice from "./components/TotalPrice/TotalPrice"
 import styles from "./Cart.module.css"
 import CartEmpty from "./components/CartEmpty/CartEmtpy"
 import CartItem from "./components/CartItem/CartItem"
-import { useMemo } from "react"
+import { useMemo, useState, useEffect } from "react"
 import Breadcrumb from "../../components/ui/Breadcrumb/Breadcrumb"
 
 const Cart = () => {
-    const carts = getCart()
+    const [cartItems, setCartItems] = useState<CartProduct[]>([])
+
+    useEffect(() => {
+        setCartItems(getCart())
+    }, [])
+
+    const onRemoveItem = (cartId: number) => {
+        removeFromCart(cartId)
+        setCartItems(getCart())
+    }
 
     const cartTotalStr = useMemo(() => {
-        return `${carts?.length} ${carts?.length === 1 ? "item" : "items"}`
-    }, [carts])
+        return `${cartItems?.length} ${cartItems?.length === 1 ? "item" : "items"}`
+    }, [cartItems])
 
-    if (carts?.length === 0) {
+    if (cartItems?.length === 0) {
         return <CartEmpty />
     }
 
@@ -29,12 +39,16 @@ const Cart = () => {
                         <input type="checkbox" />
                         <label>Select all ({cartTotalStr})</label>
                     </div>
-                    {carts?.map((cart) => (
-                        <CartItem key={cart.id} cart={cart} />
+                    {cartItems?.map((cart) => (
+                        <CartItem
+                            key={cart.id}
+                            cart={cart}
+                            onRemove={() => onRemoveItem(cart.id || 0)}
+                        />
                     ))}
                 </div>
             </div>
-            <TotalPrice selectedProducts={carts} />
+            <TotalPrice selectedProducts={cartItems} />
         </>
     )
 }
