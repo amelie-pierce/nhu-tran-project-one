@@ -21,3 +21,7 @@ a {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+hr {
+    color: var(--color-black);
+}
