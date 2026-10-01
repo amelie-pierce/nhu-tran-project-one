@@ -4,7 +4,7 @@ import styles from "./Cart.module.css"
 import CartEmpty from "./components/CartEmpty/CartEmtpy"
 import CartItem from "./components/CartItem/CartItem"
 import { useMemo } from "react"
-import Breadcumb from "../../components/ui/Breadcrumb/Breadcrumb"
+import Breadcrumb from "../../components/ui/Breadcrumb/Breadcrumb"
 
 const Cart = () => {
     const carts = getCart()
@@ -19,8 +19,8 @@ const Cart = () => {
 
     return (
         <>
-            <Breadcumb title="CART" currentPage="Cart" />
-            <div className={styles["cart-container"]}>
+            <Breadcrumb title="CART" currentPage="Cart" />
+            <div className={`${styles["cart-container"]} page-padding`}>
                 <label className={`${styles["cart-title"]} title bold`}>
                     Your Cart
                 </label>

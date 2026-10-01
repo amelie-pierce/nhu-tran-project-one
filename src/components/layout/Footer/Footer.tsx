@@ -7,7 +7,7 @@ import styles from "./Footer.module.css"
 
 const Footer = () => {
     return (
-        <footer className={styles.footer}>
+        <footer className={`${styles.footer} page-padding`}>
             <div className={styles["logo-area"]}>
                 <div className={styles["logo-container"]}>
                     <img

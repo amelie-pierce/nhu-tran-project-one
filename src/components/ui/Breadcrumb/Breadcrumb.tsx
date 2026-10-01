@@ -8,11 +8,11 @@ type Props = {
     currentPage: string
 }
 
-const Breadcumb = ({ title, currentPage }: Props) => {
+const Breadcrumb = ({ title, currentPage }: Props) => {
     return (
-        <div className={styles.breadcumb}>
+        <div className={`${styles.breadcrumb} section-padding`}>
             <h1 className="title bold">{title}</h1>
-            <div className={styles["breadcumb-nav"]}>
+            <div className={styles["breadcrumb-nav"]}>
                 <Link to="/">
                     <FontAwesomeIcon
                         icon={faHome}
@@ -20,7 +20,7 @@ const Breadcumb = ({ title, currentPage }: Props) => {
                     />
                 </Link>
                 <span>/</span>
-                <span className={styles["breadcumb-current"]}>
+                <span className={styles["breadcrumb-current"]}>
                     {currentPage}
                 </span>
             </div>
@@ -28,4 +28,4 @@ const Breadcumb = ({ title, currentPage }: Props) => {
     )
 }
 
-export default Breadcumb
+export default Breadcrumb

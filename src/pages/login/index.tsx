@@ -64,7 +64,7 @@ const Login = () => {
     }
 
     return (
-        <div className={styles["login-container"]}>
+        <div className={`${styles["login-container"]} page-padding`}>
             <Form
                 validate={validate}
                 initialValues={{ email: "", password: "" }}

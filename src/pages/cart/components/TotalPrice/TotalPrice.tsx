@@ -13,7 +13,7 @@ const TotalPrice = ({ selectedProducts }: Props) => {
     )
 
     return (
-        <div className={styles.wrapper}>
+        <div className={`${styles.wrapper} section-padding`}>
             <div className={styles["total-container"]}>
                 <span>Total</span>
                 <span>{totalPrice}</span>

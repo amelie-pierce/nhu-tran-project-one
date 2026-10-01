@@ -1,6 +1,5 @@
-.breadcumb {
+.breadcrumb {
     background-color: var(--color-pink-50);
-    padding: var(--section-padding-y) var(--page-padding-x);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -8,14 +7,14 @@
     gap: var(--spacing-xs);
 }
 
-.breadcumb-nav {
+.breadcrumb-nav {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: var(--spacing-xs);
 }
 
-.breadcumb-current {
+.breadcrumb-current {
     color: var(--color-pink-700);
 }
 

@@ -45,7 +45,7 @@ const Product = () => {
     }
 
     return (
-        <div className={styles["product-container"]}>
+        <div className="page-padding">
             <div className={styles["product-list"]}>
                 {products?.data?.map((product) => (
                     <ProductItem

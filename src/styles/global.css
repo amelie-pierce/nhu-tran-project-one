@@ -25,3 +25,11 @@ a {
 hr {
     color: var(--color-black);
 }
+
+.section-padding {
+    padding: var(--section-padding-y) var(--page-padding-x);
+}
+
+.page-padding {
+    padding: var(--page-padding-y) var(--page-padding-x);
+}

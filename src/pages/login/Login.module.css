@@ -1,6 +1,5 @@
 .login-container {
     width: 480px;
-    padding: var(--page-padding-y) var(--page-padding-x);
 }
 
 .login-form {
