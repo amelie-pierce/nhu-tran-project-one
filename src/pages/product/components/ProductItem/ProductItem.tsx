@@ -4,7 +4,7 @@ import styles from "./ProductItem.module.css"
 import type { Product } from "../../../../types/product"
 import { toggleCompare } from "../../../../storages/compareStorage"
 import { useProductAction } from "../../../../hooks/useProductAction"
-import { useLocation } from "react-router"
+import { useLocation, useNavigate } from "react-router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
     faScaleBalanced,
@@ -21,9 +21,16 @@ interface Props {
 const ProductItem = ({ product, setListCompare, listCompare }: Props) => {
     const { handleProductAction } = useProductAction()
     const location = useLocation()
+    const navigate = useNavigate()
 
     return (
-        <div key={product.id} className={styles["product-item-container"]}>
+        <div
+            key={product.id}
+            className={styles["product-item-container"]}
+            onClick={() => {
+                navigate(`/product/${product.id}`)
+            }}
+        >
             <img
                 src={product.img_url || ""}
                 alt={product.name}

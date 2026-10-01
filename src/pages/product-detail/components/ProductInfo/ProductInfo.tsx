@@ -47,6 +47,14 @@ const ProductInfo = ({ product }: Props) => {
                     <div className={`bold ${styles["product-detail-price"]}`}>
                         {product.price}
                     </div>
+                    <div className={styles["product-detail-description"]}>
+                        {product.description}
+                    </div>
+                    <div>
+                        {product?.ingredients?.map((item) => (
+                            <Tag key={item.id}>{item.name}</Tag>
+                        ))}
+                    </div>
                 </div>
                 <ProductActions product={product} />
             </div>
