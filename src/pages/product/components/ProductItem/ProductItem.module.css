@@ -44,10 +44,6 @@
     font-size: 16px;
 }
 
-.action-icon {
-    font-size: 19px;
-}
-
 .product-item-price {
     color: var(--color-red-700);
 }
@@ -70,17 +66,11 @@
         flex-direction: column;
         gap: var(--spacing-xs);
     }
-    .action-icon {
-        font-size: 17px;
-    }
 }
 
 @media (max-width: 375px) {
     .product-item-details {
         padding: var(--spacing-xs);
         gap: var(--spacing-xs);
-    }
-    .action-icon {
-        font-size: 15px;
     }
 }

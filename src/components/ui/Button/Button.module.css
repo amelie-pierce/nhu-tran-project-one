@@ -11,6 +11,7 @@
 
 .icon {
     display: inline-flex;
+    font-size: 19px;
 }
 
 .icon svg {
@@ -71,6 +72,9 @@
         width: var(--button-square-size-m);
         height: var(--button-square-size-m);
     }
+    .icon {
+        font-size: 17px;
+    }
 }
 
 @media (max-width: 375px) {
@@ -80,5 +84,8 @@
     .square {
         width: var(--button-square-size-s);
         height: var(--button-square-size-s);
+    }
+    .icon {
+        font-size: 15px;
     }
 }

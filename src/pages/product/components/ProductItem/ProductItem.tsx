@@ -67,12 +67,7 @@ const ProductItem = ({ product, setListCompare, listCompare }: Props) => {
                                 redirectTo: location.pathname + location.search,
                             })
                         }
-                        icon={
-                            <FontAwesomeIcon
-                                icon={faCartShopping}
-                                className={styles["action-icon"]}
-                            />
-                        }
+                        icon={<FontAwesomeIcon icon={faCartShopping} />}
                         className={styles["product-item-action-button"]}
                     >
                         Add
@@ -86,12 +81,7 @@ const ProductItem = ({ product, setListCompare, listCompare }: Props) => {
                                 redirectTo: "/checkout",
                             })
                         }
-                        icon={
-                            <FontAwesomeIcon
-                                icon={faCreditCard}
-                                className={styles["action-icon"]}
-                            />
-                        }
+                        icon={<FontAwesomeIcon icon={faCreditCard} />}
                         className={styles["product-item-action-button"]}
                     >
                         Buy

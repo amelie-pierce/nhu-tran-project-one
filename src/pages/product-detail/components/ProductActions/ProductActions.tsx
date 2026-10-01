@@ -35,12 +35,7 @@ const ProductActions = ({ product }: Props) => {
                     })
                 }
                 className={styles["action-item"]}
-                icon={
-                    <FontAwesomeIcon
-                        icon={faCartShopping}
-                        className={styles["action-icon"]}
-                    />
-                }
+                icon={<FontAwesomeIcon icon={faCartShopping} />}
             >
                 Add to cart
             </Button>
@@ -54,12 +49,7 @@ const ProductActions = ({ product }: Props) => {
                     })
                 }
                 className={styles["action-item"]}
-                icon={
-                    <FontAwesomeIcon
-                        icon={faCreditCard}
-                        className={styles["action-icon"]}
-                    />
-                }
+                icon={<FontAwesomeIcon icon={faCreditCard} />}
             >
                 Buy now
             </Button>
