@@ -2,3 +2,16 @@
     display: flex;
     gap: var(--spacing-l);
 }
+
+@media (max-width: 768px) {
+    .wrapper {
+        flex-direction: column;
+        gap: var(--spacing-m);
+    }
+}
+
+@media (max-width: 375px) {
+    .wrapper {
+        gap: var(--spacing-s);
+    }
+}

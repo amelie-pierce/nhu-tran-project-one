@@ -33,3 +33,14 @@
 .cod-icon {
     font-size: var(--font-size-l);
 }
+
+@media (max-width: 375px) {
+    .info-container {
+        padding: var(--spacing-xs) var(--spacing-s);
+        gap: var(--spacing-s);
+        border-radius: var(--radius-s);
+    }
+    .group-info {
+        gap: var(--spacing-xs);
+    }
+}
