@@ -6,6 +6,7 @@ import styles from "./ProductInfo.module.css"
 import { useState } from "react"
 import { toggleCompare } from "../../../../storages/compareStorage"
 import ProductActions from "../ProductActions/ProductActions"
+import type { Ingredient } from "../../../../types/ingredient"
 
 type Props = {
     product: Product
@@ -43,15 +44,15 @@ const ProductInfo = ({ product }: Props) => {
                             />
                         </Tag>
                     </div>
-                    <div className="bold">{product.name}</div>
+                    <div className="title bold">{product.name}</div>
                     <div className={`bold ${styles["product-detail-price"]}`}>
                         {product.price}
                     </div>
                     <div className={styles["product-detail-description"]}>
                         {product.description}
                     </div>
-                    <div>
-                        {product?.ingredients?.map((item) => (
+                    <div className={styles["product-ingredients"]}>
+                        {product?.ingredient?.map((item: Ingredient) => (
                             <Tag key={item.id}>{item.name}</Tag>
                         ))}
                     </div>

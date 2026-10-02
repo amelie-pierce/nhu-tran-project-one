@@ -17,6 +17,10 @@ export async function getProductDetail(
             *,
             category (
                 name
+            ),
+            ingredient(
+                id,
+                name
             )
             `
         )

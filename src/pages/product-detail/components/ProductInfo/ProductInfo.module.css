@@ -18,7 +18,6 @@
 
 .product-detail {
     width: 100%;
-    height: 100%;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -45,6 +44,11 @@
 
 .balance-icon {
     font-size: 16px;
+}
+
+.product-ingredients {
+    display: flex;
+    gap: var(--spacing-xs);
 }
 
 @media (max-width: 1200px) {

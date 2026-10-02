@@ -1,4 +1,5 @@
 import type { Category } from "./category"
+import type { Ingredient } from "./ingredient"
 
 export type Product = {
     id: number
@@ -8,4 +9,5 @@ export type Product = {
     category_id: string | null
     category: Category | null
     img_url: string | null
+    ingredient: Ingredient[]
 }
