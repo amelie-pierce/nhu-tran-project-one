@@ -47,7 +47,10 @@ const ProductItem = ({ product }: Props) => {
                                     ? "light-purple"
                                     : "white"
                             }
-                            onClick={() => toggleCompareItem(product.id)}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                toggleCompareItem(product.id)
+                            }}
                         >
                             <FontAwesomeIcon
                                 icon={faScaleBalanced}

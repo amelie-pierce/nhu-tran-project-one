@@ -2,19 +2,18 @@ import styles from "./Tag.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faXmark } from "@fortawesome/free-solid-svg-icons"
 
-type Props = {
+type Props = React.ComponentProps<"div"> & {
     variant?:
         "white" | "light-pink" | "purple" | "light-purple" | "peach" | "green"
     children: React.ReactNode
-    onClick?: () => void
     onRemove?: () => void
 }
 
-const Tag = ({ variant = "white", children, onClick, onRemove }: Props) => {
+const Tag = ({ variant = "white", children, onRemove, ...props }: Props) => {
     return (
         <div
-            className={`${onClick || onRemove ? "hover-shadow cursor-pointer" : ""} ${styles.tag} ${styles[`tag-${variant}`]}`}
-            onClick={onClick}
+            className={`${props?.onClick || onRemove ? "hover-shadow cursor-pointer" : ""} ${styles.tag} ${styles[`tag-${variant}`]}`}
+            {...props}
         >
             {children}
 
