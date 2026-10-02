@@ -45,7 +45,7 @@ const ProductInfo = ({ product }: Props) => {
                         </Tag>
                     </div>
                     <div className="title bold">{product.name}</div>
-                    <div className={`bold ${styles["product-detail-price"]}`}>
+                    <div className={`title bold ${styles["product-detail-price"]}`}>
                         {product.price}
                     </div>
                     <div className={styles["product-detail-description"]}>

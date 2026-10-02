@@ -31,6 +31,10 @@
     gap: var(--spacing-s);
 }
 
+.product-detail-price {
+    color: var(--color-pink-700);
+}
+
 .product-detail-tags {
     width: 100%;
     display: flex;
