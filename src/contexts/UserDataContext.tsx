@@ -8,6 +8,7 @@ import {
 } from "../storages/cartStorage"
 import { getCompare, toggleCompare } from "../storages/compareStorage"
 import { useToast } from "../components/ui/Toast/ToastContext"
+import { MAX_QUANTITY } from "../constants"
 
 type UserDataType = {
     cartList: CartProduct[]
@@ -23,8 +24,6 @@ const UserDataContext = createContext<UserDataType | null>(null)
 type Props = {
     children: React.ReactNode
 }
-
-const MAX_QUANTITY = 9
 
 export const UserDataProvider = ({ children }: Props) => {
     const [cartList, setCartList] = useState<CartProduct[]>([])

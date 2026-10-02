@@ -6,6 +6,7 @@ import Button from "../../../../components/ui/Button/Button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrash } from "@fortawesome/free-solid-svg-icons"
 import { useUserData } from "../../../../contexts/UserDataContext"
+import { MAX_QUANTITY } from "../../../../constants"
 
 type Props = {
     cart: CartProduct
@@ -30,10 +31,11 @@ const CartItem = ({ cart, onRemove }: Props) => {
                 className={styles["cart-item-image"]}
             />
             <div className={styles["cart-item-info-container"]}>
-                <p className="bold">{cart.name}</p>
+                <p className="bold text-truncate">{cart.name}</p>
                 <p>{cart.price || 0}</p>
                 <InputNumber
                     value={quantity}
+                    max={MAX_QUANTITY}
                     onChange={handleChangeQuantity}
                     className={styles["input-quantity"]}
                 />

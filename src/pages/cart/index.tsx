@@ -6,10 +6,44 @@ import CartItem from "./components/CartItem/CartItem"
 import { useMemo, useState } from "react"
 import Breadcrumb from "../../components/ui/Breadcrumb/Breadcrumb"
 import { useUserData } from "../../contexts/UserDataContext"
+import {
+    getListProduct,
+    QUERY_KEY_PRODUCTS,
+} from "../../apis/product/getListProduct"
+import { useQuery } from "@tanstack/react-query"
 
 const Cart = () => {
     const { cartList, removeFromCartList } = useUserData()
     const [selectedItems, setSelectedItems] = useState<CartProduct[]>([])
+
+    const {
+        data: products,
+        isLoading,
+        isError,
+        error,
+    } = useQuery({
+        queryKey: [QUERY_KEY_PRODUCTS, cartList],
+        queryFn: () =>
+            getListProduct({
+                product_ids: cartList?.map((item) => Number(item.id || 0)),
+            }),
+    })
+
+    // TODO: consider join cart from db
+    const cartProductItems: CartProduct[] = useMemo(
+        () =>
+            products?.data?.map((item) => {
+                const quantity = cartList?.filter(
+                    (cart) => cart.id === item.id
+                )?.[0]?.quantity
+
+                return {
+                    ...item,
+                    quantity,
+                }
+            }) || [],
+        [products?.data, cartList]
+    )
 
     const onRemoveItem = (id: number) => {
         removeFromCartList(id)
@@ -35,11 +69,11 @@ const Cart = () => {
                         <input type="checkbox" />
                         <label>Select all ({cartTotalStr})</label>
                     </div>
-                    {cartList?.map((cart) => (
+                    {cartProductItems?.map((item) => (
                         <CartItem
-                            key={cart.id}
-                            cart={cart}
-                            onRemove={() => onRemoveItem(cart.id || 0)}
+                            key={item.id}
+                            cart={item}
+                            onRemove={() => onRemoveItem(item.id || 0)}
                         />
                     ))}
                 </div>

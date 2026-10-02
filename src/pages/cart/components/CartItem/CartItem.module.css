@@ -5,7 +5,11 @@
 }
 
 .cart-item-image {
+    width: 100px;
+    height: 100px;
+    aspect-ratio: 1 / 1;
     border-radius: var(--radius-m);
+    object-fit: cover;
 }
 
 .cart-item-info-container {
@@ -26,6 +30,8 @@
 
     .cart-item-image {
         border-radius: var(--radius-s);
+        width: 50px;
+        height: 50px;
     }
 
     .cart-item-info-container {

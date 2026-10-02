@@ -7,6 +7,7 @@ type GetListProductRequest = {
     page: number
     limit: number
     category_id: number
+    product_ids: number[]
 }
 
 type GetListProductResponse = {
@@ -17,26 +18,30 @@ type GetListProductResponse = {
 }
 
 export async function getListProduct(
-    params: GetListProductRequest
+    params: Partial<GetListProductRequest>
 ): Promise<GetListProductResponse> {
-    const from = (params.page - 1) * params.limit
-    const to = params.page * params.limit - 1
-
-    const query = supabase
-        .from("product")
-        .select(
-            `
+    const query = supabase.from("product").select(
+        `
             *,
             category (
                 name
             )
             `,
-            { count: "exact" }
-        )
-        .range(from, to)
+        { count: "exact" }
+    )
+
+    if (!!params.page && !!params.limit) {
+        const from = (params.page - 1) * params.limit
+        const to = params.page * params.limit - 1
+        query.range(from, to)
+    }
 
     if (!!params.category_id) {
         query.filter("category_id", "in", `(${params.category_id})`)
+    }
+
+    if (!!params.product_ids) {
+        query.filter("id", "in", `(${params.product_ids?.join(",")})`)
     }
 
     const { data, error, count } = await query
@@ -46,12 +51,12 @@ export async function getListProduct(
     }
 
     const total = count ?? 0
-    const totalPage = Math.ceil(total / params.limit)
+    const totalPage = Math.ceil(total / (params.limit || 1))
 
     return {
         data: data ?? [],
         total,
         totalPage,
-        currentPage: params.page,
+        currentPage: params.page || 1,
     }
 }
