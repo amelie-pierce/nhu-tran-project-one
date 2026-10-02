@@ -1,29 +1,25 @@
-import { getCart, removeFromCart } from "../../storages/cartStorage"
 import type { CartProduct } from "../../types/cart"
 import TotalPrice from "./components/TotalPrice/TotalPrice"
 import styles from "./Cart.module.css"
 import CartEmpty from "./components/CartEmpty/CartEmtpy"
 import CartItem from "./components/CartItem/CartItem"
-import { useMemo, useState, useEffect } from "react"
+import { useMemo, useState } from "react"
 import Breadcrumb from "../../components/ui/Breadcrumb/Breadcrumb"
+import { useUserData } from "../../contexts/UserDataContext"
 
 const Cart = () => {
-    const [cartItems, setCartItems] = useState<CartProduct[]>([])
+    const { cartList, removeFromCartList } = useUserData()
+    const [selectedItems, setSelectedItems] = useState<CartProduct[]>([])
 
-    useEffect(() => {
-        setCartItems(getCart())
-    }, [])
-
-    const onRemoveItem = (cartId: number) => {
-        removeFromCart(cartId)
-        setCartItems(getCart())
+    const onRemoveItem = (id: number) => {
+        removeFromCartList(id)
     }
 
     const cartTotalStr = useMemo(() => {
-        return `${cartItems?.length} ${cartItems?.length === 1 ? "item" : "items"}`
-    }, [cartItems])
+        return `${cartList?.length} ${cartList?.length === 1 ? "item" : "items"}`
+    }, [cartList])
 
-    if (cartItems?.length === 0) {
+    if (cartList?.length === 0) {
         return <CartEmpty />
     }
 
@@ -39,7 +35,7 @@ const Cart = () => {
                         <input type="checkbox" />
                         <label>Select all ({cartTotalStr})</label>
                     </div>
-                    {cartItems?.map((cart) => (
+                    {cartList?.map((cart) => (
                         <CartItem
                             key={cart.id}
                             cart={cart}
@@ -48,7 +44,7 @@ const Cart = () => {
                     ))}
                 </div>
             </div>
-            <TotalPrice selectedProducts={cartItems} />
+            <TotalPrice selectedItems={selectedItems} />
         </>
     )
 }

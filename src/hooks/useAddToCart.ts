@@ -1,19 +1,19 @@
 import { useToast } from "../components/ui/Toast/ToastContext"
-import { getCart, addToCart } from "../storages/cartStorage"
+import { useUserData } from "../contexts/UserDataContext"
 
 const MAX_QUANTITY = 9
 
 export const useAddToCart = () => {
     const { showToast } = useToast()
+    const { cartList, addToCartList } = useUserData()
 
     const handleAddToCart = (productId: number, quantity: number) => {
-        const cart = getCart()
-        const itemInCart = cart.find((item) => item.id === productId)
+        const itemInCart = cartList.find((item) => item.id === productId)
         const quantityInCart = itemInCart?.quantity || 0
         const maxAddable = MAX_QUANTITY - quantityInCart
 
         if (quantity <= maxAddable) {
-            addToCart(productId, quantity)
+            addToCartList(productId, quantity)
             showToast({
                 message: "Added to cart successfully",
                 variant: "success",

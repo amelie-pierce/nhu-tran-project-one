@@ -1,11 +1,11 @@
 import InputNumber from "../../../../components/ui/InputNumber/InputNumber"
 import { useState } from "react"
-import { updateCart } from "../../../../storages/cartStorage"
 import type { CartProduct } from "../../../../types/cart"
 import styles from "./CartItem.module.css"
 import Button from "../../../../components/ui/Button/Button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrash } from "@fortawesome/free-solid-svg-icons"
+import { useUserData } from "../../../../contexts/UserDataContext"
 
 type Props = {
     cart: CartProduct
@@ -14,10 +14,11 @@ type Props = {
 
 const CartItem = ({ cart, onRemove }: Props) => {
     const [quantity, setQuantity] = useState(cart.quantity)
+    const { updateCartList } = useUserData()
 
     const handleChangeQuantity = (value: number) => {
         setQuantity(value)
-        updateCart(cart.id || 0, value)
+        updateCartList(cart.id || 0, value)
     }
 
     return (

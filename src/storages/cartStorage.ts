@@ -7,36 +7,49 @@ export const getCart = (): CartProduct[] => {
     return data ? JSON.parse(data) : []
 }
 
-export const addToCart = (id: number, quantity: number) => {
-    const cart = getCart()
-    const existingItem = cart.find((item) => item.id === id)
+export const addToCart = (
+    cartList: CartProduct[] = getCart(),
+    id: number,
+    quantity: number
+): CartProduct[] => {
+    const newCartList = cartList
+    const existingItem = newCartList.find((item) => item.id === id)
     if (existingItem) {
         existingItem.quantity += quantity
     } else {
-        cart.push({
+        newCartList.push({
             id,
             quantity,
         })
     }
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart))
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(newCartList))
+    return newCartList
 }
 
-export const updateCart = (id: number, quantity: number) => {
-    const cart = getCart()
-    const existingItem = cart.find((item) => item.id === id)
+export const updateCart = (
+    cartList: CartProduct[] = getCart(),
+    id: number,
+    quantity: number
+): CartProduct[] => {
+    const newCartList = cartList
+    const existingItem = cartList.find((item) => item.id === id)
     if (existingItem) {
         existingItem.quantity = quantity
     } else {
-        cart.push({
+        cartList.push({
             id,
             quantity,
         })
     }
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart))
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(newCartList))
+    return newCartList
 }
 
-export const removeFromCart = (id: number) => {
-    const cart = getCart()
-    const newCart = cart.filter((item) => item.id !== id)
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(newCart))
+export const removeFromCart = (
+    cartList: CartProduct[] = getCart(),
+    id: number
+): CartProduct[] => {
+    const newCartList = cartList.filter((item) => item.id !== id)
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(newCartList))
+    return newCartList
 }

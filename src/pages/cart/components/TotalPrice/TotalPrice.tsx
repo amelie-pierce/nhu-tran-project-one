@@ -3,11 +3,11 @@ import type { CartProduct } from "../../../../types/cart"
 import styles from "./TotalPrice.module.css"
 
 type Props = {
-    selectedProducts: CartProduct[]
+    selectedItems: CartProduct[]
 }
 
-const TotalPrice = ({ selectedProducts }: Props) => {
-    const totalPrice = selectedProducts?.reduce(
+const TotalPrice = ({ selectedItems }: Props) => {
+    const totalPrice = selectedItems?.reduce(
         (total, item) => total + (item.price || 0) * (item.quantity || 1),
         0
     )
