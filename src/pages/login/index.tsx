@@ -1,7 +1,6 @@
 import { useCallback } from "react"
 import { useLocation } from "react-router"
 import styles from "./Login.module.css"
-import { useAddToCart } from "../../hooks/useAddToCart"
 import Form from "../../components/ui/Form/Form"
 import FormItem from "../../components/ui/Form/FormItem"
 import Input from "../../components/ui/Input/Input"
@@ -11,12 +10,13 @@ import { useNavigate } from "react-router"
 import { signIn, type SignInRequest } from "../../apis/auth/signIn"
 import { QUERY_KEY_USER } from "../../apis/auth/getUser"
 import { useToast } from "../../components/ui/Toast/ToastContext"
+import { useUserData } from "../../contexts/UserDataContext"
 
 const Login = () => {
     const { showToast } = useToast()
     const navigate = useNavigate()
     const queryClient = useQueryClient()
-    const { handleAddToCart } = useAddToCart()
+    const { addToCartList } = useUserData()
 
     const location = useLocation()
     const action = location.state
@@ -28,10 +28,10 @@ const Login = () => {
         }
 
         if (action.type === "add") {
-            handleAddToCart(action.productId, action.quantity)
+            addToCartList(action.productId, action.quantity)
         }
         navigate(action.redirectTo)
-    }, [action, handleAddToCart, navigate])
+    }, [action, addToCartList, navigate])
 
     const signInMutation = useMutation({
         mutationFn: signIn,

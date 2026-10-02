@@ -63,28 +63,30 @@ const ProductItem = ({ product }: Props) => {
                 <div className={styles["product-item-actions"]}>
                     <Button
                         variant="secondary"
-                        onClick={() =>
+                        onClick={(e) => {
+                            e.stopPropagation()
                             handleProductAction({
                                 type: "add",
                                 productId: product.id,
                                 quantity: 1,
                                 redirectTo: location.pathname + location.search,
                             })
-                        }
+                        }}
                         icon={<FontAwesomeIcon icon={faCartShopping} />}
                         className={styles["product-item-action-button"]}
                     >
                         Add
                     </Button>
                     <Button
-                        onClick={() =>
+                        onClick={(e) => {
+                            e.stopPropagation()
                             handleProductAction({
                                 type: "buy",
                                 productId: product.id,
                                 quantity: 1,
                                 redirectTo: "/checkout",
                             })
-                        }
+                        }}
                         icon={<FontAwesomeIcon icon={faCreditCard} />}
                         className={styles["product-item-action-button"]}
                     >

@@ -10,13 +10,17 @@ import Button from "../../ui/Button/Button"
 import { useNavigate } from "react-router"
 import { useToast } from "../../ui/Toast/ToastContext"
 import { useUserData } from "../../../contexts/UserDataContext"
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 
 const Header = () => {
     const navigate = useNavigate()
     const { showToast } = useToast()
     const { cartList } = useUserData()
     const queryClient = useQueryClient()
+
+    useEffect(() => {
+        console.log("cartList", cartList)
+    }, [cartList])
 
     const { data: user } = useQuery({
         queryKey: [QUERY_KEY_USER],
@@ -40,7 +44,7 @@ const Header = () => {
     const cartNumber = useMemo(() => {
         if (cartList?.length > 9) return "9+"
         return String(cartList?.length) || ""
-    }, [cartList])
+    }, [cartList?.length])
 
     return (
         <header className={`${styles.header} section-padding`}>
@@ -68,12 +72,17 @@ const Header = () => {
                 )}
                 {user && (
                     <>
-                        <div className={styles["icon-wrapper"]}>
+                        <div
+                            className={styles["icon-wrapper"]}
+                            onClick={() => {
+                                navigate("/cart")
+                            }}
+                        >
                             <FontAwesomeIcon
                                 icon={faCartShopping}
                                 className={styles.icon}
                             />
-                            {!!cartNumber && (
+                            {!!Number(cartNumber) && (
                                 <div
                                     className={`${styles["icon-number"]} caption bold`}
                                 >

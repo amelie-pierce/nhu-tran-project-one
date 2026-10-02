@@ -20,10 +20,12 @@
 .icon-wrapper {
     position: relative;
     display: inline-flex;
+    cursor: pointer;
 }
 
 .icon {
     font-size: 24px;
+    cursor: pointer;
 }
 
 .icon-number {

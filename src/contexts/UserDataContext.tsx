@@ -7,6 +7,7 @@ import {
     updateCart,
 } from "../storages/cartStorage"
 import { getCompare, toggleCompare } from "../storages/compareStorage"
+import { useToast } from "../components/ui/Toast/ToastContext"
 
 type UserDataType = {
     cartList: CartProduct[]
@@ -23,23 +24,68 @@ type Props = {
     children: React.ReactNode
 }
 
+const MAX_QUANTITY = 9
+
 export const UserDataProvider = ({ children }: Props) => {
     const [cartList, setCartList] = useState<CartProduct[]>([])
     const [compareList, setCompareList] = useState<number[]>([])
+    const { showToast } = useToast()
 
     useEffect(() => {
         setCartList(getCart())
         setCompareList(getCompare())
     }, [])
 
+    const checkConditionAddToCart = (
+        productId: number,
+        quantity: number
+    ): boolean => {
+        const itemInCart = cartList.find((item) => item.id === productId)
+        const quantityInCart = itemInCart?.quantity || 0
+        const maxAddable = MAX_QUANTITY - quantityInCart
+
+        if (quantity <= maxAddable) {
+            showToast({
+                message: "Added to cart successfully",
+                variant: "success",
+            })
+            return true
+        }
+
+        if (maxAddable === 0) {
+            showToast({
+                message:
+                    "Your cart already contains the maximum quantity for this product.",
+                variant: "error",
+            })
+            return false
+        }
+
+        if (quantity > maxAddable) {
+            showToast({
+                message: `Your cart already has ${quantityInCart} items. You can add up to ${maxAddable} more.`,
+                variant: "warning",
+            })
+            return false
+        }
+
+        return false
+    }
+
     const updateCartList = (id: number, quantity: number) => {
-        const newCartList = updateCart(cartList, id, quantity)
-        setCartList(newCartList)
+        const isSuccess = checkConditionAddToCart(id, quantity)
+        if (isSuccess) {
+            const newCartList = updateCart(cartList, id, quantity)
+            setCartList(newCartList)
+        }
     }
 
     const addToCartList = (id: number, quantity: number) => {
-        const newCartList = addToCart(cartList, id, quantity)
-        setCartList(newCartList)
+        const isSuccess = checkConditionAddToCart(id, quantity)
+        if (isSuccess) {
+            const newCartList = addToCart(cartList, id, quantity)
+            setCartList(newCartList)
+        }
     }
 
     const removeFromCartList = (id: number) => {
