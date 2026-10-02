@@ -32,7 +32,6 @@ const Checkout = () => {
     }
 
     const handleSubmit = (values: Partial<Contact>) => {
-        console.log(values)
         setUserInfo(values)
     }
 

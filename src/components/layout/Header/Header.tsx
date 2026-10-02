@@ -18,10 +18,6 @@ const Header = () => {
     const { cartList } = useUserData()
     const queryClient = useQueryClient()
 
-    useEffect(() => {
-        console.log("cartList", cartList)
-    }, [cartList])
-
     const { data: user } = useQuery({
         queryKey: [QUERY_KEY_USER],
         queryFn: getUser,

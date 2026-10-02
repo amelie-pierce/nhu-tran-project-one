@@ -9,7 +9,6 @@ import Breadcrumb from "../../components/ui/Breadcrumb/Breadcrumb"
 
 const ProductDetail = () => {
     const { id } = useParams()
-    console.log(id, typeof id)
 
     const { data, error, isLoading } = useQuery({
         queryFn: () => getProductDetail({ id: Number(id) }),

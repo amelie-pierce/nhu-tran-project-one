@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router"
 import Button from "../../../../components/ui/Button/Button"
 import type { CartProduct } from "../../../../types/cart"
 import styles from "./TotalPrice.module.css"
@@ -7,10 +8,13 @@ type Props = {
 }
 
 const TotalPrice = ({ selectedItems }: Props) => {
+    const navigate = useNavigate()
     const totalPrice = selectedItems?.reduce(
         (total, item) => total + (item.price || 0) * (item.quantity || 1),
         0
     )
+
+    console.log("selectedItems", selectedItems.length)
 
     return (
         <div className={`${styles.wrapper} section-padding`}>
@@ -18,7 +22,16 @@ const TotalPrice = ({ selectedItems }: Props) => {
                 <span>Total</span>
                 <span>{totalPrice}</span>
             </div>
-            <Button className={styles["buy-button"]}>Buy now</Button>
+            <Button
+                variant={!!selectedItems?.length ? "primary" : "border-black"}
+                className={styles["buy-button"]}
+                disabled={!selectedItems.length}
+                onClick={() => {
+                    navigate("/checkout", { state: selectedItems })
+                }}
+            >
+                Buy now
+            </Button>
         </div>
     )
 }

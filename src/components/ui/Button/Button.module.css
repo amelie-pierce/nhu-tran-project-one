@@ -9,6 +9,10 @@
     gap: var(--spacing-xs);
 }
 
+.btn:disabled {
+    cursor: not-allowed;
+}
+
 .icon {
     display: inline-flex;
     font-size: 19px;

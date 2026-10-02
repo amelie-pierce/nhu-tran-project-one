@@ -18,7 +18,7 @@ const Button = ({
         <button
             {...props}
             className={`
-                bold hover-shadow
+                bold ${props.disabled ? "" : "hover-shadow"}
                 ${styles.btn}
                 ${styles[`btn-${variant}`]}
                 ${square ? styles.square : ""}

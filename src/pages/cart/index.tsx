@@ -35,10 +35,8 @@ const Cart = () => {
     })
 
     // TODO: consider join cart from db
-    const cartProductItems: CartProduct[] = useMemo(() => {
-        console.log("selectedItemIds", selectedItemIds)
-
-        return (
+    const cartProductItems: CartProduct[] = useMemo(
+        () =>
             products?.data?.map((item) => {
                 const quantity = cartList?.filter(
                     (cart) => cart.id === item.id
@@ -49,9 +47,9 @@ const Cart = () => {
                     quantity,
                     checked: selectedItemIds.has(item.id),
                 }
-            }) || []
-        )
-    }, [products?.data, cartList, selectedItemIds])
+            }) || [],
+        [products?.data, cartList, selectedItemIds]
+    )
 
     const onRemoveItem = (id: number) => {
         removeFromCartList(id)
