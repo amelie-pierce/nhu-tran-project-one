@@ -13,7 +13,11 @@ import { MAX_QUANTITY } from "../constants"
 type UserDataType = {
     cartList: CartProduct[]
     compareList: number[]
-    updateCartList: (id: number, quantity: number) => void
+    updateCartList: (
+        id: number,
+        quantity: number,
+        checkCondition: boolean
+    ) => void
     addToCartList: (id: number, quantity: number) => void
     removeFromCartList: (id: number) => void
     toggleCompareItem: (id: number) => void
@@ -71,8 +75,14 @@ export const UserDataProvider = ({ children }: Props) => {
         return false
     }
 
-    const updateCartList = (id: number, quantity: number) => {
-        const isSuccess = checkConditionAddToCart(id, quantity)
+    const updateCartList = (
+        id: number,
+        quantity: number,
+        checkCondition = true
+    ) => {
+        const isSuccess = checkCondition
+            ? checkConditionAddToCart(id, quantity)
+            : true
         if (isSuccess) {
             const newCartList = updateCart(cartList, id, quantity)
             setCartList(newCartList)

@@ -19,7 +19,7 @@ const CartItem = ({ cart, onRemove }: Props) => {
 
     const handleChangeQuantity = (value: number) => {
         setQuantity(value)
-        updateCartList(cart.id || 0, value)
+        updateCartList(cart.id || 0, value, false)
     }
 
     return (

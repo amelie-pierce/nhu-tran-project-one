@@ -22,7 +22,10 @@ const Cart = () => {
         isError,
         error,
     } = useQuery({
-        queryKey: [QUERY_KEY_PRODUCTS, cartList],
+        queryKey: [
+            QUERY_KEY_PRODUCTS,
+            cartList?.map((item) => item.id).join(","),
+        ],
         queryFn: () =>
             getListProduct({
                 product_ids: cartList?.map((item) => Number(item.id || 0)),

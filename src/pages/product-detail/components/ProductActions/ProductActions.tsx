@@ -7,6 +7,7 @@ import { useLocation } from "react-router"
 import styles from "./ProductActions.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCartShopping, faCreditCard } from "@fortawesome/free-solid-svg-icons"
+import { MAX_QUANTITY } from "../../../../constants"
 
 type Props = {
     product: Product
@@ -21,6 +22,7 @@ const ProductActions = ({ product }: Props) => {
         <div className={styles["product-detail-actions"]}>
             <InputNumber
                 value={quantity}
+                max={MAX_QUANTITY}
                 onChange={setQuantity}
                 className={styles["action-item"]}
             />
