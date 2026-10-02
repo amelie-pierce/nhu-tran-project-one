@@ -36,7 +36,7 @@ export async function getListProduct(
         .range(from, to)
 
     if (!!params.category_id) {
-        query.filter("id", "in", `(${params.category_id})`)
+        query.filter("category_id", "in", `(${params.category_id})`)
     }
 
     const { data, error, count } = await query
