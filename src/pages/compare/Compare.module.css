@@ -1,0 +1,9 @@
+.view-area {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    overflow: auto;
+}
+
+.actual-area {
+}

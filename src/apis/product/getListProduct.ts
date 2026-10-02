@@ -8,6 +8,7 @@ type GetListProductRequest = {
     limit: number
     category_id: number
     product_ids: number[]
+    extra_fields: string[]
 }
 
 type GetListProductResponse = {
@@ -20,15 +21,13 @@ type GetListProductResponse = {
 export async function getListProduct(
     params: Partial<GetListProductRequest>
 ): Promise<GetListProductResponse> {
-    const query = supabase.from("product").select(
-        `
-            *,
-            category (
-                name
-            )
-            `,
-        { count: "exact" }
-    )
+    let select = `*, category (name)`
+
+    if (params?.extra_fields?.includes("ingredient")) {
+        select += `, ingredient(id, name)`
+    }
+
+    const query = supabase.from("product").select(select, { count: "exact" })
 
     if (!!params.page && !!params.limit) {
         const from = (params.page - 1) * params.limit
