@@ -6,6 +6,7 @@ export const QUERY_KEY_PRODUCTS = "products"
 type GetListProductRequest = {
     page: number
     limit: number
+    category_id: number
 }
 
 type GetListProductResponse = {
@@ -18,11 +19,10 @@ type GetListProductResponse = {
 export async function getListProduct(
     params: GetListProductRequest
 ): Promise<GetListProductResponse> {
-    const { page, limit } = params
-    const from = (page - 1) * limit
-    const to = page * limit - 1
+    const from = (params.page - 1) * params.limit
+    const to = params.page * params.limit - 1
 
-    const { data, error, count } = await supabase
+    const query = supabase
         .from("product")
         .select(
             `
@@ -35,17 +35,23 @@ export async function getListProduct(
         )
         .range(from, to)
 
+    if (!!params.category_id) {
+        query.filter("id", "in", `(${params.category_id})`)
+    }
+
+    const { data, error, count } = await query
+
     if (error) {
         throw error
     }
 
     const total = count ?? 0
-    const totalPage = Math.ceil(total / limit)
+    const totalPage = Math.ceil(total / params.limit)
 
     return {
         data: data ?? [],
         total,
         totalPage,
-        currentPage: page,
+        currentPage: params.page,
     }
 }

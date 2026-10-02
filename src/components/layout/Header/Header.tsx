@@ -9,10 +9,13 @@ import styles from "./Header.module.css"
 import Button from "../../ui/Button/Button"
 import { useNavigate } from "react-router"
 import { useToast } from "../../ui/Toast/ToastContext"
+import { useUserData } from "../../../contexts/UserDataContext"
+import { useMemo } from "react"
 
 const Header = () => {
     const navigate = useNavigate()
     const { showToast } = useToast()
+    const { cartList } = useUserData()
     const queryClient = useQueryClient()
 
     const { data: user } = useQuery({
@@ -34,6 +37,11 @@ const Header = () => {
         },
     })
 
+    const cartNumber = useMemo(() => {
+        if (cartList?.length > 9) return "9+"
+        return String(cartList?.length) || ""
+    }, [cartList])
+
     return (
         <header className={`${styles.header} section-padding`}>
             <nav className={styles["menu-header"]}>
@@ -54,23 +62,24 @@ const Header = () => {
                     Compare
                 </Link>
             </nav>
-            <div className={styles["icon-header"]}>
+            <div className={styles["action-header"]}>
                 {!user && (
                     <Button onClick={() => navigate("/login")}>Login</Button>
                 )}
                 {user && (
                     <>
-                        <div className={styles["cart-wrapper"]}>
+                        <div className={styles["icon-wrapper"]}>
                             <FontAwesomeIcon
                                 icon={faCartShopping}
                                 className={styles.icon}
                             />
-
-                            <div
-                                className={`${styles["cart-number"]} caption bold`}
-                            >
-                                9+
-                            </div>
+                            {!!cartNumber && (
+                                <div
+                                    className={`${styles["icon-number"]} caption bold`}
+                                >
+                                    {cartNumber}
+                                </div>
+                            )}
                         </div>
                         <FontAwesomeIcon
                             icon={faRightToBracket}

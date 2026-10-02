@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import Button from "../../../../components/ui/Button/Button"
 import {
@@ -6,10 +5,14 @@ import {
     getListCategory,
 } from "../../../../apis/category/getListCategory"
 import styles from "./Category.module.css"
+import { useSearchParams } from "react-router"
 
-const Category = () => {
-    const [activeCategory, setActiveCategory] = useState<number>(0)
+type Props = {
+    activeCategoryId: number
+    onChangeCategory: (id: number) => void
+}
 
+const Category = ({ activeCategoryId, onChangeCategory }: Props) => {
     const { data: categories } = useQuery({
         queryKey: [QUERY_KEY_CATEGORIES],
         queryFn: getListCategory,
@@ -18,8 +21,8 @@ const Category = () => {
     return (
         <div className={styles["category-container"]}>
             <Button
-                onClick={() => setActiveCategory(0)}
-                variant={!activeCategory ? "primary" : "secondary"}
+                onClick={() => onChangeCategory(0)}
+                variant={!activeCategoryId ? "primary" : "secondary"}
                 className={styles["category-button"]}
             >
                 All Products
@@ -27,9 +30,11 @@ const Category = () => {
             {categories?.map((category) => (
                 <Button
                     key={category.id}
-                    onClick={() => setActiveCategory(category.id)}
+                    onClick={() => onChangeCategory(category.id)}
                     variant={
-                        activeCategory === category.id ? "primary" : "secondary"
+                        activeCategoryId === category.id
+                            ? "primary"
+                            : "secondary"
                     }
                     className={styles["category-button"]}
                 >

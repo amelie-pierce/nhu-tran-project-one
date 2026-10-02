@@ -10,14 +10,14 @@
     height: 50px;
 }
 
-.icon-header,
+.action-header,
 .menu-header {
     display: flex;
     align-items: center;
     gap: var(--spacing-m);
 }
 
-.cart-wrapper {
+.icon-wrapper {
     position: relative;
     display: inline-flex;
 }
@@ -26,7 +26,7 @@
     font-size: 24px;
 }
 
-.cart-number {
+.icon-number {
     width: 24px;
     height: 24px;
 
@@ -54,7 +54,7 @@
         gap: var(--spacing-xs);
     }
 
-    .icon-header {
+    .action-header {
         gap: var(--spacing-s);
     }
 

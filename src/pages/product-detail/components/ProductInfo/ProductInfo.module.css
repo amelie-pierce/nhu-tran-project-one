@@ -66,6 +66,9 @@
         align-items: center;
         gap: var(--spacing-m);
     }
+    .product-detail-image {
+        align-self: center;
+    }
 }
 
 @media (max-width: 375px) {
