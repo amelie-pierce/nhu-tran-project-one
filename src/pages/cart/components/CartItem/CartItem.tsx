@@ -1,5 +1,5 @@
 import InputNumber from "../../../../components/ui/InputNumber/InputNumber"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { CartProduct } from "../../../../types/cart"
 import styles from "./CartItem.module.css"
 import Button from "../../../../components/ui/Button/Button"
@@ -9,30 +9,35 @@ import { useUserData } from "../../../../contexts/UserDataContext"
 import { MAX_QUANTITY } from "../../../../constants"
 
 type Props = {
-    cart: CartProduct
+    item: CartProduct
     onRemove: () => void
+    onToggleCheck: (item: CartProduct) => void
 }
 
-const CartItem = ({ cart, onRemove }: Props) => {
-    const [quantity, setQuantity] = useState(cart.quantity)
+const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
+    const [quantity, setQuantity] = useState(item.quantity)
     const { updateCartList } = useUserData()
 
     const handleChangeQuantity = (value: number) => {
         setQuantity(value)
-        updateCartList(cart.id || 0, value, false)
+        updateCartList(item.id || 0, value, false)
     }
 
     return (
-        <div key={cart.id} className={styles["cart-item-container"]}>
-            <input type="checkbox" />
+        <div key={item.id} className={styles["cart-item-container"]}>
+            <input
+                type="checkbox"
+                checked={item.checked}
+                onChange={() => onToggleCheck(item)}
+            />
             <img
-                src={cart.img_url || ""}
-                alt={cart.name}
+                src={item.img_url || ""}
+                alt={item.name}
                 className={styles["cart-item-image"]}
             />
             <div className={styles["cart-item-info-container"]}>
-                <p className="bold text-truncate">{cart.name}</p>
-                <p>{cart.price || 0}</p>
+                <p className="bold text-truncate">{item.name}</p>
+                <p>{item.price || 0}</p>
                 <InputNumber
                     value={quantity}
                     max={MAX_QUANTITY}
@@ -40,7 +45,7 @@ const CartItem = ({ cart, onRemove }: Props) => {
                     className={styles["input-quantity"]}
                 />
             </div>
-            <p>{(cart.price || 0) * quantity}</p>
+            <p>{(item.price || 0) * quantity}</p>
             <Button
                 variant="secondary"
                 icon={<FontAwesomeIcon icon={faTrash} />}

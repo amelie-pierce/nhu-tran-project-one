@@ -3,7 +3,7 @@ import TotalPrice from "./components/TotalPrice/TotalPrice"
 import styles from "./Cart.module.css"
 import CartEmpty from "./components/CartEmpty/CartEmtpy"
 import CartItem from "./components/CartItem/CartItem"
-import { useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import Breadcrumb from "../../components/ui/Breadcrumb/Breadcrumb"
 import { useUserData } from "../../contexts/UserDataContext"
 import {
@@ -14,13 +14,15 @@ import { useQuery } from "@tanstack/react-query"
 
 const Cart = () => {
     const { cartList, removeFromCartList } = useUserData()
-    const [selectedItems, setSelectedItems] = useState<CartProduct[]>([])
+    const [selectedItemIds, setSelectedItemIds] = useState<Set<number>>(
+        new Set()
+    )
+    const [isSelectAllChecked, setIsSelectAllChecked] = useState(false)
 
     const {
         data: products,
         isLoading,
         isError,
-        error,
     } = useQuery({
         queryKey: [
             QUERY_KEY_PRODUCTS,
@@ -33,8 +35,10 @@ const Cart = () => {
     })
 
     // TODO: consider join cart from db
-    const cartProductItems: CartProduct[] = useMemo(
-        () =>
+    const cartProductItems: CartProduct[] = useMemo(() => {
+        console.log("selectedItemIds", selectedItemIds)
+
+        return (
             products?.data?.map((item) => {
                 const quantity = cartList?.filter(
                     (cart) => cart.id === item.id
@@ -43,13 +47,45 @@ const Cart = () => {
                 return {
                     ...item,
                     quantity,
+                    checked: selectedItemIds.has(item.id),
                 }
-            }) || [],
-        [products?.data, cartList]
-    )
+            }) || []
+        )
+    }, [products?.data, cartList, selectedItemIds])
 
     const onRemoveItem = (id: number) => {
         removeFromCartList(id)
+    }
+
+    const handleSelectAll = () => {
+        const isChecked = !isSelectAllChecked
+        setIsSelectAllChecked(isChecked)
+
+        if (isChecked) {
+            const setOfItems = new Set(
+                cartProductItems?.map((item) => Number(item.id))
+            )
+            setSelectedItemIds(setOfItems)
+        } else {
+            setSelectedItemIds(new Set())
+        }
+    }
+
+    const handleToggleSelectItem = (item: CartProduct) => {
+        const isChecked = selectedItemIds?.has(item.id || 0)
+        let newSelectedItemIds = new Set(selectedItemIds)
+        if (isChecked) {
+            newSelectedItemIds.delete(item.id || 0)
+        } else {
+            newSelectedItemIds.add(item.id || 0)
+        }
+        setSelectedItemIds(newSelectedItemIds)
+
+        if (newSelectedItemIds.size === cartProductItems?.length) {
+            setIsSelectAllChecked(true)
+        } else {
+            setIsSelectAllChecked(false)
+        }
     }
 
     const cartTotalStr = useMemo(() => {
@@ -69,19 +105,28 @@ const Cart = () => {
                 </label>
                 <div className={styles["cart-items-container"]}>
                     <div className={styles["cart-select-all"]}>
-                        <input type="checkbox" />
+                        <input
+                            type="checkbox"
+                            checked={isSelectAllChecked}
+                            onChange={handleSelectAll}
+                        />
                         <label>Select all ({cartTotalStr})</label>
                     </div>
                     {cartProductItems?.map((item) => (
                         <CartItem
                             key={item.id}
-                            cart={item}
+                            item={item}
                             onRemove={() => onRemoveItem(item.id || 0)}
+                            onToggleCheck={handleToggleSelectItem}
                         />
                     ))}
                 </div>
             </div>
-            <TotalPrice selectedItems={selectedItems} />
+            <TotalPrice
+                selectedItems={cartProductItems?.filter((item) =>
+                    selectedItemIds.has(item.id || 0)
+                )}
+            />
         </>
     )
 }
