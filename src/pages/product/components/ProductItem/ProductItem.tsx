@@ -2,7 +2,6 @@ import Button from "../../../../components/ui/Button/Button"
 import Tag from "../../../../components/ui/Tag/Tag"
 import styles from "./ProductItem.module.css"
 import type { Product } from "../../../../types/product"
-import { toggleCompare } from "../../../../storages/compareStorage"
 import { useProductAction } from "../../../../hooks/useProductAction"
 import { useLocation, useNavigate } from "react-router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -11,15 +10,15 @@ import {
     faCartShopping,
     faCreditCard,
 } from "@fortawesome/free-solid-svg-icons"
+import { useUserData } from "../../../../contexts/UserDataContext"
 
 interface Props {
     product: Product
-    listCompare: number[]
-    setListCompare: (listCompare: number[]) => void
 }
 
-const ProductItem = ({ product, setListCompare, listCompare }: Props) => {
+const ProductItem = ({ product }: Props) => {
     const { handleProductAction } = useProductAction()
+    const { compareList, toggleCompareItem } = useUserData()
     const location = useLocation()
     const navigate = useNavigate()
 
@@ -44,13 +43,11 @@ const ProductItem = ({ product, setListCompare, listCompare }: Props) => {
                         </span>
                         <Tag
                             variant={
-                                listCompare.includes(product.id)
+                                compareList.includes(product.id)
                                     ? "light-purple"
                                     : "white"
                             }
-                            onClick={() =>
-                                setListCompare(toggleCompare(product.id))
-                            }
+                            onClick={() => toggleCompareItem(product.id)}
                         >
                             <FontAwesomeIcon
                                 icon={faScaleBalanced}

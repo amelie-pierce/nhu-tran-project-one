@@ -3,17 +3,16 @@ import { faScaleBalanced } from "@fortawesome/free-solid-svg-icons"
 import Tag from "../../../../components/ui/Tag/Tag"
 import type { Product } from "../../../../types/product"
 import styles from "./ProductInfo.module.css"
-import { useState } from "react"
-import { toggleCompare } from "../../../../storages/compareStorage"
 import ProductActions from "../ProductActions/ProductActions"
 import type { Ingredient } from "../../../../types/ingredient"
+import { useUserData } from "../../../../contexts/UserDataContext"
 
 type Props = {
     product: Product
 }
 
 const ProductInfo = ({ product }: Props) => {
-    const [listCompare, setListCompare] = useState<number[]>([])
+    const { compareList, toggleCompareItem } = useUserData()
 
     return (
         <div className={styles["product-detail-container"]}>
@@ -30,13 +29,11 @@ const ProductInfo = ({ product }: Props) => {
                         </Tag>
                         <Tag
                             variant={
-                                listCompare.includes(product.id)
+                                compareList.includes(product.id)
                                     ? "light-purple"
                                     : "white"
                             }
-                            onClick={() =>
-                                setListCompare(toggleCompare(product.id))
-                            }
+                            onClick={() => toggleCompareItem(product.id)}
                         >
                             <FontAwesomeIcon
                                 icon={faScaleBalanced}
@@ -45,7 +42,9 @@ const ProductInfo = ({ product }: Props) => {
                         </Tag>
                     </div>
                     <div className="title bold">{product.name}</div>
-                    <div className={`title bold ${styles["product-detail-price"]}`}>
+                    <div
+                        className={`title bold ${styles["product-detail-price"]}`}
+                    >
                         {product.price}
                     </div>
                     <div className={styles["product-detail-description"]}>

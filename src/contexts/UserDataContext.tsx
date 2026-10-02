@@ -1,22 +1,20 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
 import type { CartProduct } from "../types/cart"
-import type { Contact } from "../types/user"
-import { getUserInfo } from "../storages/userStorage"
 import {
     addToCart,
     getCart,
     removeFromCart,
     updateCart,
 } from "../storages/cartStorage"
-import { getCompare } from "../storages/compareStorage"
+import { getCompare, toggleCompare } from "../storages/compareStorage"
 
 type UserDataType = {
-    userInfo: Partial<Contact>
     cartList: CartProduct[]
     compareList: number[]
     updateCartList: (id: number, quantity: number) => void
     addToCartList: (id: number, quantity: number) => void
     removeFromCartList: (id: number) => void
+    toggleCompareItem: (id: number) => void
 }
 
 const UserDataContext = createContext<UserDataType | null>(null)
@@ -26,12 +24,10 @@ type Props = {
 }
 
 export const UserDataProvider = ({ children }: Props) => {
-    const [userInfo, setUserInfo] = useState<Partial<Contact>>({})
     const [cartList, setCartList] = useState<CartProduct[]>([])
     const [compareList, setCompareList] = useState<number[]>([])
 
     useEffect(() => {
-        setUserInfo(getUserInfo())
         setCartList(getCart())
         setCompareList(getCompare())
     }, [])
@@ -51,15 +47,20 @@ export const UserDataProvider = ({ children }: Props) => {
         setCartList(newCartList)
     }
 
+    const toggleCompareItem = (id: number) => {
+        const newCompareList = toggleCompare(id)
+        setCompareList(newCompareList)
+    }
+
     return (
         <UserDataContext.Provider
             value={{
-                userInfo,
                 cartList,
                 compareList,
                 updateCartList,
                 addToCartList,
                 removeFromCartList,
+                toggleCompareItem,
             }}
         >
             {children}
