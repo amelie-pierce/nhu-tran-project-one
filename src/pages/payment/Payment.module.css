@@ -15,7 +15,7 @@
     justify-content: center;
     align-items: center;
     gap: var(--spacing-s);
-    color: var(--color-green-600);
+    
 }
 
 .payment-icon {

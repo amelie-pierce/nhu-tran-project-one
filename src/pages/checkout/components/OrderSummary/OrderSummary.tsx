@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router"
 import Button from "../../../../components/ui/Button/Button"
 import Tag from "../../../../components/ui/Tag/Tag"
 import type { OrderProduct } from "../../../../types/order"
@@ -11,6 +12,8 @@ type Props = {
 const SHIPPING_FEE = 0
 
 const OrderSummary = ({ orderItems }: Props) => {
+    const navigate = useNavigate()
+
     const subTotal = orderItems.reduce(
         (total, item) => total + item.quantity * item.price,
         0
@@ -43,7 +46,13 @@ const OrderSummary = ({ orderItems }: Props) => {
                     </div>
                 </div>
 
-                <Button type="submit" className={styles["checkout-button"]}>
+                <Button
+                    type="submit"
+                    className={styles["checkout-button"]}
+                    onClick={() => {
+                        navigate("/payment", { state: { status: "success" } })
+                    }}
+                >
                     Place an order
                 </Button>
             </div>

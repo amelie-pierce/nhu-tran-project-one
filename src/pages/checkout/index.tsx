@@ -10,7 +10,6 @@ const Checkout = () => {
     const contactInfo = getUserInfo()
     const location = useLocation()
     const state = location.state
-    console.log(state)
 
     const validate = (values: Partial<Contact>) => {
         const errors: Record<string, string> = {}
@@ -35,9 +34,9 @@ const Checkout = () => {
         setUserInfo(values)
     }
 
-    // if (!state) {
-    //     return <Navigate to="/" />
-    // }
+    if (!state) {
+        return <Navigate to="/" />
+    }
 
     return (
         <Form
