@@ -28,18 +28,18 @@ const OrderSummary = ({ orderItems }: Props) => {
             <div className={styles["summary-container"]}>
                 <div className={styles["info-container"]}>
                     <div className={styles["info"]}>
-                        <p className="bold">Sub Total</p>
-                        <p>{subTotal}</p>
+                        <span className="bold">Sub Total</span>
+                        <span className="bold">{subTotal}</span>
                     </div>
                     <div className={styles["info"]}>
-                        <p className="bold">Shipping</p>
+                        <span className="bold">Shipping</span>
                         <Tag variant="green">Freeship</Tag>
                     </div>
                 </div>
                 <div className={styles["info-container"]}>
                     <div className={styles["info"]}>
-                        <p className="bold">Total</p>
-                        <p>{subTotal + SHIPPING_FEE}</p>
+                        <span className="bold">Total</span>
+                        <span className="bold">{subTotal + SHIPPING_FEE}</span>
                     </div>
                 </div>
 

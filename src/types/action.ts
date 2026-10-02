@@ -1,8 +1,9 @@
+import type { CartProduct } from "./cart"
+
 export type Action = "add" | "buy"
 
 export type ActionState = {
     type: Action
-    productId: number
-    quantity: number
+    items: CartProduct[]
     redirectTo: string
 }

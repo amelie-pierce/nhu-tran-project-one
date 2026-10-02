@@ -29,8 +29,7 @@ const ProductActions = ({ product }: Props) => {
                 onClick={() =>
                     handleProductAction({
                         type: "add",
-                        productId: product.id,
-                        quantity,
+                        items: [{ ...product, quantity }],
                         redirectTo: location.pathname + location.search,
                     })
                 }
@@ -43,8 +42,7 @@ const ProductActions = ({ product }: Props) => {
                 onClick={() =>
                     handleProductAction({
                         type: "buy",
-                        productId: product.id,
-                        quantity,
+                        items: [{ ...product, quantity }],
                         redirectTo: "/checkout",
                     })
                 }

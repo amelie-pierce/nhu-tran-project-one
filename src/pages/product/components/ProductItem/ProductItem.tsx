@@ -70,8 +70,7 @@ const ProductItem = ({ product }: Props) => {
                             e.stopPropagation()
                             handleProductAction({
                                 type: "add",
-                                productId: product.id,
-                                quantity: 1,
+                                items: [{ ...product, quantity: 1 }],
                                 redirectTo: location.pathname + location.search,
                             })
                         }}
@@ -85,8 +84,7 @@ const ProductItem = ({ product }: Props) => {
                             e.stopPropagation()
                             handleProductAction({
                                 type: "buy",
-                                productId: product.id,
-                                quantity: 1,
+                                items: [{ ...product, quantity: 1 }],
                                 redirectTo: "/checkout",
                             })
                         }}

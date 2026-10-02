@@ -20,12 +20,13 @@ export const useProductAction = () => {
         }
 
         if (action.type === "add") {
-            addToCartList(action.productId, action.quantity)
+            const item = action.items?.[0]
+            addToCartList(item.id || 0, item.quantity)
             return
         }
 
         if (action.type === "buy") {
-            navigate(action.redirectTo)
+            navigate(action.redirectTo, { state: action.items })
         }
     }
 

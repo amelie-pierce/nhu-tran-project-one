@@ -10,6 +10,7 @@ const Checkout = () => {
     const contactInfo = getUserInfo()
     const location = useLocation()
     const state = location.state
+    console.log(state)
 
     const validate = (values: Partial<Contact>) => {
         const errors: Record<string, string> = {}
@@ -44,10 +45,10 @@ const Checkout = () => {
             initialValues={contactInfo}
             validate={validate}
             onSubmit={handleSubmit}
-            className={styles["wrapper"]}
+            className={`${styles["wrapper"]} page-padding`}
         >
             <UserInformation />
-            <OrderSummary orderItems={[]} />
+            <OrderSummary orderItems={state} />
         </Form>
     )
 }

@@ -15,11 +15,11 @@ const OrderItem = ({ product }: Props) => {
                 className={styles["order-item-image"]}
             />
             <div className={styles["order-item-details"]}>
-                <p>{product.name}</p>
-                <p>{product.price}</p>
+                <span className="bold">{product.name}</span>
+                <span>{product.price}</span>
                 <Tag variant="light-pink">x {product.quantity}</Tag>
             </div>
-            <p>{product.price * product.quantity}</p>
+            <span className="bold">{product.price * product.quantity}</span>
         </div>
     )
 }
