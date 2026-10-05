@@ -28,6 +28,11 @@
     /* Color */
     --foreground: var(--color-black);
     --background: var(--color-white);
+
+    /* Table compare */
+    --header-cell-height: 220px;
+    --body-cell-height: 55px;
+    --body-cell-width: 300px;
 }
 
 @media (max-width: 768px) {

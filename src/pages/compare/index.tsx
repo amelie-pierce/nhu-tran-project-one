@@ -9,7 +9,12 @@ import { useQuery } from "@tanstack/react-query"
 import { FALLBACK_IMAGE } from "../../constants"
 import Button from "../../components/ui/Button/Button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCartPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
+import {
+    faCartPlus,
+    faCheck,
+    faTrash,
+    faXmark,
+} from "@fortawesome/free-solid-svg-icons"
 
 const HEADER_HEIGHT = 220
 const CELL_HEIGHT = 55
@@ -74,17 +79,13 @@ const Compare = () => {
                     width: columnVirtualizer.getTotalSize() + CELL_WIDTH,
                 }}
             >
-                <div style={{ position: "sticky", top: 0, left: 0, zIndex: 1 }}>
+                <div className={styles["sticky-header"]}>
                     {columnVirtualizer?.getVirtualItems()?.map((column) => (
                         <div
                             key={column.key}
-                            className={`${styles.product} ${styles.cell}`}
+                            className={`${styles.cell} ${styles["header-cell"]}`}
                             style={{
-                                position: "absolute",
-                                top: 0,
                                 left: column.start + CELL_WIDTH,
-                                width: CELL_WIDTH,
-                                height: HEADER_HEIGHT,
                             }}
                         >
                             <div className={styles["product-info"]}>
@@ -122,39 +123,22 @@ const Compare = () => {
                 </div>
 
                 <div
+                    className={styles["body-row"]}
                     style={{
-                        position: "sticky",
-                        left: 0,
-                        width: CELL_WIDTH,
                         height: rowVirtualizer.getTotalSize(),
-                        zIndex: 1,
                     }}
                 >
                     <div
-                        className={`bold ${styles.cell}`}
-                        style={{
-                            position: "sticky",
-                            top: 0,
-                            left: 0,
-                            zIndex: 2,
-                            width: CELL_WIDTH,
-                            height: HEADER_HEIGHT,
-                            textDecoration: "underline",
-                            alignContent: "end",
-                        }}
+                        className={`bold ${styles.cell} ${styles["cell-remove-all"]}`}
                     >
                         Remove all
                     </div>
                     {rowVirtualizer.getVirtualItems().map((row) => (
                         <div
                             key={row.key}
-                            className={`bold ${styles.cell}`}
+                            className={`bold ${styles.cell} ${styles["body-label"]}`}
                             style={{
-                                position: "absolute",
                                 top: row.start + HEADER_HEIGHT,
-                                left: 0,
-                                width: CELL_WIDTH,
-                                height: CELL_HEIGHT,
                             }}
                         >
                             {row.key}
@@ -173,23 +157,32 @@ const Compare = () => {
                                 currentProduct?.ingredient?.filter(
                                     (ingredient) => ingredient.name === row.key
                                 )?.[0]
-                                    ? "Yes"
-                                    : "No"
                             return (
                                 <div
                                     key={`${row.key}-${column.key}`}
                                     className={`${styles.cell} ${styles["body-cell"]}`}
                                     style={{
-                                        position: "absolute",
                                         top: row.start + HEADER_HEIGHT,
                                         left: column.start + CELL_WIDTH,
-                                        width: CELL_WIDTH,
-                                        height: CELL_HEIGHT,
                                     }}
                                 >
-                                    {basicInfo.includes(String(row.key))
-                                        ? currentValue
-                                        : currentIngredient}
+                                    {basicInfo.includes(String(row.key)) ? (
+                                        currentValue
+                                    ) : (
+                                        <FontAwesomeIcon
+                                            icon={
+                                                currentIngredient
+                                                    ? faCheck
+                                                    : faXmark
+                                            }
+                                            style={{
+                                                fontSize: 16,
+                                                color: currentIngredient
+                                                    ? "var(--color-green-500)"
+                                                    : "var(--color-red-500)",
+                                            }}
+                                        />
+                                    )}
                                 </div>
                             )
                         })}

@@ -1,9 +1,3 @@
-.root {
-    --header-cell-height: 220px;
-    --body-cell-height: 55px;
-    --body-cell-width: 300px;
-}
-
 .view-area {
     width: 100%;
     height: 500px;
@@ -28,9 +22,6 @@
     top: 0;
     width: var(--body-cell-width);
     height: var(--header-cell-height);
-}
-
-.product {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
