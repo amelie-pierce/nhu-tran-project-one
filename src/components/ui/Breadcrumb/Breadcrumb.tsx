@@ -13,7 +13,7 @@ const Breadcrumb = ({ title, currentPage }: Props) => {
         <div className={`${styles.breadcrumb} section-padding`}>
             <h1 className="title bold">{title}</h1>
             <div className={styles["breadcrumb-nav"]}>
-                <Link to="/">
+                <Link to="/" className={styles["link-to-home"]}>
                     <FontAwesomeIcon
                         icon={faHome}
                         className={styles["home-icon"]}

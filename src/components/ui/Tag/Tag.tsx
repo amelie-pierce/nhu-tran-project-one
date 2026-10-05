@@ -12,8 +12,8 @@ type Props = React.ComponentProps<"div"> & {
 const Tag = ({ variant = "white", children, onRemove, ...props }: Props) => {
     return (
         <div
-            className={`${props?.onClick || onRemove ? "hover-shadow cursor-pointer" : ""} ${styles.tag} ${styles[`tag-${variant}`]}`}
             {...props}
+            className={`${props?.onClick || onRemove ? "hover-shadow cursor-pointer" : ""} ${styles.tag} ${styles[`tag-${variant}`]} ${props.className}`}
         >
             {children}
 

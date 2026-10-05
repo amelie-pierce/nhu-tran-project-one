@@ -1,0 +1,96 @@
+.wrapper {
+    width: 100%;
+    background-color: var(--color-white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-l);
+}
+
+.journey-container {
+    width: 100%;
+    display: flex;
+    gap: var(--spacing-l);
+    border-radius: var(--radius-m);
+    border: 1px solid var(--color-gray-500);
+    padding: var(--spacing-l);
+}
+
+.uit-logo {
+    height: 150px;
+    width: fit-content;
+}
+
+.journey {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--spacing-l);
+}
+
+.journey-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+}
+
+.journey-info {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.points-wrapper {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-l);
+}
+
+@media (max-width: 1400px) {
+    .wrapper {
+        gap: var(--spacing-m);
+    }
+    .uit-logo {
+        height: 100px;
+    }
+    .journey {
+        gap: var(--spacing-m);
+    }
+    .journey-container {
+        padding: var(--spacing-m);
+    }
+    .journey-text {
+        gap: var(--spacing-xs);
+    }
+    .points-wrapper {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: var(--spacing-m);
+    }
+}
+
+@media (max-width: 480px) {
+    .wrapper {
+        gap: var(--spacing-s);
+    }
+    .journey-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: var(--spacing-s);
+        padding: var(--spacing-s);
+    }
+    .journey-info {
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+    }
+    .journey {
+        gap: var(--spacing-s);
+    }
+
+    .points-wrapper {
+        gap: var(--spacing-s);
+    }
+}

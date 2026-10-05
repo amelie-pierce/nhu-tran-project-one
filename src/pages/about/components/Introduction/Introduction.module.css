@@ -1,0 +1,63 @@
+.wrapper {
+    background-color: var(--color-pink-30);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-l);
+}
+
+.intro {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--spacing-l);
+}
+
+.intro-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+}
+
+.intro-img {
+    height: 400px;
+    object-fit: contain;
+    justify-self: center;
+    align-self: center;
+}
+
+.hobbies {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+@media (max-width: 1400px) {
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-m);
+    }
+    .intro {
+        align-items: center;
+        gap: var(--spacing-m);
+    }
+    .intro-text {
+        align-items: center;
+        gap: var(--spacing-xs);
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .wrapper {
+        gap: var(--spacing-s);
+    }
+    .intro {
+        gap: var(--spacing-s);
+    }
+    .intro-text {
+        gap: var(--spacing-xs);
+    }
+    .intro-img {
+        height: 200px;
+    }
+}

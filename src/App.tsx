@@ -13,6 +13,7 @@ import "./index.css"
 import "./styles/global.css"
 import "./styles/typography.css"
 import Compare from "./pages/compare"
+import AboutMe from "./pages/about"
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/compare-product" element={<Compare />} />
                 <Route path="/payment" element={<Payment />} />
+                <Route path="/about-me" element={<AboutMe />} />
                 <Route
                     path="/login"
                     element={
