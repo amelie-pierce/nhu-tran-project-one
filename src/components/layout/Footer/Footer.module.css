@@ -67,7 +67,7 @@
     }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 480px) {
     .footer {
         grid-template-columns: 1fr;
         gap: var(--spacing-s);

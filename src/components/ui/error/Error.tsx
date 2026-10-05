@@ -4,7 +4,7 @@ import {
     faFaceFrownOpen,
     faRotateRight,
 } from "@fortawesome/free-solid-svg-icons"
-import Button from "../../components/ui/Button/Button"
+import Button from "../Button/Button"
 
 const Error = () => {
     return (

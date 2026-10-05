@@ -10,6 +10,7 @@ import {
 import ProductItem from "./components/ProductItem/ProductItem"
 import Category from "./components/Category/Category"
 import { useSearchParams } from "react-router"
+import Error from "../../components/ui/error/Error"
 
 const Product = () => {
     const [searchParams, setSearchParams] = useSearchParams()
@@ -61,7 +62,7 @@ const Product = () => {
     }
 
     if (isError) {
-        return <div>Error: {error.message}</div>
+        return <Error />
     }
 
     return (

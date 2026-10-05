@@ -19,6 +19,8 @@
     --section-padding-y: var(--spacing-s);
     --page-gap: var(--spacing-l);
     --header-height: 82px;
+    --footer-height: 252px;
+    --breadcrumb-height: 88px;
 
     /* Button */
     --button-square-size-s: 33px;
@@ -49,6 +51,9 @@
         --page-padding-y: var(--spacing-l);
         --page-gap: var(--spacing-m);
 
+        --footer-height: 164px;
+        --breadcrumb-height: 81px;
+
         --header-cell-height: 200px;
         --body-cell-height: 45px;
         --body-cell-width: 250px;
@@ -69,9 +74,17 @@
         --page-padding-y: var(--spacing-s);
         --page-gap: var(--spacing-s);
         --header-height: 72px;
+        --footer-height: 191px;
+        --breadcrumb-height: 75px;
 
         --header-cell-height: 120px;
         --body-cell-height: 35px;
         --body-cell-width: 120px;
+    }
+}
+
+@media (max-width: 315px) {
+    :root {
+        --footer-height: 221px;
     }
 }

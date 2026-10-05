@@ -5,6 +5,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--spacing-xs);
+    width: 100%;
 }
 
 .breadcrumb-nav {

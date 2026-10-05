@@ -8,7 +8,6 @@ import Login from "./pages/login"
 import Checkout from "./pages/checkout"
 import Cart from "./pages/cart"
 import Payment from "./pages/payment"
-import Error from "./pages/error"
 
 import "./index.css"
 import "./styles/global.css"
@@ -25,7 +24,6 @@ function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/compare-product" element={<Compare />} />
                 <Route path="/payment" element={<Payment />} />
-                <Route path="/error" element={<Error />} />
                 <Route
                     path="/login"
                     element={
