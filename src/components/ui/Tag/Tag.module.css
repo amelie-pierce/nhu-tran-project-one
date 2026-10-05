@@ -11,13 +11,13 @@
     cursor: pointer;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .tag {
         gap: var(--spacing-xs);
     }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 480px) {
     .tag {
         padding: var(--spacing-xxxs) var(--spacing-xs);
         gap: var(--spacing-xxs);

@@ -23,7 +23,7 @@
     width: 150px;
 }
 
-@media (max-width: 375px) {
+@media (max-width: 480px) {
     .cart-item-container {
         gap: var(--spacing-xs);
     }

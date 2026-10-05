@@ -89,7 +89,7 @@
     height: var(--body-cell-height);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .cell {
         padding: var(--spacing-xs) var(--spacing-s);
     }
@@ -98,7 +98,7 @@
     }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 480px) {
     .cell {
         padding: var(--spacing-xxs) var(--spacing-xs);
     }

@@ -25,9 +25,9 @@ const Product = () => {
     const screenWidth = useScreenWidth()
 
     const limit = useMemo(() => {
-        if (screenWidth >= 1440) return 8
-        if (screenWidth >= 768) return 9
-        return 4
+        if (screenWidth <= 480) return 4
+        if (screenWidth <= 1024) return 9
+        return 8
     }, [screenWidth])
 
     const {

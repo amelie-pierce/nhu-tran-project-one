@@ -48,7 +48,7 @@
     font-size: 19px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .footer {
         gap: var(--spacing-m);
     }

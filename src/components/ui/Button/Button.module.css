@@ -71,7 +71,7 @@
     cursor: not-allowed;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .square {
         width: var(--button-square-size-m);
         height: var(--button-square-size-m);
@@ -81,7 +81,7 @@
     }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 480px) {
     .btn {
         gap: var(--spacing-xxs);
     }

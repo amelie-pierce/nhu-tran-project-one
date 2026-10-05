@@ -35,7 +35,7 @@
     --body-cell-width: 300px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     :root {
         --font-size-heading: var(--font-size-xl);
         --font-size-title: var(--font-size-ml);
@@ -55,7 +55,7 @@
     }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 480px) {
     :root {
         --font-size-heading: var(--font-size-ml);
         --font-size-title: var(--font-size-m);

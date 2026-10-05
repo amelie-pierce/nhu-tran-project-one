@@ -20,7 +20,7 @@
     gap: var(--spacing-m);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .cart-title {
         display: none;
     }
@@ -32,7 +32,7 @@
     }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 480px) {
     .cart-select-all {
         gap: var(--spacing-s);
     }

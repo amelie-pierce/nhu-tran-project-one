@@ -3,14 +3,14 @@
     gap: var(--spacing-l);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .wrapper {
         flex-direction: column;
         gap: var(--spacing-m);
     }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 480px) {
     .wrapper {
         gap: var(--spacing-s);
     }

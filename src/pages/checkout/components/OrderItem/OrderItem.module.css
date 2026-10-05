@@ -22,7 +22,7 @@
     gap: var(--spacing-xs);
 }
 
-@media (max-width: 375px) {
+@media (max-width: 480px) {
     .order-item-container {
         gap: var(--spacing-xs);
         padding: var(--spacing-xs) var(--spacing-s);

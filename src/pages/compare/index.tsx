@@ -30,14 +30,14 @@ const Compare = () => {
     const screenWidth = useScreenWidth()
 
     const size = useMemo(() => {
-        if (screenWidth > 1440) {
+        if (screenWidth <= 480) {
             return {
-                headerHeight: 220,
-                cellHeight: 55,
-                cellWidth: 300,
+                headerHeight: 120,
+                cellHeight: 35,
+                cellWidth: 120,
             }
         }
-        if (screenWidth >= 768) {
+        if (screenWidth <= 1024) {
             return {
                 headerHeight: 200,
                 cellHeight: 45,
@@ -45,9 +45,9 @@ const Compare = () => {
             }
         }
         return {
-            headerHeight: 120,
-            cellHeight: 35,
-            cellWidth: 120,
+            headerHeight: 220,
+            cellHeight: 55,
+            cellWidth: 300,
         }
     }, [screenWidth])
 
@@ -146,7 +146,7 @@ const Compare = () => {
                                             )
                                         }}
                                     >
-                                        {screenWidth > 768 ? "Remove" : null}
+                                        {screenWidth > 1024 ? "Remove" : null}
                                     </Button>
                                     <Button
                                         variant="secondary"
@@ -169,7 +169,7 @@ const Compare = () => {
                                             })
                                         }}
                                     >
-                                        {screenWidth > 768 ? "Add" : null}
+                                        {screenWidth > 1024 ? "Add" : null}
                                     </Button>
                                 </div>
                             </div>

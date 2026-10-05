@@ -41,7 +41,7 @@
     width: 100%;
 }
 
-@media (max-width: 375px) {
+@media (max-width: 480px) {
     .order-summary-container {
         border-radius: var(--radius-s);
         padding: var(--spacing-xs) var(--spacing-s);
