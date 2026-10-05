@@ -11,6 +11,8 @@ import {
     QUERY_KEY_PRODUCTS,
 } from "../../apis/product/getListProduct"
 import { useQuery } from "@tanstack/react-query"
+import Loader from "../../components/ui/Loader/Loader"
+import Error from "../../components/ui/error/Error"
 
 const Cart = () => {
     const { cartList, removeFromCartList } = useUserData()
@@ -89,6 +91,14 @@ const Cart = () => {
     const cartTotalStr = useMemo(() => {
         return `${cartList?.length} ${cartList?.length === 1 ? "item" : "items"}`
     }, [cartList])
+
+    if (isLoading) {
+        return <Loader />
+    }
+
+    if (isError) {
+        return <Error />
+    }
 
     if (cartList?.length === 0) {
         return <Empty />

@@ -22,6 +22,7 @@ import { useScreenWidth } from "../../hooks/useScreenWidth"
 import Loader from "../../components/ui/Loader/Loader"
 import Error from "../../components/ui/error/Error"
 import Breadcrumb from "../../components/ui/Breadcrumb/Breadcrumb"
+import { toVND } from "../../utils/toVND"
 
 const OVERSCAN = 2
 
@@ -65,6 +66,7 @@ const Compare = () => {
                 extra_fields: ["ingredient"],
                 product_ids: compareList,
             }),
+        enabled: compareList?.length > 0,
     })
 
     const ingredients: string[] = useMemo(() => {
@@ -247,6 +249,15 @@ const Compare = () => {
                                             (ingredient) =>
                                                 ingredient.name === row.key
                                         )?.[0]
+
+                                    let displayValue = ""
+                                    if (basicInfo.includes(String(row.key))) {
+                                        if (row.key === "price") {
+                                            displayValue = toVND(currentValue)
+                                        } else {
+                                            displayValue = currentValue
+                                        }
+                                    }
                                     return (
                                         <div
                                             key={`${row.key}-${column.key}`}
@@ -263,7 +274,7 @@ const Compare = () => {
                                             {basicInfo.includes(
                                                 String(row.key)
                                             ) ? (
-                                                currentValue
+                                                displayValue
                                             ) : (
                                                 <FontAwesomeIcon
                                                     icon={

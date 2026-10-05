@@ -6,15 +6,25 @@ import {
     QUERY_KEY_PRODUCT_DETAIL,
 } from "../../apis/product/getProductDetail"
 import Breadcrumb from "../../components/ui/Breadcrumb/Breadcrumb"
+import Loader from "../../components/ui/Loader/Loader"
+import Error from "../../components/ui/error/Error"
 
 const ProductDetail = () => {
     const { id } = useParams()
 
-    const { data, error, isLoading } = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryFn: () => getProductDetail({ id: Number(id) }),
         queryKey: [QUERY_KEY_PRODUCT_DETAIL, id],
         enabled: !!id,
     })
+
+    if (isLoading) {
+        return <Loader />
+    }
+
+    if (isError) {
+        return <Error />
+    }
 
     if (!data) {
         return <div>Product not found</div>

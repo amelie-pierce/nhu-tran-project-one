@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { Navigate } from "react-router"
 import { getUser, QUERY_KEY_USER } from "../../apis/auth/getUser"
+import Loader from "../ui/Loader/Loader"
 
 type Props = {
     children: React.ReactNode
@@ -13,7 +14,7 @@ const AuthRoute = ({ children }: Props) => {
     })
 
     if (isLoading) {
-        return null
+        return <Loader />
     }
 
     if (!user) {

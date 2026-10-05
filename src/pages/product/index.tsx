@@ -36,7 +36,6 @@ const Product = () => {
         data: products,
         isLoading,
         isError,
-        error,
     } = useQuery({
         queryKey: [QUERY_KEY_PRODUCTS, currentPage, limit, activeCategoryId],
         queryFn: () =>
