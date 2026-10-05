@@ -1,7 +1,7 @@
 import type { CartProduct } from "../../types/cart"
 import TotalPrice from "./components/TotalPrice/TotalPrice"
 import styles from "./Cart.module.css"
-import CartEmpty from "./components/CartEmpty/CartEmtpy"
+import Empty from "../../components/ui/Empty/Emtpy"
 import CartItem from "./components/CartItem/CartItem"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import Breadcrumb from "../../components/ui/Breadcrumb/Breadcrumb"
@@ -91,7 +91,7 @@ const Cart = () => {
     }, [cartList])
 
     if (cartList?.length === 0) {
-        return <CartEmpty />
+        return <Empty />
     }
 
     return (

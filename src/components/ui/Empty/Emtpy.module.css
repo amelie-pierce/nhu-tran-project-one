@@ -1,4 +1,4 @@
-.cart-empty-container {
+.empty-container {
     flex: 1;
     justify-content: center;
     align-items: center;
@@ -9,7 +9,7 @@
     height: 100%;
 }
 
-.cart-empty-text {
+.empty-text {
     color: var(--color-gray-700);
 }
 
@@ -18,7 +18,7 @@
 }
 
 @media (max-width: 375px) {
-    .cart-empty-container {
+    .empty-container {
         gap: var(--spacing-s);
     }
 }

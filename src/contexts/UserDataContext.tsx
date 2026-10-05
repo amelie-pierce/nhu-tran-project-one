@@ -6,7 +6,11 @@ import {
     removeFromCart,
     updateCart,
 } from "../storages/cartStorage"
-import { getCompare, toggleCompare } from "../storages/compareStorage"
+import {
+    getCompare,
+    removeAllCompare,
+    toggleCompare,
+} from "../storages/compareStorage"
 import { useToast } from "../components/ui/Toast/ToastContext"
 import { MAX_QUANTITY } from "../constants"
 
@@ -21,6 +25,7 @@ type UserDataType = {
     addToCartList: (id: number, quantity: number) => void
     removeFromCartList: (id: number) => void
     toggleCompareItem: (id: number) => void
+    removeAllCompareItems: () => void
 }
 
 const UserDataContext = createContext<UserDataType | null>(null)
@@ -107,6 +112,11 @@ export const UserDataProvider = ({ children }: Props) => {
         setCompareList(newCompareList)
     }
 
+    const removeAllCompareItems = () => {
+        removeAllCompare()
+        setCompareList([])
+    }
+
     return (
         <UserDataContext.Provider
             value={{
@@ -116,6 +126,7 @@ export const UserDataProvider = ({ children }: Props) => {
                 addToCartList,
                 removeFromCartList,
                 toggleCompareItem,
+                removeAllCompareItems,
             }}
         >
             {children}

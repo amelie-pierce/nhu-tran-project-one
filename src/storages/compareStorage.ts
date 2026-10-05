@@ -16,3 +16,7 @@ export const toggleCompare = (id: number): number[] => {
 
     return newCompare
 }
+
+export const removeAllCompare = () => {
+    localStorage.removeItem(COMPARE_STORAGE_KEY)
+}

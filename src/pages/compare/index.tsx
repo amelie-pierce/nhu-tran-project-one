@@ -15,20 +15,48 @@ import {
     faTrash,
     faXmark,
 } from "@fortawesome/free-solid-svg-icons"
+import { useUserData } from "../../contexts/UserDataContext"
+import Empty from "../../components/ui/Empty/Emtpy"
+import { useProductAction } from "../../hooks/useProductAction"
+import { useScreenWidth } from "../../hooks/useScreenWidth"
 
-const HEADER_HEIGHT = 220
-const CELL_HEIGHT = 55
-const CELL_WIDTH = 300
 const OVERSCAN = 2
 
 const Compare = () => {
     const parentRef = useRef<HTMLDivElement>(null)
+    const { compareList, toggleCompareItem, removeAllCompareItems } =
+        useUserData()
+    const { handleProductAction } = useProductAction()
+    const screenWidth = useScreenWidth()
+
+    const size = useMemo(() => {
+        if (screenWidth > 1440) {
+            return {
+                headerHeight: 220,
+                cellHeight: 55,
+                cellWidth: 300,
+            }
+        }
+        if (screenWidth >= 768) {
+            return {
+                headerHeight: 200,
+                cellHeight: 45,
+                cellWidth: 250,
+            }
+        }
+        return {
+            headerHeight: 120,
+            cellHeight: 35,
+            cellWidth: 120,
+        }
+    }, [screenWidth])
 
     const { data: products } = useQuery({
-        queryKey: [QUERY_KEY_PRODUCTS],
+        queryKey: [QUERY_KEY_PRODUCTS, compareList?.join(",")],
         queryFn: () =>
             getListProduct({
                 extra_fields: ["ingredient"],
+                product_ids: compareList,
             }),
     })
 
@@ -49,7 +77,7 @@ const Compare = () => {
     const rowVirtualizer = useVirtualizer({
         count: rowLabels?.length || 0,
         getScrollElement: () => parentRef.current,
-        estimateSize: () => CELL_HEIGHT,
+        estimateSize: () => size.cellHeight,
         overscan: OVERSCAN,
         getItemKey: (index) => rowLabels?.[index] || "",
     })
@@ -58,7 +86,7 @@ const Compare = () => {
         horizontal: true,
         count: products?.data.length || 0,
         getScrollElement: () => parentRef.current,
-        estimateSize: () => CELL_WIDTH,
+        estimateSize: () => size.cellWidth,
         overscan: OVERSCAN,
         getItemKey: (index) => products?.data?.[index]?.id || 0,
     })
@@ -71,55 +99,82 @@ const Compare = () => {
         columnVirtualizer?.getVirtualItems()
     )
 
+    if (!compareList?.length) {
+        return <Empty label="comparision" />
+    }
+
     return (
         <div className={styles["view-area"]} ref={parentRef}>
             <div
                 style={{
-                    height: rowVirtualizer.getTotalSize() + HEADER_HEIGHT,
-                    width: columnVirtualizer.getTotalSize() + CELL_WIDTH,
+                    height: rowVirtualizer.getTotalSize() + size.headerHeight,
+                    width: columnVirtualizer.getTotalSize() + size.cellWidth,
                 }}
             >
                 <div className={styles["sticky-header"]}>
-                    {columnVirtualizer?.getVirtualItems()?.map((column) => (
-                        <div
-                            key={column.key}
-                            className={`${styles.cell} ${styles["header-cell"]}`}
-                            style={{
-                                left: column.start + CELL_WIDTH,
-                            }}
-                        >
-                            <div className={styles["product-info"]}>
-                                <img
-                                    src={
-                                        products?.data?.[column.index]
-                                            ?.img_url || FALLBACK_IMAGE
-                                    }
-                                    alt="product-img"
-                                    className={styles["product-img"]}
-                                />
+                    {columnVirtualizer?.getVirtualItems()?.map((column) => {
+                        const product = products?.data?.[column.index]
+                        return (
+                            <div
+                                key={column.key}
+                                className={`${styles.cell} ${styles["header-cell"]}`}
+                                style={{
+                                    left: column.start + size.cellWidth,
+                                }}
+                            >
+                                <div className={styles["product-info"]}>
+                                    <img
+                                        src={product?.img_url || FALLBACK_IMAGE}
+                                        alt="product-img"
+                                        className={styles["product-img"]}
+                                    />
 
-                                <span className="bold">
-                                    {products?.data?.[column.index]?.name}
-                                </span>
+                                    <div className="bold text-truncate">
+                                        {product?.name}
+                                    </div>
+                                </div>
+                                <div className={styles["product-actions"]}>
+                                    <Button
+                                        variant="border-black"
+                                        icon={
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        }
+                                        className={styles["button-action"]}
+                                        onClick={() => {
+                                            toggleCompareItem(
+                                                Number(column.key)
+                                            )
+                                        }}
+                                    >
+                                        {screenWidth > 768 ? "Remove" : null}
+                                    </Button>
+                                    <Button
+                                        variant="secondary"
+                                        icon={
+                                            <FontAwesomeIcon
+                                                icon={faCartPlus}
+                                            />
+                                        }
+                                        className={styles["button-action"]}
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            handleProductAction({
+                                                type: "add",
+                                                items: [
+                                                    { ...product, quantity: 1 },
+                                                ],
+                                                redirectTo:
+                                                    location.pathname +
+                                                    location.search,
+                                            })
+                                        }}
+                                    >
+                                        {screenWidth > 768 ? "Add" : null}
+                                    </Button>
+                                </div>
                             </div>
-                            <div className={styles["product-actions"]}>
-                                <Button
-                                    variant="border-black"
-                                    icon={<FontAwesomeIcon icon={faTrash} />}
-                                    className={styles["button-action"]}
-                                >
-                                    Remove
-                                </Button>
-                                <Button
-                                    variant="secondary"
-                                    icon={<FontAwesomeIcon icon={faCartPlus} />}
-                                    className={styles["button-action"]}
-                                >
-                                    Add
-                                </Button>
-                            </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
 
                 <div
@@ -130,15 +185,18 @@ const Compare = () => {
                 >
                     <div
                         className={`bold ${styles.cell} ${styles["cell-remove-all"]}`}
+                        onClick={removeAllCompareItems}
                     >
-                        Remove all
+                        <span className={styles["text-remove-all"]}>
+                            Remove all
+                        </span>
                     </div>
                     {rowVirtualizer.getVirtualItems().map((row) => (
                         <div
                             key={row.key}
                             className={`bold ${styles.cell} ${styles["body-label"]}`}
                             style={{
-                                top: row.start + HEADER_HEIGHT,
+                                top: row.start + size.headerHeight,
                             }}
                         >
                             {row.key}
@@ -162,8 +220,8 @@ const Compare = () => {
                                     key={`${row.key}-${column.key}`}
                                     className={`${styles.cell} ${styles["body-cell"]}`}
                                     style={{
-                                        top: row.start + HEADER_HEIGHT,
-                                        left: column.start + CELL_WIDTH,
+                                        top: row.start + size.headerHeight,
+                                        left: column.start + size.cellWidth,
                                     }}
                                 >
                                     {basicInfo.includes(String(row.key)) ? (
