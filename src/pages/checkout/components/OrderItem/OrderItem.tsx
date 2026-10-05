@@ -2,6 +2,7 @@ import Tag from "../../../../components/ui/Tag/Tag"
 import type { OrderProduct } from "../../../../types/order"
 import styles from "./OrderItem.module.css"
 import { FALLBACK_IMAGE } from "../../../../constants"
+import { toVND } from "../../../../utils/toVND"
 
 type Props = {
     product: OrderProduct
@@ -17,7 +18,7 @@ const OrderItem = ({ product }: Props) => {
             />
             <div className={styles["order-item-details"]}>
                 <span className="bold">{product.name}</span>
-                <span>{product.price}</span>
+                <span>{toVND(product.price)}</span>
                 <Tag variant="light-pink">x {product.quantity}</Tag>
             </div>
             <span className="bold">{product.price * product.quantity}</span>

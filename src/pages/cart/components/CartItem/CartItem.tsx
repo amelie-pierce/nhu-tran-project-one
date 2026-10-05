@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrash } from "@fortawesome/free-solid-svg-icons"
 import { useUserData } from "../../../../contexts/UserDataContext"
 import { MAX_QUANTITY } from "../../../../constants"
+import { toVND } from "../../../../utils/toVND"
 
 type Props = {
     item: CartProduct
@@ -37,7 +38,7 @@ const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
             />
             <div className={styles["cart-item-info-container"]}>
                 <p className="bold text-truncate">{item.name}</p>
-                <p>{item.price || 0}</p>
+                <p>{toVND(item.price)}</p>
                 <InputNumber
                     value={quantity}
                     max={MAX_QUANTITY}

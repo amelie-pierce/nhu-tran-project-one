@@ -12,6 +12,7 @@ import {
     faCreditCard,
 } from "@fortawesome/free-solid-svg-icons"
 import { useUserData } from "../../../../contexts/UserDataContext"
+import { toVND } from "../../../../utils/toVND"
 
 interface Props {
     product: Product
@@ -61,7 +62,7 @@ const ProductItem = ({ product }: Props) => {
                     </div>
                     <div className="bold text-truncate">{product.name}</div>
                     <div className={`bold ${styles["product-item-price"]}`}>
-                        {product.price}
+                        {toVND(product.price)}
                     </div>
                 </div>
                 <div className={styles["product-item-actions"]}>

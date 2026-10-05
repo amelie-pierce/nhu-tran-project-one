@@ -1,3 +1,7 @@
+.wrapper {
+    width: 100%;
+}
+
 .product-list {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -17,7 +21,7 @@
     gap: var(--spacing-s);
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 1024px) {
     .product-list {
         grid-template-columns: repeat(3, 1fr);
         gap: var(--spacing-m);
@@ -27,7 +31,7 @@
     }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 480px) {
     .product-list {
         grid-template-columns: repeat(2, 1fr);
         gap: var(--spacing-s);

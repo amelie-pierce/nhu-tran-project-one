@@ -7,6 +7,7 @@ import ProductActions from "../ProductActions/ProductActions"
 import type { Ingredient } from "../../../../types/ingredient"
 import { useUserData } from "../../../../contexts/UserDataContext"
 import { FALLBACK_IMAGE } from "../../../../constants"
+import { toVND } from "../../../../utils/toVND"
 
 type Props = {
     product: Product
@@ -46,7 +47,7 @@ const ProductInfo = ({ product }: Props) => {
                     <div
                         className={`title bold ${styles["product-detail-price"]}`}
                     >
-                        {product.price}
+                        {toVND(product.price)}
                     </div>
                     <div className={styles["product-detail-description"]}>
                         {product.description}

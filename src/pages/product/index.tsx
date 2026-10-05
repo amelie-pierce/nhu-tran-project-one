@@ -11,6 +11,7 @@ import ProductItem from "./components/ProductItem/ProductItem"
 import Category from "./components/Category/Category"
 import { useSearchParams } from "react-router"
 import Error from "../../components/ui/error/Error"
+import Loader from "../../components/ui/Loader/Loader"
 
 const Product = () => {
     const [searchParams, setSearchParams] = useSearchParams()
@@ -58,7 +59,7 @@ const Product = () => {
     }
 
     if (isLoading) {
-        return <div>Loading...</div>
+        return <Loader />
     }
 
     if (isError) {
@@ -66,7 +67,7 @@ const Product = () => {
     }
 
     return (
-        <div className="page-padding page-layout">
+        <div className={`${styles["wrapper"]} page-padding page-layout`}>
             <img
                 src="https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/banner.jpg"
                 alt="banner"
