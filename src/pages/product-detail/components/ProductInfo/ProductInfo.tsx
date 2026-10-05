@@ -6,6 +6,7 @@ import styles from "./ProductInfo.module.css"
 import ProductActions from "../ProductActions/ProductActions"
 import type { Ingredient } from "../../../../types/ingredient"
 import { useUserData } from "../../../../contexts/UserDataContext"
+import { FALLBACK_IMAGE } from "../../../../constants"
 
 type Props = {
     product: Product
@@ -17,7 +18,7 @@ const ProductInfo = ({ product }: Props) => {
     return (
         <div className={styles["product-detail-container"]}>
             <img
-                src={product.img_url || ""}
+                src={product.img_url || FALLBACK_IMAGE}
                 alt="Product Image"
                 className={styles["product-detail-image"]}
             />

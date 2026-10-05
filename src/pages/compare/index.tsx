@@ -6,9 +6,14 @@ import {
     QUERY_KEY_PRODUCTS,
 } from "../../apis/product/getListProduct"
 import { useQuery } from "@tanstack/react-query"
+import { FALLBACK_IMAGE } from "../../constants"
+import Button from "../../components/ui/Button/Button"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCartPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
 
-const FIXED_HEIGHT = 50
-const FIXED_WIDTH = 200
+const HEADER_HEIGHT = 220
+const CELL_HEIGHT = 55
+const CELL_WIDTH = 300
 const OVERSCAN = 2
 
 const Compare = () => {
@@ -32,18 +37,23 @@ const Compare = () => {
         return Array.from(uniqueIngredients)
     }, [products?.data])
 
+    const basicInfo = ["price", "category.name"]
+
+    const rowLabels = [...basicInfo, ...ingredients]
+
     const rowVirtualizer = useVirtualizer({
-        count: products?.data?.length || 0,
+        count: rowLabels?.length || 0,
         getScrollElement: () => parentRef.current,
-        estimateSize: () => FIXED_HEIGHT,
+        estimateSize: () => CELL_HEIGHT,
         overscan: OVERSCAN,
-        getItemKey: (index) => ingredients?.[index] || "",
+        getItemKey: (index) => rowLabels?.[index] || "",
     })
 
     const columnVirtualizer = useVirtualizer({
+        horizontal: true,
         count: products?.data.length || 0,
         getScrollElement: () => parentRef.current,
-        estimateSize: () => FIXED_WIDTH,
+        estimateSize: () => CELL_WIDTH,
         overscan: OVERSCAN,
         getItemKey: (index) => products?.data?.[index]?.id || 0,
     })
@@ -59,69 +69,133 @@ const Compare = () => {
     return (
         <div className={styles["view-area"]} ref={parentRef}>
             <div
-                className={styles["actual-area"]}
                 style={{
-                    height: rowVirtualizer.getTotalSize() + FIXED_HEIGHT,
-                    width: columnVirtualizer.getTotalSize() + FIXED_WIDTH,
+                    height: rowVirtualizer.getTotalSize() + HEADER_HEIGHT,
+                    width: columnVirtualizer.getTotalSize() + CELL_WIDTH,
                 }}
             >
+                <div style={{ position: "sticky", top: 0, left: 0, zIndex: 1 }}>
+                    {columnVirtualizer?.getVirtualItems()?.map((column) => (
+                        <div
+                            key={column.key}
+                            className={`${styles.product} ${styles.cell}`}
+                            style={{
+                                position: "absolute",
+                                top: 0,
+                                left: column.start + CELL_WIDTH,
+                                width: CELL_WIDTH,
+                                height: HEADER_HEIGHT,
+                            }}
+                        >
+                            <div className={styles["product-info"]}>
+                                <img
+                                    src={
+                                        products?.data?.[column.index]
+                                            ?.img_url || FALLBACK_IMAGE
+                                    }
+                                    alt="product-img"
+                                    className={styles["product-img"]}
+                                />
+
+                                <span className="bold">
+                                    {products?.data?.[column.index]?.name}
+                                </span>
+                            </div>
+                            <div className={styles["product-actions"]}>
+                                <Button
+                                    variant="border-black"
+                                    icon={<FontAwesomeIcon icon={faTrash} />}
+                                    className={styles["button-action"]}
+                                >
+                                    Remove
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    icon={<FontAwesomeIcon icon={faCartPlus} />}
+                                    className={styles["button-action"]}
+                                >
+                                    Add
+                                </Button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
                 <div
                     style={{
-                        position: "absolute",
-                        top: 0,
+                        position: "sticky",
                         left: 0,
+                        width: CELL_WIDTH,
+                        height: rowVirtualizer.getTotalSize(),
+                        zIndex: 1,
                     }}
                 >
-                    Remove all
-                </div>
-                {columnVirtualizer?.getVirtualItems()?.map((item) => (
                     <div
-                        key={item.key}
+                        className={`bold ${styles.cell}`}
                         style={{
-                            position: "absolute",
+                            position: "sticky",
                             top: 0,
-                            left: item.start + FIXED_WIDTH,
-                            width: FIXED_WIDTH,
+                            left: 0,
+                            zIndex: 2,
+                            width: CELL_WIDTH,
+                            height: HEADER_HEIGHT,
+                            textDecoration: "underline",
+                            alignContent: "end",
                         }}
                     >
-                        {products?.data?.[item.index]?.name}
+                        Remove all
+                    </div>
+                    {rowVirtualizer.getVirtualItems().map((row) => (
+                        <div
+                            key={row.key}
+                            className={`bold ${styles.cell}`}
+                            style={{
+                                position: "absolute",
+                                top: row.start + HEADER_HEIGHT,
+                                left: 0,
+                                width: CELL_WIDTH,
+                                height: CELL_HEIGHT,
+                            }}
+                        >
+                            {row.key}
+                        </div>
+                    ))}
+                </div>
+
+                {rowVirtualizer?.getVirtualItems()?.map((row) => (
+                    <div key={row.key}>
+                        {columnVirtualizer?.getVirtualItems()?.map((column) => {
+                            const currentProduct =
+                                products?.data?.[column.index]
+                            const currentValue =
+                                currentProduct?.[String(row.key)]
+                            const currentIngredient =
+                                currentProduct?.ingredient?.filter(
+                                    (ingredient) => ingredient.name === row.key
+                                )?.[0]
+                                    ? "Yes"
+                                    : "No"
+                            return (
+                                <div
+                                    key={`${row.key}-${column.key}`}
+                                    className={`${styles.cell} ${styles["body-cell"]}`}
+                                    style={{
+                                        position: "absolute",
+                                        top: row.start + HEADER_HEIGHT,
+                                        left: column.start + CELL_WIDTH,
+                                        width: CELL_WIDTH,
+                                        height: CELL_HEIGHT,
+                                    }}
+                                >
+                                    {basicInfo.includes(String(row.key))
+                                        ? currentValue
+                                        : currentIngredient}
+                                </div>
+                            )
+                        })}
                     </div>
                 ))}
             </div>
-
-            {rowVirtualizer?.getVirtualItems()?.map((row) => (
-                <>
-                    <div
-                        key={row.key}
-                        style={{
-                            position: "absolute",
-                            top: row.start + FIXED_HEIGHT,
-                            left: 0,
-                            height: FIXED_HEIGHT,
-                        }}
-                    >
-                        {row.key}
-                    </div>
-                    {columnVirtualizer?.getVirtualItems()?.map((column) => {
-                        const currentProduct = products?.data?.[column.index]
-                        const currentIngredient =
-                            currentProduct?.ingredient?.filter(
-                                (ingredient) => ingredient.name === row.key
-                            )?.[0]
-                        return (
-                            <div
-                                style={{
-                                    position: "absolute",
-                                    top: row.start + FIXED_HEIGHT,
-                                    left: column.start + FIXED_WIDTH,
-                                }}
-                            >
-                                {currentIngredient ? "Yes" : "No"}
-                            </div>
-                        )
-                    })}
-                </>
-            ))}
         </div>
     )
 }

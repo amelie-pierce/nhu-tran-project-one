@@ -46,8 +46,10 @@ const Product = () => {
     })
 
     const handleChangeCategory = (id: number) => {
+        setCurrentPage(1)
         setActiveCategoryId(id)
-        if (!!id) {
+
+        if (id) {
             setSearchParams({ category_id: String(id) })
         } else {
             setSearchParams({})

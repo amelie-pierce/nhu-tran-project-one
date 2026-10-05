@@ -1,6 +1,7 @@
 import Tag from "../../../../components/ui/Tag/Tag"
 import type { OrderProduct } from "../../../../types/order"
 import styles from "./OrderItem.module.css"
+import { FALLBACK_IMAGE } from "../../../../constants"
 
 type Props = {
     product: OrderProduct
@@ -10,7 +11,7 @@ const OrderItem = ({ product }: Props) => {
     return (
         <div className={styles["order-item-container"]}>
             <img
-                src={product.img_url || ""}
+                src={product.img_url || FALLBACK_IMAGE}
                 alt={product.name}
                 className={styles["order-item-image"]}
             />
