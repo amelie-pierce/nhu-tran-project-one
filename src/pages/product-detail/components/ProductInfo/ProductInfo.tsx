@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import TextOverflow from "../../../../components/ui/TextOverflow/TextOverflow"
 import { faScaleBalanced } from "@fortawesome/free-solid-svg-icons"
 import Tag from "../../../../components/ui/Tag/Tag"
 import type { Product } from "../../../../types/product"
@@ -49,9 +50,10 @@ const ProductInfo = ({ product }: Props) => {
                     >
                         {toVND(product.price)}
                     </div>
-                    <div className={styles["product-detail-description"]}>
-                        {product.description}
-                    </div>
+                    <TextOverflow
+                        text={product.description || ""}
+                        className={styles["product-detail-description"]}
+                    />
                     <div className={styles["product-ingredients"]}>
                         {product?.ingredient?.map((item: Ingredient) => (
                             <Tag key={item.id}>{item.name}</Tag>
