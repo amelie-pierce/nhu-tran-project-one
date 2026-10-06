@@ -3,7 +3,7 @@ import TotalPrice from "./components/TotalPrice/TotalPrice"
 import styles from "./Cart.module.css"
 import Empty from "../../components/ui/Empty/Emtpy"
 import CartItem from "./components/CartItem/CartItem"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import Breadcrumb from "../../components/ui/Breadcrumb/Breadcrumb"
 import { useUserData } from "../../contexts/UserDataContext"
 import {

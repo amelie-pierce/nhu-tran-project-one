@@ -53,7 +53,7 @@ export async function getListProduct(
     const totalPage = Math.ceil(total / (params.limit || 1))
 
     return {
-        data: data ?? [],
+        data: (data ?? []) as unknown as Product[],
         total,
         totalPage,
         currentPage: params.page || 1,

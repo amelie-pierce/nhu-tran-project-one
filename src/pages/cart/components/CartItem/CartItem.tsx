@@ -1,5 +1,5 @@
 import InputNumber from "../../../../components/ui/InputNumber/InputNumber"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import type { CartProduct } from "../../../../types/cart"
 import styles from "./CartItem.module.css"
 import Button from "../../../../components/ui/Button/Button"

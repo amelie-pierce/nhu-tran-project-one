@@ -5,7 +5,6 @@ import {
     getListCategory,
 } from "../../../../apis/category/getListCategory"
 import styles from "./Category.module.css"
-import { useSearchParams } from "react-router"
 
 type Props = {
     activeCategoryId: number

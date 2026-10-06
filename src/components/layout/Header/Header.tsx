@@ -10,7 +10,7 @@ import Button from "../../ui/Button/Button"
 import { useNavigate } from "react-router"
 import { useToast } from "../../ui/Toast/ToastContext"
 import { useUserData } from "../../../contexts/UserDataContext"
-import { useEffect, useMemo } from "react"
+import { useMemo } from "react"
 
 const Header = () => {
     const navigate = useNavigate()
