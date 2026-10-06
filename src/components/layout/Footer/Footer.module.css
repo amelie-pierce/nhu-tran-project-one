@@ -1,8 +1,16 @@
 .footer {
     background-color: var(--color-pink-100);
+}
+
+.wrapper {
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: var(--spacing-l);
+}
+
+.footer-login-mobile {
+    height: 235px;
+    align-content: center;
 }
 
 .logo-footer {
@@ -41,16 +49,39 @@
 
 .social-link {
     display: inline-flex;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .social-icon {
     font-size: 19px;
+    margin-left: -2px;
+}
+
+.envelop-icon {
+    display: block;
+    width: auto;
+    height: 25px;
+    margin-top: -3px;
+}
+
+.linkedin-icon {
+    font-size: 21.5px;
+    margin-top: -1px;
+    margin-left: -6px;
+}
+
+.phone-icon {
+    font-size: 19px;
+    margin-left: -6px;
 }
 
 @media (max-width: 1024px) {
-    .footer {
+    .wrapper {
         gap: var(--spacing-m);
+    }
+
+    .wrapper-login-tablet {
+        gap: var(--spacing-s);
     }
 
     .logo-footer {
@@ -68,7 +99,7 @@
 }
 
 @media (max-width: 480px) {
-    .footer {
+    .wrapper {
         grid-template-columns: 1fr;
         gap: var(--spacing-s);
     }

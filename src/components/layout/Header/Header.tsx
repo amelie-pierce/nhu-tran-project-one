@@ -45,7 +45,7 @@ const Header = () => {
     return (
         <header className={`${styles.header} section-padding`}>
             <nav className={styles["menu-header"]}>
-                <Link to="/product" className="bold">
+                <Link to="/product"  className={styles["logo-link"]}>
                     <img
                         src="https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/logo/logo.png"
                         alt="logo"

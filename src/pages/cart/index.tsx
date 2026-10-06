@@ -95,10 +95,6 @@ const Cart = () => {
         return `${cartList?.length} ${cartList?.length === 1 ? "item" : "items"}`
     }, [cartList])
 
-    if (isLoading) {
-        return <Loader />
-    }
-
     if (isError) {
         return <Error />
     }
@@ -110,34 +106,41 @@ const Cart = () => {
     return (
         <>
             <Breadcrumb title="CART" currentPage="Cart" />
-            <div className={`${styles["cart-container"]} page-padding`}>
-                <label className={`${styles["cart-title"]} title bold`}>
-                    Your Cart
-                </label>
-                <div className={styles["cart-items-container"]}>
-                    <div className={styles["cart-select-all"]}>
-                        <input
-                            type="checkbox"
-                            checked={isSelectAllChecked}
-                            onChange={handleSelectAll}
-                        />
-                        <label>Select all ({cartTotalStr})</label>
+
+            {isLoading ? (
+                <Loader />
+            ) : (
+                <>
+                    <div className={`${styles["cart-container"]} page-padding`}>
+                        <label className={`${styles["cart-title"]} title bold`}>
+                            Your Cart
+                        </label>
+                        <div className={styles["cart-items-container"]}>
+                            <div className={styles["cart-select-all"]}>
+                                <input
+                                    type="checkbox"
+                                    checked={isSelectAllChecked}
+                                    onChange={handleSelectAll}
+                                />
+                                <label>Select all ({cartTotalStr})</label>
+                            </div>
+                            {cartProductItems?.map((item) => (
+                                <CartItem
+                                    key={item.id}
+                                    item={item}
+                                    onRemove={() => onRemoveItem(item.id || 0)}
+                                    onToggleCheck={handleToggleSelectItem}
+                                />
+                            ))}
+                        </div>
                     </div>
-                    {cartProductItems?.map((item) => (
-                        <CartItem
-                            key={item.id}
-                            item={item}
-                            onRemove={() => onRemoveItem(item.id || 0)}
-                            onToggleCheck={handleToggleSelectItem}
-                        />
-                    ))}
-                </div>
-            </div>
-            <TotalPrice
-                selectedItems={cartProductItems?.filter((item) =>
-                    selectedItemIds.has(item.id || 0)
-                )}
-            />
+                    <TotalPrice
+                        selectedItems={cartProductItems?.filter((item) =>
+                            selectedItemIds.has(item.id || 0)
+                        )}
+                    />
+                </>
+            )}
         </>
     )
 }
