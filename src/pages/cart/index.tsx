@@ -21,36 +21,39 @@ const Cart = () => {
     )
     const [isSelectAllChecked, setIsSelectAllChecked] = useState(false)
 
+    const productIds = cartList?.map((item) => Number(item.id)) ?? []
+
     const {
         data: products,
         isLoading,
         isError,
     } = useQuery({
-        queryKey: [
-            QUERY_KEY_PRODUCTS,
-            cartList?.map((item) => item.id).join(","),
-        ],
+        queryKey: [QUERY_KEY_PRODUCTS],
         queryFn: () =>
             getListProduct({
-                product_ids: cartList?.map((item) => Number(item.id || 0)),
+                product_ids: productIds,
             }),
+        enabled: productIds.length > 0,
     })
 
-    // TODO: consider join cart from db
     const cartProductItems: CartProduct[] = useMemo(
         () =>
-            products?.data?.map((item) => {
-                const quantity = cartList?.filter(
-                    (cart) => cart.id === item.id
-                )?.[0]?.quantity
+            cartList
+                ?.map((cartItem) => {
+                    const product = products?.data?.find(
+                        (product) => product.id === cartItem.id
+                    )
 
-                return {
-                    ...item,
-                    quantity,
-                    checked: selectedItemIds.has(item.id),
-                }
-            }) || [],
-        [products?.data, cartList, selectedItemIds]
+                    if (!product) return null
+
+                    return {
+                        ...product,
+                        quantity: cartItem.quantity,
+                        checked: selectedItemIds.has(product.id),
+                    }
+                })
+                ?.filter((item) => !!item),
+        [cartList, products?.data, selectedItemIds]
     )
 
     const onRemoveItem = (id: number) => {
@@ -100,7 +103,7 @@ const Cart = () => {
         return <Error />
     }
 
-    if (cartList?.length === 0) {
+    if (!cartList?.length) {
         return <Empty />
     }
 

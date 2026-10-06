@@ -17,17 +17,15 @@ type Props = {
 }
 
 const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
-    const [quantity, setQuantity] = useState(item.quantity)
     const { updateCartList } = useUserData()
     const screenWidth = useScreenWidth()
 
     const handleChangeQuantity = (value: number) => {
-        setQuantity(value)
         updateCartList(item.id || 0, value, false)
     }
 
     return (
-        <div key={item.id} className={styles["cart-item-container"]}>
+        <div className={styles["cart-item-container"]}>
             <input
                 type="checkbox"
                 checked={item.checked}
@@ -42,13 +40,15 @@ const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
                 <div className="bold text-truncate">{item.name}</div>
                 <div>{toVND(item.price)}</div>
                 <InputNumber
-                    value={quantity}
+                    value={item.quantity}
                     max={MAX_QUANTITY}
                     onChange={handleChangeQuantity}
                     className={styles["input-quantity"]}
                 />
             </div>
-            {screenWidth > 1024 && <p>{toVND((item.price || 0) * quantity)}</p>}
+            {screenWidth > 1024 && (
+                <p>{toVND((item.price || 0) * (item.quantity || 0))}</p>
+            )}
             <Button
                 variant="secondary"
                 icon={<FontAwesomeIcon icon={faTrash} />}

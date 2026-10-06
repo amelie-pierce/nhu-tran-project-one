@@ -35,8 +35,8 @@ type Props = {
 }
 
 export const UserDataProvider = ({ children }: Props) => {
-    const [cartList, setCartList] = useState<CartProduct[]>([])
-    const [compareList, setCompareList] = useState<number[]>([])
+    const [cartList, setCartList] = useState<CartProduct[]>(getCart())
+    const [compareList, setCompareList] = useState<number[]>(getCompare())
     const { showToast } = useToast()
 
     useEffect(() => {
@@ -138,7 +138,7 @@ export const useUserData = () => {
     const context = useContext(UserDataContext)
 
     if (!context) {
-        throw new Error("useToast must be used inside ToastProvider")
+        throw new Error("useUserData must be used inside UserDataProvider")
     }
 
     return context

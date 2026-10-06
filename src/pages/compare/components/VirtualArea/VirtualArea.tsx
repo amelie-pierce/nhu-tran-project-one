@@ -94,11 +94,7 @@ const VirtualArea = ({
     }
 
     if (isLoading) {
-        return (
-            <div className={styles["loading-wrapper"]}>
-                <Loader />
-            </div>
-        )
+        return <Loader />
     }
 
     return (
@@ -193,7 +189,10 @@ const VirtualArea = ({
                             top: row.start + size.headerHeight,
                         }}
                     >
-                        {getBasicInfoValue(String(row.key), products?.[0]).label}
+                        {
+                            getBasicInfoValue(String(row.key), products?.[0])
+                                .label
+                        }
                     </div>
                 ))}
             </div>
@@ -210,7 +209,8 @@ const VirtualArea = ({
                         const displayValue = BASIC_INFO.includes(
                             String(row.key)
                         )
-                            ? getBasicInfoValue(String(row.key), currentProduct).value
+                            ? getBasicInfoValue(String(row.key), currentProduct)
+                                  .value
                             : ""
                         return (
                             <div

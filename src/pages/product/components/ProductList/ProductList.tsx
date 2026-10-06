@@ -26,12 +26,6 @@ const ProductList = () => {
         setCurrentPage(Number(searchParams.get("page")) || 1)
     }, [searchParams])
 
-    useEffect(() => {
-        catalogRef.current?.scrollIntoView({
-            behavior: "smooth",
-        })
-    }, [currentPage])
-
     const screenWidth = useScreenWidth()
 
     const limit = useMemo(() => {
@@ -43,6 +37,7 @@ const ProductList = () => {
     const {
         data: products,
         isLoading,
+        isFetching,
         isError,
     } = useQuery({
         queryKey: [QUERY_KEY_PRODUCTS, currentPage, limit, activeCategoryId],
@@ -53,6 +48,14 @@ const ProductList = () => {
                 category_id: activeCategoryId,
             }),
     })
+
+    useEffect(() => {
+        if (!isFetching) {
+            catalogRef.current?.scrollIntoView({
+                behavior: "smooth",
+            })
+        }
+    }, [currentPage, isFetching])
 
     const handleChangeCategory = (id: number) => {
         setCurrentPage(1)
@@ -77,7 +80,11 @@ const ProductList = () => {
     }
 
     if (isLoading) {
-        return <Loader />
+        return (
+            <div className={styles["loader-container"]}>
+                <Loader />
+            </div>
+        )
     }
 
     if (isError) {
