@@ -23,6 +23,7 @@ import Loader from "../../components/ui/Loader/Loader"
 import Error from "../../components/ui/error/Error"
 import Breadcrumb from "../../components/ui/Breadcrumb/Breadcrumb"
 import { toVND } from "../../utils/toVND"
+import type { Product } from "../../types/product"
 
 const OVERSCAN = 2
 
@@ -242,8 +243,13 @@ const Compare = () => {
                                 ?.map((column) => {
                                     const currentProduct =
                                         products?.data?.[column.index]
-                                    const currentValue =
-                                        currentProduct?.[String(row.key)]
+                                    const currentValue = basicInfo.includes(
+                                        String(row.key)
+                                    )
+                                        ? currentProduct?.[
+                                              String(row.key) as keyof Product
+                                          ]
+                                        : undefined
                                     const currentIngredient =
                                         currentProduct?.ingredient?.filter(
                                             (ingredient) =>
@@ -251,11 +257,16 @@ const Compare = () => {
                                         )?.[0]
 
                                     let displayValue = ""
+
                                     if (basicInfo.includes(String(row.key))) {
                                         if (row.key === "price") {
-                                            displayValue = toVND(currentValue)
+                                            displayValue = toVND(
+                                                Number(currentValue || 0)
+                                            )
                                         } else {
-                                            displayValue = currentValue
+                                            displayValue = String(
+                                                currentValue ?? ""
+                                            )
                                         }
                                     }
                                     return (
