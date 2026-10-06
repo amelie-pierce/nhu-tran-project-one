@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router"
+import { toVND } from "../../../../utils/toVND"
 import Button from "../../../../components/ui/Button/Button"
 import Tag from "../../../../components/ui/Tag/Tag"
 import type { OrderProduct } from "../../../../types/order"
@@ -21,18 +22,18 @@ const OrderSummary = ({ orderItems }: Props) => {
 
     return (
         <div className={styles["order-summary-container"]}>
-            <div className={styles["order-items-container"]}>
+            <div
+                className={`${styles["order-items-container"]} scrollbar-hidden`}
+            >
                 {orderItems.map((item) => (
-                    <div key={item.id}>
-                        <OrderItem product={item} />
-                    </div>
+                    <OrderItem key={item.id} product={item} />
                 ))}
             </div>
             <div className={styles["summary-container"]}>
                 <div className={styles["info-container"]}>
                     <div className={styles["info"]}>
                         <span className="bold">Sub Total</span>
-                        <span className="bold">{subTotal}</span>
+                        <span className="bold">{toVND(subTotal)}</span>
                     </div>
                     <div className={styles["info"]}>
                         <span className="bold">Shipping</span>
@@ -42,7 +43,9 @@ const OrderSummary = ({ orderItems }: Props) => {
                 <div className={styles["info-container"]}>
                     <div className={styles["info"]}>
                         <span className="bold">Total</span>
-                        <span className="bold">{subTotal + SHIPPING_FEE}</span>
+                        <span className="bold">
+                            {toVND(subTotal + SHIPPING_FEE)}
+                        </span>
                     </div>
                 </div>
 

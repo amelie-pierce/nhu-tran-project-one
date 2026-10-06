@@ -5,6 +5,7 @@ import OrderSummary from "./components/OrderSummary/OrderSummary"
 import UserInformation from "./components/UserInformation/UserInformation"
 import { getUserInfo, setUserInfo } from "../../storages/userStorage"
 import type { Contact } from "../../types/user"
+import Breadcrumb from "../../components/ui/Breadcrumb/Breadcrumb"
 
 const Checkout = () => {
     const contactInfo = getUserInfo()
@@ -39,15 +40,18 @@ const Checkout = () => {
     }
 
     return (
-        <Form
-            initialValues={contactInfo}
-            validate={validate}
-            onSubmit={handleSubmit}
-            className={`${styles["wrapper"]} page-padding`}
-        >
-            <UserInformation />
-            <OrderSummary orderItems={state} />
-        </Form>
+        <>
+            <Breadcrumb title="CHECKOUT" currentPage="Checkout" />
+            <Form
+                initialValues={contactInfo}
+                validate={validate}
+                onSubmit={handleSubmit}
+                className={`${styles["wrapper"]} page-padding`}
+            >
+                <UserInformation />
+                <OrderSummary orderItems={state} />
+            </Form>
+        </>
     )
 }
 

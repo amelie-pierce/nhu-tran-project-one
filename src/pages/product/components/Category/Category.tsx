@@ -18,7 +18,7 @@ const Category = ({ activeCategoryId, onChangeCategory }: Props) => {
     })
 
     return (
-        <div className={styles["category-container"]}>
+        <div className={`${styles["category-container"]} scrollbar-hidden`}>
             <Button
                 onClick={() => onChangeCategory(0)}
                 variant={!activeCategoryId ? "primary" : "secondary"}

@@ -9,12 +9,3 @@
     border-radius: var(--radius-xl);
     white-space: nowrap;
 }
-
-.category-container::-webkit-scrollbar {
-    display: none;
-}
-
-.category-container {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}

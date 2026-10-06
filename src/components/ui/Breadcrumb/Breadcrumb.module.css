@@ -21,8 +21,11 @@
 
 .home-icon {
     font-size: 16px;
+    height: 100%;
+    width: 100%;
 }
 
 .link-to-home {
     height: 16px;
+    width: 16px;
 }

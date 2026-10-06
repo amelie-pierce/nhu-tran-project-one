@@ -8,6 +8,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons"
 import { useUserData } from "../../../../contexts/UserDataContext"
 import { MAX_QUANTITY } from "../../../../constants"
 import { toVND } from "../../../../utils/toVND"
+import { useScreenWidth } from "../../../../hooks/useScreenWidth"
 
 type Props = {
     item: CartProduct
@@ -18,6 +19,7 @@ type Props = {
 const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
     const [quantity, setQuantity] = useState(item.quantity)
     const { updateCartList } = useUserData()
+    const screenWidth = useScreenWidth()
 
     const handleChangeQuantity = (value: number) => {
         setQuantity(value)
@@ -37,8 +39,8 @@ const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
                 className={styles["cart-item-image"]}
             />
             <div className={styles["cart-item-info-container"]}>
-                <p className="bold text-truncate">{item.name}</p>
-                <p>{toVND(item.price)}</p>
+                <div className="bold text-truncate">{item.name}</div>
+                <div>{toVND(item.price)}</div>
                 <InputNumber
                     value={quantity}
                     max={MAX_QUANTITY}
@@ -46,7 +48,7 @@ const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
                     className={styles["input-quantity"]}
                 />
             </div>
-            <p>{(item.price || 0) * quantity}</p>
+            {screenWidth > 1024 && <p>{toVND((item.price || 0) * quantity)}</p>}
             <Button
                 variant="secondary"
                 icon={<FontAwesomeIcon icon={faTrash} />}

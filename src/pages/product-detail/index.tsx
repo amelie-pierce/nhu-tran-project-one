@@ -37,7 +37,7 @@ const ProductDetail = () => {
                 currentPage={data?.category?.name || ""}
             />
 
-            <div className="page-padding">
+            <div className="page-padding" style={{ width: "100%" }}>
                 <ProductInfo product={data} />
             </div>
         </>

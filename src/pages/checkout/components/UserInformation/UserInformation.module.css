@@ -32,6 +32,7 @@
 
 .cod-icon {
     font-size: var(--font-size-l);
+    width: 26px;
 }
 
 @media (max-width: 480px) {

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router"
+import { toVND } from "../../../../utils/toVND"
 import Button from "../../../../components/ui/Button/Button"
 import type { CartProduct } from "../../../../types/cart"
 import styles from "./TotalPrice.module.css"
@@ -14,13 +15,11 @@ const TotalPrice = ({ selectedItems }: Props) => {
         0
     )
 
-    console.log("selectedItems", selectedItems.length)
-
     return (
         <div className={`${styles.wrapper} section-padding`}>
             <div className={styles["total-container"]}>
-                <span>Total</span>
-                <span>{totalPrice}</span>
+                <span className="bold">Total</span>
+                <span className="bold">{toVND(totalPrice)}</span>
             </div>
             <Button
                 variant={!!selectedItems?.length ? "primary" : "border-black"}

@@ -8,8 +8,8 @@ import { useLocation, useNavigate } from "react-router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
     faScaleBalanced,
-    faCartShopping,
     faCreditCard,
+    faCartPlus,
 } from "@fortawesome/free-solid-svg-icons"
 import { useUserData } from "../../../../contexts/UserDataContext"
 import { toVND } from "../../../../utils/toVND"
@@ -76,7 +76,7 @@ const ProductItem = ({ product }: Props) => {
                                 redirectTo: location.pathname + location.search,
                             })
                         }}
-                        icon={<FontAwesomeIcon icon={faCartShopping} />}
+                        icon={<FontAwesomeIcon icon={faCartPlus} />}
                         className={styles["product-item-action-button"]}
                     >
                         Add

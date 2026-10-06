@@ -21,7 +21,9 @@ const OrderItem = ({ product }: Props) => {
                 <span>{toVND(product.price)}</span>
                 <Tag variant="light-pink">x {product.quantity}</Tag>
             </div>
-            <span className="bold">{product.price * product.quantity}</span>
+            <span className="bold">
+                {toVND(product.price * product.quantity)}
+            </span>
         </div>
     )
 }

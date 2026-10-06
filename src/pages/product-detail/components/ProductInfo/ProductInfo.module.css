@@ -53,6 +53,7 @@
 .product-ingredients {
     display: flex;
     gap: var(--spacing-xs);
+    flex-wrap: wrap;
 }
 
 @media (max-width: 1200px) {
@@ -81,6 +82,7 @@
     .product-detail-image {
         width: 100%;
         height: auto;
+        border-radius: var(--radius-s);
     }
     .product-detail-info {
         gap: var(--spacing-xs);

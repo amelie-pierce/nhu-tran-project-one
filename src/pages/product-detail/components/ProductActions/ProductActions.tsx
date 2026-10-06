@@ -6,7 +6,7 @@ import { useProductAction } from "../../../../hooks/useProductAction"
 import { useLocation } from "react-router"
 import styles from "./ProductActions.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCartShopping, faCreditCard } from "@fortawesome/free-solid-svg-icons"
+import { faCartPlus, faCreditCard } from "@fortawesome/free-solid-svg-icons"
 import { MAX_QUANTITY } from "../../../../constants"
 
 type Props = {
@@ -36,7 +36,7 @@ const ProductActions = ({ product }: Props) => {
                     })
                 }
                 className={styles["action-item"]}
-                icon={<FontAwesomeIcon icon={faCartShopping} />}
+                icon={<FontAwesomeIcon icon={faCartPlus} />}
             >
                 Add to cart
             </Button>
