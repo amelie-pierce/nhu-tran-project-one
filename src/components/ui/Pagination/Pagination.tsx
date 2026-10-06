@@ -77,7 +77,10 @@ const Pagination = ({ currentPage, totalPage, onPageChange }: Props) => {
                 />
                 <Button variant="border-black" onClick={handleGoToPage}>
                     Go
-                    <FontAwesomeIcon icon={faChevronRight} className={styles["chevron-icon"]} />
+                    <FontAwesomeIcon
+                        icon={faChevronRight}
+                        className={styles["chevron-icon"]}
+                    />
                 </Button>
             </div>
 
@@ -104,7 +107,10 @@ const Pagination = ({ currentPage, totalPage, onPageChange }: Props) => {
                     if (page === ELLIPSIS) {
                         return (
                             <span key={`ellipsis-${index}`}>
-                                <FontAwesomeIcon icon={faEllipsis} className={styles["ellipsis-icon"]} />
+                                <FontAwesomeIcon
+                                    icon={faEllipsis}
+                                    className={styles["ellipsis-icon"]}
+                                />
                             </span>
                         )
                     }
