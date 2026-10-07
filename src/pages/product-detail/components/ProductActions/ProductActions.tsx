@@ -6,7 +6,7 @@ import { useLocation } from "react-router"
 import styles from "./ProductActions.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCartPlus, faCreditCard } from "@fortawesome/free-solid-svg-icons"
-import { maxQtyPerProduct } from "@/featureFlags"
+import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 
 type Props = {
     product: Product
@@ -16,6 +16,7 @@ const ProductActions = ({ product }: Props) => {
     const [quantity, setQuantity] = useState(1)
     const { handleProductAction } = useProductAction()
     const location = useLocation()
+    const { maxQtyPerProduct } = useFeatureFlags()
 
     return (
         <div className={styles["product-detail-actions"]}>

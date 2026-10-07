@@ -7,7 +7,7 @@ import { faCartPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { useProductAction } from "@/hooks/useProductAction"
 import styles from "./VirtualColumn.module.css"
 import globalStyles from "../VirtualArea/VirtualArea.module.css"
-import { fallbackImg } from "@/featureFlags"
+import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 
 type Props = {
     columnVirtualizer: ReactVirtualizer<HTMLDivElement, Element>
@@ -28,6 +28,7 @@ const VirtualColumn = ({
 }: Props) => {
     const { toggleCompareItem } = useUserData()
     const { handleProductAction } = useProductAction()
+    const { fallbackImg } = useFeatureFlags()
 
     return (
         <div className={styles["sticky-header"]}>

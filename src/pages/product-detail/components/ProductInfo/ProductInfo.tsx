@@ -6,7 +6,7 @@ import type { Product } from "@/types/product"
 import type { Ingredient } from "@/types/ingredient"
 import { useUserData } from "@/contexts/UserDataContext"
 import { toVND } from "@/utils/toVND"
-import { fallbackImg } from "@/featureFlags"
+import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 import { ProductActions } from "@/pages/product-detail/components"
 import styles from "./ProductInfo.module.css"
 
@@ -16,6 +16,7 @@ type Props = {
 
 const ProductInfo = ({ product }: Props) => {
     const { compareList, toggleCompareItem } = useUserData()
+    const { fallbackImg } = useFeatureFlags()
 
     return (
         <div className={styles["product-detail-container"]}>

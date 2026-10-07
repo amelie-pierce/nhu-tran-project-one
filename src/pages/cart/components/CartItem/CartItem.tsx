@@ -6,7 +6,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons"
 import { useUserData } from "@/contexts/UserDataContext"
 import { toVND } from "@/utils/toVND"
 import { useScreenWidth } from "@/hooks/useScreenWidth"
-import { maxQtyPerProduct } from "@/featureFlags"
+import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 
 type Props = {
     item: CartProduct
@@ -16,6 +16,7 @@ type Props = {
 
 const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
     const { updateCartList } = useUserData()
+    const { maxQtyPerProduct } = useFeatureFlags()
     const screenWidth = useScreenWidth()
 
     const handleChangeQuantity = (value: number) => {

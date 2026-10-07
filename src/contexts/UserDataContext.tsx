@@ -25,7 +25,7 @@ import { createUserCart } from "@/apis/cart/createUserCart"
 import { updateUserCart } from "@/apis/cart/updateUserCart"
 import { deleteUserCart } from "@/apis/cart/deleteUserCart"
 import { debounce } from "@/utils/debounce"
-import { isDBCartEnabled, maxQtyPerProduct } from "@/featureFlags"
+import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 
 type UserDataType = {
     cartList: CartProduct[]
@@ -51,6 +51,7 @@ type Props = {
 }
 
 export const UserDataProvider = ({ children }: Props) => {
+    const { isDBCartEnabled, maxQtyPerProduct } = useFeatureFlags()
     const [cartList, setCartList] = useState<CartProduct[]>(getCartStorage())
     const [compareList, setCompareList] =
         useState<number[]>(getCompareStorage())

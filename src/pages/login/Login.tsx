@@ -8,14 +8,15 @@ import { signIn, type SignInRequest } from "@/apis/auth/signIn"
 import { QUERY_KEY_USER } from "@/apis/auth/getUser"
 import { useToast } from "@/contexts/ToastContext"
 import { useUserData } from "@/contexts/UserDataContext"
-import { isSignupEnabled } from "@/featureFlags"
 import styles from "./Login.module.css"
+import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 
 const Login = () => {
     const { showToast } = useToast()
     const navigate = useNavigate()
     const queryClient = useQueryClient()
     const { addToCartList } = useUserData()
+    const { isSignupEnabled } = useFeatureFlags()
 
     const location = useLocation()
     const action = location.state

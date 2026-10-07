@@ -2,13 +2,14 @@ import { Tag } from "@/components/ui"
 import type { OrderProduct } from "@/types/order"
 import { toVND } from "@/utils/toVND"
 import styles from "./OrderItem.module.css"
-import { fallbackImg } from "@/featureFlags"
+import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 
 type Props = {
     product: OrderProduct
 }
 
 const OrderItem = ({ product }: Props) => {
+    const { fallbackImg } = useFeatureFlags()
     return (
         <div className={styles["order-item-container"]}>
             <img

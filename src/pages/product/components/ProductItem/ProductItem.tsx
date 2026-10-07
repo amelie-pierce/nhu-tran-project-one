@@ -11,7 +11,7 @@ import {
 import { useUserData } from "@/contexts/UserDataContext"
 import { toVND } from "@/utils/toVND"
 import styles from "./ProductItem.module.css"
-import { fallbackImg } from "@/featureFlags"
+import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 
 interface Props {
     product: Product
@@ -22,6 +22,7 @@ const ProductItem = ({ product }: Props) => {
     const { compareList, toggleCompareItem } = useUserData()
     const location = useLocation()
     const navigate = useNavigate()
+    const { fallbackImg } = useFeatureFlags()
 
     return (
         <div

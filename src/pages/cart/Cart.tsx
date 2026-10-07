@@ -3,7 +3,7 @@ import { CartItem, TotalPrice } from "./components"
 import styles from "./Cart.module.css"
 import Empty from "@/components/Empty/Empty"
 import { useMemo, useState } from "react"
-import { isDBCartEnabled } from "@/featureFlags"
+import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 import { useUserData } from "@/contexts/UserDataContext"
 import {
     getListProduct,
@@ -14,6 +14,7 @@ import { Loader } from "@/components/ui"
 import { Error, Breadcrumb } from "@/components"
 
 const Cart = () => {
+    const { isDBCartEnabled } = useFeatureFlags()
     const {
         cartList,
         removeFromCartList,
