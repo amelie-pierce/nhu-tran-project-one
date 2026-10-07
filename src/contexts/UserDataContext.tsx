@@ -54,7 +54,8 @@ type Props = {
 export const UserDataProvider = ({ children }: Props) => {
     const dbEnabled = flagsmith.hasFeature("db_enabled")
     const [cartList, setCartList] = useState<CartProduct[]>(getCartStorage())
-    const [compareList, setCompareList] = useState<number[]>(getCompareStorage())
+    const [compareList, setCompareList] =
+        useState<number[]>(getCompareStorage())
     const { showToast } = useToast()
 
     const {
@@ -192,21 +193,26 @@ export const UserDataProvider = ({ children }: Props) => {
         const isSuccess = checkConditionAddToCart(product_id, quantity)
         if (!isSuccess) return
 
-        if (dbEnabled) {
-            createCart({
-                product_id,
-                quantity,
-            })
+        const existingItem = cartList?.find((item) => item.id === product_id)
+        if (existingItem) {
+            updateCartList(product_id, existingItem.quantity + quantity, false)
         } else {
-            addToCartStorage(cartList, product_id, quantity)
+            if (dbEnabled) {
+                createCart({
+                    product_id,
+                    quantity,
+                })
+            } else {
+                addToCartStorage(cartList, product_id, quantity)
+            }
+            setCartList((prevCartList) => [
+                ...prevCartList,
+                {
+                    id: product_id,
+                    quantity,
+                },
+            ])
         }
-        setCartList((prevCartList) => [
-            ...prevCartList,
-            {
-                id: product_id,
-                quantity,
-            },
-        ])
     }
 
     const removeFromCartList = (product_id: number) => {
