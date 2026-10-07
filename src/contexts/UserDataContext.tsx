@@ -18,6 +18,7 @@ import { MAX_QUANTITY } from "@/constants"
 import { getUserCart } from "@/apis/cart/getUserCart"
 import flagsmith from "@/lib/flagsmith"
 import { createUserCart } from "@/apis/cart/createUserCart"
+import { updateUserCart } from "@/apis/cart/updateUserCart"
 
 type UserDataType = {
     cartList: CartProduct[]
@@ -69,6 +70,28 @@ export const UserDataProvider = ({ children }: Props) => {
                     quantity: data.quantity,
                 },
             ])
+        },
+        onError: (error) => {
+            showToast({
+                message: (error as Error).message,
+                variant: "error",
+            })
+        },
+    })
+
+    const updateCartMutation = useMutation({
+        mutationFn: updateUserCart,
+        onSuccess: (data) => {
+            setCartList((prevCartList) =>
+                prevCartList.map((item) =>
+                    item.id === data.product.id
+                        ? {
+                              ...item,
+                              quantity: data.quantity,
+                          }
+                        : item
+                )
+            )
         },
         onError: (error) => {
             showToast({
@@ -131,16 +154,32 @@ export const UserDataProvider = ({ children }: Props) => {
     }
 
     const updateCartList = (
-        id: number,
+        product_id: number,
         quantity: number,
         checkCondition = true
     ) => {
         const isSuccess = checkCondition
-            ? checkConditionAddToCart(id, quantity)
+            ? checkConditionAddToCart(product_id, quantity)
             : true
-        if (isSuccess) {
-            const newCartList = updateCart(cartList, id, quantity)
-            setCartList(newCartList)
+        if (!isSuccess) return
+
+        if (dbEnabled) {
+            updateCartMutation.mutate({
+                product_id,
+                quantity,
+            })
+        } else {
+            updateCart(cartList, product_id, quantity)
+            setCartList((prevCartList) =>
+                prevCartList.map((item) =>
+                    item.id === product_id
+                        ? {
+                              ...item,
+                              quantity,
+                          }
+                        : item
+                )
+            )
         }
     }
 
@@ -154,8 +193,14 @@ export const UserDataProvider = ({ children }: Props) => {
                 quantity,
             })
         } else {
-            const newCartList = addToCart(cartList, product_id, quantity)
-            setCartList(newCartList)
+            addToCart(cartList, product_id, quantity)
+            setCartList((prevCartList) => [
+                ...prevCartList,
+                {
+                    id: product_id,
+                    quantity,
+                },
+            ])
         }
     }
 

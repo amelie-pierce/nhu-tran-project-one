@@ -11,7 +11,7 @@ export const addToCart = (
     cartList: CartProduct[] = getCart(),
     id: number,
     quantity: number
-): CartProduct[] => {
+) => {
     const newCartList = [...cartList]
     const existingItem = newCartList.find((item) => item.id === id)
     if (existingItem) {
@@ -23,14 +23,13 @@ export const addToCart = (
         })
     }
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(newCartList))
-    return newCartList
 }
 
 export const updateCart = (
     cartList: CartProduct[] = getCart(),
     id: number,
     quantity: number
-): CartProduct[] => {
+) => {
     const newCartList = [...cartList]
     const existingItem = newCartList.find((item) => item.id === id)
     if (existingItem) {
@@ -42,7 +41,6 @@ export const updateCart = (
         })
     }
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(newCartList))
-    return newCartList
 }
 
 export const removeFromCart = (
