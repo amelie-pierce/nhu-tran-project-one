@@ -5,6 +5,7 @@ import GuestRoute from "@/routes/GuestRoute"
 import Product from "@/pages/product/Product"
 import ProductDetail from "@/pages/product-detail/ProductDetail"
 import Login from "@/pages/login/Login"
+import Signup from "@/pages/signup/SignUp"
 import Checkout from "@/pages/checkout/Checkout"
 import Cart from "@/pages/cart/Cart"
 import Payment from "@/pages/payment/Payment"
@@ -26,6 +27,14 @@ function App() {
                 <Route path="/compare-product" element={<Compare />} />
                 <Route path="/payment" element={<Payment />} />
                 <Route path="/about-me" element={<AboutMe />} />
+                <Route
+                    path="/signup"
+                    element={
+                        <GuestRoute>
+                            <Signup />
+                        </GuestRoute>
+                    }
+                />
                 <Route
                     path="/login"
                     element={

@@ -12,17 +12,18 @@ export const addToCart = (
     id: number,
     quantity: number
 ): CartProduct[] => {
-    const existingItem = cartList.find((item) => item.id === id)
+    const newCartList = [...cartList]
+    const existingItem = newCartList.find((item) => item.id === id)
     if (existingItem) {
         existingItem.quantity += quantity
     } else {
-        cartList.push({
+        newCartList.push({
             id,
             quantity,
         })
     }
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartList))
-    return cartList
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(newCartList))
+    return newCartList
 }
 
 export const updateCart = (

@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { useLocation } from "react-router"
+import { Link, useLocation } from "react-router"
 import { Form, FormItem } from "@/components"
 import { Input, Button } from "@/components/ui"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -9,6 +9,7 @@ import { QUERY_KEY_USER } from "@/apis/auth/getUser"
 import { useToast } from "@/contexts/ToastContext"
 import { useUserData } from "@/contexts/UserDataContext"
 import styles from "./Login.module.css"
+import flagsmith from "@/lib/flagsmith"
 
 const Login = () => {
     const { showToast } = useToast()
@@ -26,9 +27,13 @@ const Login = () => {
         }
 
         if (action.type === "add") {
-            addToCartList(action.productId, action.quantity)
+            const item = action.items?.[0]
+            addToCartList(item?.id, item?.quantity)
         }
-        navigate(action.redirectTo)
+
+        if (action.type === "buy") {
+            navigate(action.redirectTo, { state: action.items })
+        }
     }, [action, addToCartList, navigate])
 
     const signInMutation = useMutation({
@@ -97,9 +102,26 @@ const Login = () => {
                         )}
                     />
                 </div>
-                <Button type="submit" className={styles["login-button"]}>
-                    Login
-                </Button>
+                <div className={styles["action-button-container"]}>
+                    <Button type="submit" className={styles["login-button"]}>
+                        Login
+                    </Button>
+                    {flagsmith.hasFeature("signup") && (
+                        <div className={styles["signup-container"]}>
+                            <span>Don't have an account?</span>
+                            <span
+                                className={styles["signup-link"]}
+                                onClick={() =>
+                                    navigate("/signup", {
+                                        state: action,
+                                    })
+                                }
+                            >
+                                Sign up
+                            </span>
+                        </div>
+                    )}
+                </div>
             </Form>
         </div>
     )
