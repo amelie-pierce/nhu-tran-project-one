@@ -31,7 +31,7 @@ const FormItem = ({ label, name, required, render }: Props) => {
                     onChange: (e) => onValuesChange(name, e.target.value),
                 })}
 
-                {errors && (
+                {errors?.[name] && (
                     <div className={styles["form-item-error"]}>
                         {errors[name]}
                     </div>

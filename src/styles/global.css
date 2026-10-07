@@ -50,3 +50,25 @@ hr {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+.custom-credit-icon-btn {
+    font-size: 25px;
+    margin-top: -3px;
+    margin-bottom: -3px;
+}
+
+@media (max-width: 1024px) {
+    .custom-credit-icon-btn {
+        font-size: 23px;
+        margin-top: -3px;
+        margin-bottom: -3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .custom-credit-icon-btn {
+        font-size: 20px;
+        margin-top: -2.5px;
+        margin-bottom: -2.5px;
+    }
+}

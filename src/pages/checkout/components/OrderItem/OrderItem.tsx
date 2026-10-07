@@ -17,7 +17,7 @@ const OrderItem = ({ product }: Props) => {
                 className={styles["order-item-image"]}
             />
             <div className={styles["order-item-details"]}>
-                <span className="bold">{product.name}</span>
+                <span className="bold text-truncate">{product.name}</span>
                 <span>{toVND(product.price)}</span>
                 <Tag variant="light-pink">x {product.quantity}</Tag>
             </div>

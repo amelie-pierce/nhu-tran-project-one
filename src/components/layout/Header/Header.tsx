@@ -2,7 +2,7 @@ import { Link } from "react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getUser, QUERY_KEY_USER } from "../../../apis/auth/getUser"
 import { signOut } from "../../../apis/auth/signOut"
-import { faRightToBracket } from "@fortawesome/free-solid-svg-icons"
+import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons"
 import styles from "./Header.module.css"
@@ -45,7 +45,7 @@ const Header = () => {
     return (
         <header className={`${styles.header} section-padding`}>
             <nav className={styles["menu-header"]}>
-                <Link to="/product"  className={styles["logo-link"]}>
+                <Link to="/product" className={styles["logo-link"]}>
                     <img
                         src="https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/logo/logo.png"
                         alt="logo"
@@ -90,7 +90,7 @@ const Header = () => {
                             )}
                         </div>
                         <FontAwesomeIcon
-                            icon={faRightToBracket}
+                            icon={faRightFromBracket}
                             className={styles.icon}
                             onClick={() => signOutMutation.mutate()}
                         />

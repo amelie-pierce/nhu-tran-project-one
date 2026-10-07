@@ -74,10 +74,15 @@
     .product-item-details {
         padding: var(--spacing-xs);
         gap: var(--spacing-xs);
+        border-radius: 0 0 var(--radius-s) var(--radius-s);
     }
     .product-item-tags {
         gap: var(--spacing-xs);
         flex-direction: column-reverse;
         align-items: baseline;
+    }
+
+    .product-item-image {
+        border-radius: var(--radius-s) var(--radius-s) 0 0;
     }
 }

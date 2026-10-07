@@ -113,7 +113,7 @@ const Cart = () => {
                 <>
                     <div className={`${styles["cart-container"]} page-padding`}>
                         <label className={`${styles["cart-title"]} title bold`}>
-                            Your Cart
+                            Your cart
                         </label>
                         <div className={styles["cart-items-container"]}>
                             <div className={styles["cart-select-all"]}>

@@ -9,11 +9,15 @@ import { useScreenWidth } from "../../../hooks/useScreenWidth"
 const Footer = () => {
     const screenWidth = useScreenWidth()
     const location = useLocation()
-    const isLoginMobile = screenWidth <= 480 && location.pathname === "/login"
+
+    const isDesktop = screenWidth > 1024
+
+    // Custom Login Styles
     const isLoginTablet =
         screenWidth > 480 &&
         screenWidth <= 1024 &&
         location.pathname === "/login"
+    const isLoginMobile = screenWidth <= 480 && location.pathname === "/login"
 
     return (
         <footer
@@ -39,7 +43,9 @@ const Footer = () => {
                         <Link to="/compare-product">Compare Products</Link>
                         <Link to="/cart">Cart</Link>
                     </div>
-                    <div className={styles["footer-section"]}>
+                    <div
+                        className={`${styles["footer-section"]} ${isDesktop ? styles["footer-section-about-desktop"] : ""}`}
+                    >
                         <div className="bold text-primary"> ABOUT</div>
                         <Link to="/about-me">About Me</Link>
                         <div className={styles["social-media"]}>

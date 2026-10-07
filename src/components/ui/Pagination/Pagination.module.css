@@ -14,12 +14,24 @@
     gap: var(--spacing-xs);
 }
 
+.input-number {
+    width: 70px;
+}
+
 .chevron-icon {
+    width: auto;
     font-size: 14px;
 }
 
 .ellipsis-icon {
-    font-size: 23px;
+    width: auto;
+    font-size: 20px;
+}
+
+@media (max-width: 1024px) {
+    .input-number {
+        width: 60px;
+    }
 }
 
 @media (max-width: 480px) {

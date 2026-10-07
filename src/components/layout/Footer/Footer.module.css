@@ -42,6 +42,10 @@
     gap: var(--spacing-s);
 }
 
+.footer-section-about-desktop {
+    margin-left: var(--spacing-xs);
+}
+
 .social-media {
     display: flex;
     gap: var(--spacing-s);

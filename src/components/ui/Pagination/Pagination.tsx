@@ -74,6 +74,7 @@ const Pagination = ({ currentPage, totalPage, onPageChange }: Props) => {
                     value={inputPage}
                     max={totalPage}
                     onChange={setInputPage}
+                    className={styles["input-number"]}
                 />
                 <Button variant="border-black" onClick={handleGoToPage}>
                     Go

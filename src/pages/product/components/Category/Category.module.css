@@ -2,10 +2,16 @@
     width: 100%;
     display: flex;
     overflow-x: auto;
-    gap: var(--spacing-xs);
+    gap: var(--spacing-s);
 }
 
 .category-button {
     border-radius: var(--radius-xl);
     white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+    .category-container {
+        gap: var(--spacing-xs);
+    }
 }

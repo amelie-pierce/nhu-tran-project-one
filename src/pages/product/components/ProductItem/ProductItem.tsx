@@ -90,7 +90,12 @@ const ProductItem = ({ product }: Props) => {
                                 redirectTo: "/checkout",
                             })
                         }}
-                        icon={<FontAwesomeIcon icon={faCreditCard} />}
+                        icon={
+                            <FontAwesomeIcon
+                                icon={faCreditCard}
+                                className="custom-credit-icon-btn"
+                            />
+                        }
                         className={styles["product-item-action-button"]}
                     >
                         Buy

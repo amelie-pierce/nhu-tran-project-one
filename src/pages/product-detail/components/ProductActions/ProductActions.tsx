@@ -49,7 +49,12 @@ const ProductActions = ({ product }: Props) => {
                     })
                 }
                 className={styles["action-item"]}
-                icon={<FontAwesomeIcon icon={faCreditCard} />}
+                icon={
+                    <FontAwesomeIcon
+                        icon={faCreditCard}
+                        className="custom-credit-icon-btn"
+                    />
+                }
             >
                 Buy now
             </Button>

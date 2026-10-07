@@ -48,7 +48,7 @@ const Payment = () => {
                 icon={<FontAwesomeIcon icon={faArrowRight} />}
                 onClick={() => navigate("/product")}
             >
-                Continue Shopping
+                Continue shopping
             </Button>
         </div>
     )
