@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { Link, useLocation } from "react-router"
+import { useLocation } from "react-router"
 import { Form, FormItem } from "@/components"
 import { Input, Button } from "@/components/ui"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -32,7 +32,7 @@ const Login = () => {
         }
 
         if (action.type === "buy") {
-            navigate(action.redirectTo, { state: action.items })
+            navigate(action.redirectTo, { state: action })
         }
     }, [action, addToCartList, navigate])
 

@@ -26,7 +26,7 @@ export const useProductAction = () => {
         }
 
         if (action.type === "buy") {
-            navigate(action.redirectTo, { state: action.items })
+            navigate(action.redirectTo, { state: action })
         }
     }
 

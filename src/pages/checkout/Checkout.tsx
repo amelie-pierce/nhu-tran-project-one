@@ -47,7 +47,7 @@ const Checkout = () => {
                 className={`${styles["wrapper"]} page-padding`}
             >
                 <UserInformation />
-                <OrderSummary orderItems={state} />
+                <OrderSummary orderItems={state?.items || []} />
             </Form>
         </>
     )

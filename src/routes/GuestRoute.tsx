@@ -9,7 +9,7 @@ type Props = {
 
 const GuestRoute = ({ children }: Props) => {
     const location = useLocation()
-    const action = location.state
+    const state = location.state
 
     const { data: user, isLoading } = useQuery({
         queryKey: [QUERY_KEY_USER],
@@ -21,7 +21,7 @@ const GuestRoute = ({ children }: Props) => {
     }
 
     if (user) {
-        return <Navigate to={action?.redirectTo || "/"} replace />
+        return <Navigate to={state?.redirectTo || "/"} replace state={state} />
     }
 
     return <>{children}</>
