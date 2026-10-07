@@ -8,8 +8,8 @@ import { signIn, type SignInRequest } from "@/apis/auth/signIn"
 import { QUERY_KEY_USER } from "@/apis/auth/getUser"
 import { useToast } from "@/contexts/ToastContext"
 import { useUserData } from "@/contexts/UserDataContext"
+import { isSignupEnabled } from "@/featureFlags"
 import styles from "./Login.module.css"
-import flagsmith from "@/lib/flagsmith"
 
 const Login = () => {
     const { showToast } = useToast()
@@ -106,7 +106,7 @@ const Login = () => {
                     <Button type="submit" className={styles["login-button"]}>
                         Login
                     </Button>
-                    {flagsmith.hasFeature("db_enabled") && (
+                    {isSignupEnabled && (
                         <div className={styles["signup-container"]}>
                             <span>Don't have an account?</span>
                             <span

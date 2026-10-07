@@ -20,13 +20,12 @@ import {
     toggleCompareStorage,
 } from "@/storages/compareStorage"
 import { useToast } from "@/contexts/ToastContext"
-import { MAX_QUANTITY } from "@/constants"
 import { getUserCart } from "@/apis/cart/getUserCart"
-import flagsmith from "@/lib/flagsmith"
 import { createUserCart } from "@/apis/cart/createUserCart"
 import { updateUserCart } from "@/apis/cart/updateUserCart"
 import { deleteUserCart } from "@/apis/cart/deleteUserCart"
 import { debounce } from "@/utils/debounce"
+import { isDBCartEnabled, maxQtyPerProduct } from "@/featureFlags"
 
 type UserDataType = {
     cartList: CartProduct[]
@@ -52,7 +51,6 @@ type Props = {
 }
 
 export const UserDataProvider = ({ children }: Props) => {
-    const dbEnabled = flagsmith.hasFeature("db_enabled")
     const [cartList, setCartList] = useState<CartProduct[]>(getCartStorage())
     const [compareList, setCompareList] =
         useState<number[]>(getCompareStorage())
@@ -66,7 +64,7 @@ export const UserDataProvider = ({ children }: Props) => {
     } = useQuery({
         queryKey: [QUERY_KEY_USER_CART],
         queryFn: getUserCart,
-        enabled: dbEnabled,
+        enabled: isDBCartEnabled,
     })
 
     const { mutate: createCart } = useMutation({
@@ -107,7 +105,7 @@ export const UserDataProvider = ({ children }: Props) => {
     }
 
     useEffect(() => {
-        if (!!userCart?.length && dbEnabled) {
+        if (!!userCart?.length && isDBCartEnabled) {
             setCartList(pareCartAPIResponse(userCart))
         } else {
             setCartList(getCartStorage())
@@ -121,7 +119,7 @@ export const UserDataProvider = ({ children }: Props) => {
     ): boolean => {
         const itemInCart = cartList.find((item) => item.id === productId)
         const quantityInCart = itemInCart?.quantity || 0
-        const maxAddable = MAX_QUANTITY - quantityInCart
+        const maxAddable = maxQtyPerProduct - quantityInCart
 
         if (quantity <= maxAddable) {
             showToast({
@@ -172,7 +170,7 @@ export const UserDataProvider = ({ children }: Props) => {
             : true
         if (!isSuccess) return
 
-        if (dbEnabled) {
+        if (isDBCartEnabled) {
             debouncedUpdateCart(product_id, quantity)
         } else {
             updateCartStorage(cartList, product_id, quantity)
@@ -197,7 +195,7 @@ export const UserDataProvider = ({ children }: Props) => {
         if (existingItem) {
             updateCartList(product_id, existingItem.quantity + quantity, false)
         } else {
-            if (dbEnabled) {
+            if (isDBCartEnabled) {
                 createCart({
                     product_id,
                     quantity,
@@ -216,7 +214,7 @@ export const UserDataProvider = ({ children }: Props) => {
     }
 
     const removeFromCartList = (product_id: number) => {
-        if (dbEnabled) {
+        if (isDBCartEnabled) {
             deleteCart({
                 product_id,
                 quantity: 0,

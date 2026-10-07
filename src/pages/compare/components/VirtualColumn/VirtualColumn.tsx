@@ -4,10 +4,10 @@ import type { ReactVirtualizer } from "@tanstack/react-virtual"
 import type { Product } from "@/types/product"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCartPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
-import { FALLBACK_IMAGE } from "@/constants"
 import { useProductAction } from "@/hooks/useProductAction"
 import styles from "./VirtualColumn.module.css"
 import globalStyles from "../VirtualArea/VirtualArea.module.css"
+import { fallbackImg } from "@/featureFlags"
 
 type Props = {
     columnVirtualizer: ReactVirtualizer<HTMLDivElement, Element>
@@ -43,7 +43,7 @@ const VirtualColumn = ({
                     >
                         <div className={styles["product-info"]}>
                             <img
-                                src={product?.img_url || FALLBACK_IMAGE}
+                                src={product?.img_url || fallbackImg}
                                 alt="product-img"
                                 className={styles["product-img"]}
                             />

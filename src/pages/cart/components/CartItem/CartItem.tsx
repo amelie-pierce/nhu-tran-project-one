@@ -4,9 +4,9 @@ import styles from "./CartItem.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrash } from "@fortawesome/free-solid-svg-icons"
 import { useUserData } from "@/contexts/UserDataContext"
-import { MAX_QUANTITY } from "@/constants"
 import { toVND } from "@/utils/toVND"
 import { useScreenWidth } from "@/hooks/useScreenWidth"
+import { maxQtyPerProduct } from "@/featureFlags"
 
 type Props = {
     item: CartProduct
@@ -39,7 +39,7 @@ const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
                 <div>{toVND(item.price)}</div>
                 <InputNumber
                     value={item.quantity}
-                    max={MAX_QUANTITY}
+                    max={maxQtyPerProduct}
                     onChange={handleChangeQuantity}
                     className={styles["input-quantity"]}
                 />

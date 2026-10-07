@@ -1,8 +1,8 @@
 import { Tag } from "@/components/ui"
 import type { OrderProduct } from "@/types/order"
-import { FALLBACK_IMAGE } from "@/constants"
 import { toVND } from "@/utils/toVND"
 import styles from "./OrderItem.module.css"
+import { fallbackImg } from "@/featureFlags"
 
 type Props = {
     product: OrderProduct
@@ -12,7 +12,7 @@ const OrderItem = ({ product }: Props) => {
     return (
         <div className={styles["order-item-container"]}>
             <img
-                src={product.img_url || FALLBACK_IMAGE}
+                src={product.img_url || fallbackImg}
                 alt={product.name}
                 className={styles["order-item-image"]}
             />

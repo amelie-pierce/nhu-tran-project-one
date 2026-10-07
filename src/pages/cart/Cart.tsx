@@ -3,7 +3,7 @@ import { CartItem, TotalPrice } from "./components"
 import styles from "./Cart.module.css"
 import Empty from "@/components/Empty/Empty"
 import { useMemo, useState } from "react"
-import flagsmith from "@/lib/flagsmith"
+import { isDBCartEnabled } from "@/featureFlags"
 import { useUserData } from "@/contexts/UserDataContext"
 import {
     getListProduct,
@@ -46,7 +46,7 @@ const Cart = () => {
         () =>
             cartList
                 ?.map((cartItem) => {
-                    if (flagsmith.hasFeature("db_enabled")) {
+                    if (isDBCartEnabled) {
                         return {
                             ...cartItem,
                             checked: selectedItemIds.has(cartItem?.id || 0),

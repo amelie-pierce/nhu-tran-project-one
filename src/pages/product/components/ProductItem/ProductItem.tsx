@@ -1,6 +1,5 @@
 import { Button, Tag } from "@/components/ui"
 import type { Product } from "@/types/product"
-import { FALLBACK_IMAGE } from "@/constants"
 import { useProductAction } from "@/hooks/useProductAction"
 import { useLocation, useNavigate } from "react-router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -12,6 +11,7 @@ import {
 import { useUserData } from "@/contexts/UserDataContext"
 import { toVND } from "@/utils/toVND"
 import styles from "./ProductItem.module.css"
+import { fallbackImg } from "@/featureFlags"
 
 interface Props {
     product: Product
@@ -32,7 +32,7 @@ const ProductItem = ({ product }: Props) => {
             }}
         >
             <img
-                src={product.img_url || FALLBACK_IMAGE}
+                src={product.img_url || fallbackImg}
                 alt={product.name}
                 className={styles["product-item-image"]}
             />

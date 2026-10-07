@@ -5,8 +5,8 @@ import { Tag } from "@/components/ui"
 import type { Product } from "@/types/product"
 import type { Ingredient } from "@/types/ingredient"
 import { useUserData } from "@/contexts/UserDataContext"
-import { FALLBACK_IMAGE } from "@/constants"
 import { toVND } from "@/utils/toVND"
+import { fallbackImg } from "@/featureFlags"
 import { ProductActions } from "@/pages/product-detail/components"
 import styles from "./ProductInfo.module.css"
 
@@ -20,7 +20,7 @@ const ProductInfo = ({ product }: Props) => {
     return (
         <div className={styles["product-detail-container"]}>
             <img
-                src={product.img_url || FALLBACK_IMAGE}
+                src={product.img_url || fallbackImg}
                 alt="Product Image"
                 className={styles["product-detail-image"]}
             />
