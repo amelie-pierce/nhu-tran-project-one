@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
-import type { CartProduct } from "@/types/cart"
+import { useQuery } from "@tanstack/react-query"
+import { QUERY_KEY_USER_CART } from "@/apis/cart/getUserCart"
+import type { CartProduct, UserCart } from "@/types/cart"
 import {
     addToCart,
     getCart,
@@ -13,6 +15,8 @@ import {
 } from "@/storages/compareStorage"
 import { useToast } from "@/contexts/ToastContext"
 import { MAX_QUANTITY } from "@/constants"
+import { getUserCart } from "@/apis/cart/getUserCart"
+import flagsmith from "@/lib/flagsmith"
 
 type UserDataType = {
     cartList: CartProduct[]
@@ -26,6 +30,9 @@ type UserDataType = {
     removeFromCartList: (id: number) => void
     toggleCompareItem: (id: number) => void
     removeAllCompareItems: () => void
+    isCartFetching: boolean
+    isCartLoading: boolean
+    isCartError: boolean
 }
 
 const UserDataContext = createContext<UserDataType | null>(null)
@@ -35,14 +42,37 @@ type Props = {
 }
 
 export const UserDataProvider = ({ children }: Props) => {
+    const dbEnabled = flagsmith.hasFeature("db_enabled")
     const [cartList, setCartList] = useState<CartProduct[]>(getCart())
     const [compareList, setCompareList] = useState<number[]>(getCompare())
     const { showToast } = useToast()
 
+    const {
+        data: userCart,
+        isLoading: isCartLoading,
+        isError: isCartError,
+        isFetching: isCartFetching,
+    } = useQuery({
+        queryKey: [QUERY_KEY_USER_CART],
+        queryFn: getUserCart,
+        enabled: dbEnabled,
+    })
+
+    const pareCartAPIResponse = (cartList: UserCart[]): CartProduct[] => {
+        return cartList?.map((item) => ({
+            ...item.product,
+            quantity: item.quantity,
+        }))
+    }
+
     useEffect(() => {
-        setCartList(getCart())
+        if (!!userCart?.length && dbEnabled) {
+            setCartList(pareCartAPIResponse(userCart))
+        } else {
+            setCartList(getCart())
+        }
         setCompareList(getCompare())
-    }, [])
+    }, [userCart])
 
     const checkConditionAddToCart = (
         productId: number,
@@ -127,6 +157,9 @@ export const UserDataProvider = ({ children }: Props) => {
                 removeFromCartList,
                 toggleCompareItem,
                 removeAllCompareItems,
+                isCartLoading,
+                isCartError,
+                isCartFetching,
             }}
         >
             {children}

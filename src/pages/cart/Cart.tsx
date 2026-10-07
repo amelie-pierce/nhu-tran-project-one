@@ -3,6 +3,7 @@ import { CartItem, TotalPrice } from "./components"
 import styles from "./Cart.module.css"
 import Empty from "@/components/Empty/Empty"
 import { useMemo, useState } from "react"
+import flagsmith from "@/lib/flagsmith"
 import { useUserData } from "@/contexts/UserDataContext"
 import {
     getListProduct,
@@ -13,7 +14,13 @@ import { Loader } from "@/components/ui"
 import { Error, Breadcrumb } from "@/components"
 
 const Cart = () => {
-    const { cartList, removeFromCartList } = useUserData()
+    const {
+        cartList,
+        removeFromCartList,
+        isCartFetching,
+        isCartError,
+        isCartLoading,
+    } = useUserData()
     const [selectedItemIds, setSelectedItemIds] = useState<Set<number>>(
         new Set()
     )
@@ -24,6 +31,7 @@ const Cart = () => {
     const {
         data: products,
         isLoading,
+        isFetching,
         isError,
     } = useQuery({
         queryKey: [QUERY_KEY_PRODUCTS],
@@ -38,6 +46,13 @@ const Cart = () => {
         () =>
             cartList
                 ?.map((cartItem) => {
+                    if (flagsmith.hasFeature("db_enabled")) {
+                        return {
+                            ...cartItem,
+                            checked: selectedItemIds.has(cartItem?.id || 0),
+                        }
+                    }
+
                     const product = products?.data?.find(
                         (product) => product.id === cartItem.id
                     )
@@ -93,11 +108,11 @@ const Cart = () => {
         return `${cartList?.length} ${cartList?.length === 1 ? "item" : "items"}`
     }, [cartList])
 
-    if (isError) {
+    if (isError || isCartError) {
         return <Error />
     }
 
-    if (!cartList?.length) {
+    if (!cartList?.length && !isCartFetching && !isFetching) {
         return <Empty />
     }
 
@@ -105,7 +120,7 @@ const Cart = () => {
         <>
             <Breadcrumb title="CART" currentPage="Cart" />
 
-            {isLoading ? (
+            {isLoading || isCartLoading ? (
                 <Loader />
             ) : (
                 <>

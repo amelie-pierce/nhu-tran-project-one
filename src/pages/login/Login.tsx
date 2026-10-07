@@ -106,7 +106,7 @@ const Login = () => {
                     <Button type="submit" className={styles["login-button"]}>
                         Login
                     </Button>
-                    {flagsmith.hasFeature("signup") && (
+                    {flagsmith.hasFeature("db_enabled") && (
                         <div className={styles["signup-container"]}>
                             <span>Don't have an account?</span>
                             <span

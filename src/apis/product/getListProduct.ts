@@ -21,7 +21,7 @@ type GetListProductResponse = {
 export async function getListProduct(
     params: Partial<GetListProductRequest>
 ): Promise<GetListProductResponse> {
-    let select = `*, category (name)`
+    let select = `*, category(name)`
 
     if (params?.extra_fields?.includes("ingredient")) {
         select += `, ingredient(id, name)`
