@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation } from "@tanstack/react-query"
 import { QUERY_KEY_USER_CART } from "@/apis/cart/getUserCart"
 import type { CartProduct, UserCart } from "@/types/cart"
 import {
@@ -17,6 +17,7 @@ import { useToast } from "@/contexts/ToastContext"
 import { MAX_QUANTITY } from "@/constants"
 import { getUserCart } from "@/apis/cart/getUserCart"
 import flagsmith from "@/lib/flagsmith"
+import { createUserCart } from "@/apis/cart/createUserCart"
 
 type UserDataType = {
     cartList: CartProduct[]
@@ -56,6 +57,25 @@ export const UserDataProvider = ({ children }: Props) => {
         queryKey: [QUERY_KEY_USER_CART],
         queryFn: getUserCart,
         enabled: dbEnabled,
+    })
+
+    const createCartMutation = useMutation({
+        mutationFn: createUserCart,
+        onSuccess: (data) => {
+            setCartList((prevCartList) => [
+                ...prevCartList,
+                {
+                    ...data.product,
+                    quantity: data.quantity,
+                },
+            ])
+        },
+        onError: (error) => {
+            showToast({
+                message: (error as Error).message,
+                variant: "error",
+            })
+        },
     })
 
     const pareCartAPIResponse = (cartList: UserCart[]): CartProduct[] => {
@@ -124,10 +144,17 @@ export const UserDataProvider = ({ children }: Props) => {
         }
     }
 
-    const addToCartList = (id: number, quantity: number) => {
-        const isSuccess = checkConditionAddToCart(id, quantity)
-        if (isSuccess) {
-            const newCartList = addToCart(cartList, id, quantity)
+    const addToCartList = (product_id: number, quantity: number) => {
+        const isSuccess = checkConditionAddToCart(product_id, quantity)
+        if (!isSuccess) return
+
+        if (dbEnabled) {
+            createCartMutation.mutate({
+                product_id,
+                quantity,
+            })
+        } else {
+            const newCartList = addToCart(cartList, product_id, quantity)
             setCartList(newCartList)
         }
     }
