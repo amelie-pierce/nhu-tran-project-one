@@ -1,4 +1,4 @@
-import type { CartProduct } from "../types/cart"
+import type { CartProduct } from "@/types/cart"
 
 const CART_STORAGE_KEY = "cart"
 

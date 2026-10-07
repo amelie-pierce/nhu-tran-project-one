@@ -1,0 +1,6 @@
+export { default as Education } from "./Education/Education"
+export { default as Introduction } from "./Introduction/Introduction"
+export { default as MainPoint } from "./MainPoint/MainPoint"
+export { default as Project } from "./Project/Project"
+export { default as Scholarship } from "./Scholarship/Scholarship"
+export { default as WorkExperience } from "./WorkExperience/WorkExperience"

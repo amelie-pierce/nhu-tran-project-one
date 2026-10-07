@@ -1,0 +1,28 @@
+.body-row {
+    position: sticky;
+    left: 0;
+    width: var(--body-cell-width);
+    z-index: 1;
+}
+
+.cell-remove-all {
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    width: var(--body-cell-width);
+    height: var(--header-cell-height);
+    align-content: end;
+}
+
+.text-remove-all {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.body-label {
+    position: absolute;
+    left: 0;
+    width: var(--body-cell-width);
+    height: var(--body-cell-height);
+}

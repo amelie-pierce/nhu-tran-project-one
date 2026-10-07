@@ -1,5 +1,5 @@
-import Tag from "../../../../components/ui/Tag/Tag"
-import MainPoint from "../MainPoint/MainPoint"
+import { Tag } from "@/components/ui"
+import { MainPoint } from "@/pages/about/components"
 import styles from "./Education.module.css"
 
 const Education = () => {

@@ -1,14 +1,12 @@
-import InputNumber from "../../../../components/ui/InputNumber/InputNumber"
-import { useState } from "react"
-import type { CartProduct } from "../../../../types/cart"
+import { InputNumber, Button } from "@/components/ui"
+import type { CartProduct } from "@/types/cart"
 import styles from "./CartItem.module.css"
-import Button from "../../../../components/ui/Button/Button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrash } from "@fortawesome/free-solid-svg-icons"
-import { useUserData } from "../../../../contexts/UserDataContext"
-import { MAX_QUANTITY } from "../../../../constants"
-import { toVND } from "../../../../utils/toVND"
-import { useScreenWidth } from "../../../../hooks/useScreenWidth"
+import { useUserData } from "@/contexts/UserDataContext"
+import { MAX_QUANTITY } from "@/constants"
+import { toVND } from "@/utils/toVND"
+import { useScreenWidth } from "@/hooks/useScreenWidth"
 
 type Props = {
     item: CartProduct

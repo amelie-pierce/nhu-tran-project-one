@@ -1,5 +1,5 @@
-import { supabase } from "../../lib/supabase"
-import type { Category } from "../../types/category"
+import { supabase } from "@/lib/supabase"
+import type { Category } from "@/types/category"
 
 export const QUERY_KEY_CATEGORIES = "categories"
 

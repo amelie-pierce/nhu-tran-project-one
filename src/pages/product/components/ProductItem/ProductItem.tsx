@@ -1,9 +1,7 @@
-import Button from "../../../../components/ui/Button/Button"
-import Tag from "../../../../components/ui/Tag/Tag"
-import styles from "./ProductItem.module.css"
-import type { Product } from "../../../../types/product"
-import { FALLBACK_IMAGE } from "../../../../constants"
-import { useProductAction } from "../../../../hooks/useProductAction"
+import { Button, Tag } from "@/components/ui"
+import type { Product } from "@/types/product"
+import { FALLBACK_IMAGE } from "@/constants"
+import { useProductAction } from "@/hooks/useProductAction"
 import { useLocation, useNavigate } from "react-router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -11,8 +9,9 @@ import {
     faCreditCard,
     faCartPlus,
 } from "@fortawesome/free-solid-svg-icons"
-import { useUserData } from "../../../../contexts/UserDataContext"
-import { toVND } from "../../../../utils/toVND"
+import { useUserData } from "@/contexts/UserDataContext"
+import { toVND } from "@/utils/toVND"
+import styles from "./ProductItem.module.css"
 
 interface Props {
     product: Product

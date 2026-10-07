@@ -1,13 +1,12 @@
 import { useState } from "react"
-import type { Product } from "../../../../types/product"
-import InputNumber from "../../../../components/ui/InputNumber/InputNumber"
-import Button from "../../../../components/ui/Button/Button"
-import { useProductAction } from "../../../../hooks/useProductAction"
+import type { Product } from "@/types/product"
+import { InputNumber, Button } from "@/components/ui"
+import { useProductAction } from "@/hooks/useProductAction"
 import { useLocation } from "react-router"
 import styles from "./ProductActions.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCartPlus, faCreditCard } from "@fortawesome/free-solid-svg-icons"
-import { MAX_QUANTITY } from "../../../../constants"
+import { MAX_QUANTITY } from "@/constants"
 
 type Props = {
     product: Product

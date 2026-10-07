@@ -1,17 +1,15 @@
 import { useQuery } from "@tanstack/react-query"
-import styles from "./ProductList.module.css"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router"
-import Pagination from "../../../../components/ui/Pagination/Pagination"
+import { Loader } from "@/components/ui"
+import { Pagination, Error } from "@/components"
 import {
     QUERY_KEY_PRODUCTS,
     getListProduct,
-} from "../../../../apis/product/getListProduct"
-import Error from "../../../../components/ui/error/Error"
-import Loader from "../../../../components/ui/Loader/Loader"
-import { useScreenWidth } from "../../../../hooks/useScreenWidth"
-import ProductItem from "../ProductItem/ProductItem"
-import Category from "../Category/Category"
+} from "@/apis/product/getListProduct"
+import { useScreenWidth } from "@/hooks/useScreenWidth"
+import { ProductItem, Category } from "@/pages/product/components"
+import styles from "./ProductList.module.css"
 
 const ProductList = () => {
     const [searchParams, setSearchParams] = useSearchParams()

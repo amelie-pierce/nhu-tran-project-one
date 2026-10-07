@@ -1,8 +1,8 @@
-import Tag from "../../../../components/ui/Tag/Tag"
-import type { OrderProduct } from "../../../../types/order"
+import { Tag } from "@/components/ui"
+import type { OrderProduct } from "@/types/order"
+import { FALLBACK_IMAGE } from "@/constants"
+import { toVND } from "@/utils/toVND"
 import styles from "./OrderItem.module.css"
-import { FALLBACK_IMAGE } from "../../../../constants"
-import { toVND } from "../../../../utils/toVND"
 
 type Props = {
     product: OrderProduct

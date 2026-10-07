@@ -1,4 +1,4 @@
-import type { Contact } from "../types/user"
+import type { Contact } from "@/types/user"
 
 const USER_STORAGE_KEY = "user_info"
 

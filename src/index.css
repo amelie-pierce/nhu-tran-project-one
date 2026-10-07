@@ -1,5 +1,5 @@
-@import "./styles/primitive.css";
-@import "./styles/semantic.css";
+@import "@/styles/primitive.css";
+@import "@/styles/semantic.css";
 
 html {
     height: 100%;

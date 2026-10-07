@@ -1,4 +1,4 @@
-import Input from "../Input/Input"
+import { Input } from "@/components/ui"
 
 const STEP = 1
 const MIN = 1

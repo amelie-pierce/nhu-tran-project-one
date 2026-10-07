@@ -1,5 +1,5 @@
-import FormItem from "../../../../components/ui/Form/FormItem"
-import Input from "../../../../components/ui/Input/Input"
+import { FormItem } from "@/components"
+import { Input } from "@/components/ui"
 import styles from "./UserInformation.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHandHoldingDollar } from "@fortawesome/free-solid-svg-icons"

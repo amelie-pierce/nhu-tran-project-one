@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
-import Button from "../../../../components/ui/Button/Button"
+import { Button } from "@/components/ui"
 import {
     QUERY_KEY_CATEGORIES,
     getListCategory,
-} from "../../../../apis/category/getListCategory"
+} from "@/apis/category/getListCategory"
 import styles from "./Category.module.css"
 
 type Props = {

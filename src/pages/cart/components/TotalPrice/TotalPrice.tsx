@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router"
-import { toVND } from "../../../../utils/toVND"
-import Button from "../../../../components/ui/Button/Button"
-import type { CartProduct } from "../../../../types/cart"
+import { toVND } from "@/utils/toVND"
+import { Button } from "@/components/ui"
+import type { CartProduct } from "@/types/cart"
 import styles from "./TotalPrice.module.css"
 
 type Props = {

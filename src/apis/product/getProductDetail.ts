@@ -1,5 +1,5 @@
-import { supabase } from "../../lib/supabase"
-import type { Product } from "../../types/product"
+import { supabase } from "@/lib/supabase"
+import type { Product } from "@/types/product"
 
 export const QUERY_KEY_PRODUCT_DETAIL = "product_detail"
 

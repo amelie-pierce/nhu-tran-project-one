@@ -1,5 +1,5 @@
-import { supabase } from "../../lib/supabase"
-import { getUserInfo, setUserInfo } from "../../storages/userStorage"
+import { supabase } from "@/lib/supabase"
+import { getUserInfo, setUserInfo } from "@/storages/userStorage"
 
 export const QUERY_KEY_USER = "user"
 

@@ -1,18 +1,18 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
-import type { CartProduct } from "../types/cart"
+import type { CartProduct } from "@/types/cart"
 import {
     addToCart,
     getCart,
     removeFromCart,
     updateCart,
-} from "../storages/cartStorage"
+} from "@/storages/cartStorage"
 import {
     getCompare,
     removeAllCompare,
     toggleCompare,
-} from "../storages/compareStorage"
-import { useToast } from "../components/ui/Toast/ToastContext"
-import { MAX_QUANTITY } from "../constants"
+} from "@/storages/compareStorage"
+import { useToast } from "@/contexts/ToastContext"
+import { MAX_QUANTITY } from "@/constants"
 
 type UserDataType = {
     cartList: CartProduct[]

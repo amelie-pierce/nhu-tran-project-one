@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router"
-import { toVND } from "../../../../utils/toVND"
-import Button from "../../../../components/ui/Button/Button"
-import Tag from "../../../../components/ui/Tag/Tag"
-import type { OrderProduct } from "../../../../types/order"
-import OrderItem from "../OrderItem/OrderItem"
+import { toVND } from "@/utils/toVND"
+import { Button, Tag } from "@/components/ui"
+import type { OrderProduct } from "@/types/order"
+import { OrderItem } from "@/pages/checkout/components"
 import styles from "./OrderSummary.module.css"
 
 type Props = {

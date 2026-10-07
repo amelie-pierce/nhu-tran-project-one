@@ -1,4 +1,4 @@
-import Tag from "../../../../components/ui/Tag/Tag"
+import { Tag } from "@/components/ui"
 import styles from "./Scholarship.module.css"
 
 const Scholarship = () => {

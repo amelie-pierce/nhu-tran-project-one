@@ -1,0 +1,6 @@
+.body-cell {
+    position: absolute;
+    text-align: center;
+    width: var(--body-cell-width);
+    height: var(--body-cell-height);
+}

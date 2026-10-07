@@ -1,14 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import TextOverflow from "../../../../components/ui/TextOverflow/TextOverflow"
+import { TextOverflow } from "@/components"
 import { faScaleBalanced } from "@fortawesome/free-solid-svg-icons"
-import Tag from "../../../../components/ui/Tag/Tag"
-import type { Product } from "../../../../types/product"
+import { Tag } from "@/components/ui"
+import type { Product } from "@/types/product"
+import type { Ingredient } from "@/types/ingredient"
+import { useUserData } from "@/contexts/UserDataContext"
+import { FALLBACK_IMAGE } from "@/constants"
+import { toVND } from "@/utils/toVND"
+import { ProductActions } from "@/pages/product-detail/components"
 import styles from "./ProductInfo.module.css"
-import ProductActions from "../ProductActions/ProductActions"
-import type { Ingredient } from "../../../../types/ingredient"
-import { useUserData } from "../../../../contexts/UserDataContext"
-import { FALLBACK_IMAGE } from "../../../../constants"
-import { toVND } from "../../../../utils/toVND"
 
 type Props = {
     product: Product

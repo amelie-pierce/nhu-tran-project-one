@@ -1,10 +1,9 @@
 import { faGithub } from "@fortawesome/free-brands-svg-icons"
-import Button from "../../../../components/ui/Button/Button"
-import Tag from "../../../../components/ui/Tag/Tag"
+import { Button, Tag } from "@/components/ui"
 import styles from "./Project.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBook } from "@fortawesome/free-solid-svg-icons"
-import { useScreenWidth } from "../../../../hooks/useScreenWidth"
+import { useScreenWidth } from "@/hooks/useScreenWidth"
 
 const Project = () => {
     const screenWidth = useScreenWidth()
