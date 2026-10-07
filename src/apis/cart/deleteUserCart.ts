@@ -23,7 +23,6 @@ export const deleteUserCart = async (values: UpdateUserCartRequest) => {
         .delete()
         .eq("user_id", userId)
         .eq("product_id", values.product_id)
-        .select("*")
         .single()
 
     if (error) {

@@ -36,7 +36,7 @@ const Login = () => {
         }
     }, [action, addToCartList, navigate])
 
-    const signInMutation = useMutation({
+    const { mutate: signInMutation } = useMutation({
         mutationFn: signIn,
         onSuccess: (data) => {
             showToast({ message: "Login successful", variant: "success" })
@@ -63,7 +63,7 @@ const Login = () => {
     }
 
     const handleSubmit = async (values: SignInRequest) => {
-        signInMutation.mutate(values)
+        signInMutation(values)
     }
 
     return (

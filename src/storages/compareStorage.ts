@@ -1,12 +1,12 @@
 const COMPARE_STORAGE_KEY = "compare"
 
-export const getCompare = (): number[] => {
+export const getCompareStorage = (): number[] => {
     const data = localStorage.getItem(COMPARE_STORAGE_KEY)
     return data ? JSON.parse(data) : []
 }
 
-export const toggleCompare = (id: number): number[] => {
-    const compare = getCompare()
+export const toggleCompareStorage = (id: number): number[] => {
+    const compare = getCompareStorage()
 
     const newCompare = compare.includes(id)
         ? compare.filter((item) => item !== id)
@@ -17,6 +17,6 @@ export const toggleCompare = (id: number): number[] => {
     return newCompare
 }
 
-export const removeAllCompare = () => {
+export const removeAllCompareStorage = () => {
     localStorage.removeItem(COMPARE_STORAGE_KEY)
 }

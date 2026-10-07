@@ -23,7 +23,7 @@ const Header = () => {
         queryFn: getUser,
     })
 
-    const signOutMutation = useMutation({
+    const { mutate: signOutMutation } = useMutation({
         mutationFn: signOut,
         onSuccess: () => {
             showToast({ message: "Logout successful", variant: "success" })
@@ -92,7 +92,7 @@ const Header = () => {
                         <FontAwesomeIcon
                             icon={faRightFromBracket}
                             className={styles.icon}
-                            onClick={() => signOutMutation.mutate()}
+                            onClick={() => signOutMutation()}
                         />
                     </>
                 )}

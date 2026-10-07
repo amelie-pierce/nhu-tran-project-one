@@ -1,12 +1,12 @@
 import { Form, Breadcrumb } from "@/components"
 import { useLocation, Navigate } from "react-router"
 import { OrderSummary, UserInformation } from "./components"
-import { getUserInfo, setUserInfo } from "@/storages/userStorage"
+import { getUserInfoStorage, setUserInfoStorage } from "@/storages/userStorage"
 import type { Contact } from "@/types/user"
 import styles from "./Checkout.module.css"
 
 const Checkout = () => {
-    const contactInfo = getUserInfo()
+    const contactInfo = getUserInfoStorage()
     const location = useLocation()
     const state = location.state
 
@@ -30,7 +30,7 @@ const Checkout = () => {
     }
 
     const handleSubmit = (values: Partial<Contact>) => {
-        setUserInfo(values)
+        setUserInfoStorage(values)
     }
 
     if (!state) {

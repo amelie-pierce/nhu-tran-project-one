@@ -25,7 +25,6 @@ export const updateUserCart = async (values: UpdateUserCartRequest) => {
         })
         .eq("user_id", userId)
         .eq("product_id", values.product_id)
-        .select("*")
         .single()
 
     if (error) {

@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase"
-import { getUserInfo, setUserInfo } from "@/storages/userStorage"
+import { getUserInfoStorage, setUserInfoStorage } from "@/storages/userStorage"
 
 export const QUERY_KEY_USER = "user"
 
@@ -8,13 +8,13 @@ export const getUser = async () => {
         data: { user },
     } = await supabase.auth.getUser()
 
-    const prevUserInfo = getUserInfo()
+    const prevUserInfo = getUserInfoStorage()
     const userInfo =
         user?.email === prevUserInfo.email
             ? prevUserInfo
             : { email: user?.email }
 
-    setUserInfo(userInfo)
+    setUserInfoStorage(userInfo)
 
     return user
 }

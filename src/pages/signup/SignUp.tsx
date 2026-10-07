@@ -16,7 +16,7 @@ const SignUp = () => {
     const location = useLocation()
     const action = location.state
 
-    const signUpMutation = useMutation({
+    const { mutate: signUpMutation } = useMutation({
         mutationFn: signUp,
         onSuccess: (data) => {
             showToast({ message: "Sign up successful", variant: "success" })
@@ -45,7 +45,7 @@ const SignUp = () => {
     }
 
     const handleSubmit = async (values: SignUpRequest) => {
-        signUpMutation.mutate(values)
+        signUpMutation(values)
     }
 
     return (

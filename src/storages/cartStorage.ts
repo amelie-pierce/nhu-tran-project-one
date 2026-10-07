@@ -2,13 +2,13 @@ import type { CartProduct } from "@/types/cart"
 
 const CART_STORAGE_KEY = "cart"
 
-export const getCart = (): CartProduct[] => {
+export const getCartStorage = (): CartProduct[] => {
     const data = localStorage.getItem(CART_STORAGE_KEY)
     return data ? JSON.parse(data) : []
 }
 
-export const addToCart = (
-    cartList: CartProduct[] = getCart(),
+export const addToCartStorage = (
+    cartList: CartProduct[] = getCartStorage(),
     id: number,
     quantity: number
 ) => {
@@ -25,8 +25,8 @@ export const addToCart = (
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(newCartList))
 }
 
-export const updateCart = (
-    cartList: CartProduct[] = getCart(),
+export const updateCartStorage = (
+    cartList: CartProduct[] = getCartStorage(),
     id: number,
     quantity: number
 ) => {
@@ -43,8 +43,8 @@ export const updateCart = (
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(newCartList))
 }
 
-export const removeFromCart = (
-    cartList: CartProduct[] = getCart(),
+export const removeFromCartStorage = (
+    cartList: CartProduct[] = getCartStorage(),
     id: number
 ): CartProduct[] => {
     const newCartList = cartList.filter((item) => item.id !== id)

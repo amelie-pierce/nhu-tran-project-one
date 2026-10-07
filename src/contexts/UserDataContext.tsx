@@ -1,17 +1,23 @@
-import React, { createContext, useContext, useEffect, useState } from "react"
+import React, {
+    createContext,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
+} from "react"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { QUERY_KEY_USER_CART } from "@/apis/cart/getUserCart"
 import type { CartProduct, UserCart } from "@/types/cart"
 import {
-    addToCart,
-    getCart,
-    removeFromCart,
-    updateCart,
+    addToCartStorage,
+    getCartStorage,
+    removeFromCartStorage,
+    updateCartStorage,
 } from "@/storages/cartStorage"
 import {
-    getCompare,
-    removeAllCompare,
-    toggleCompare,
+    getCompareStorage,
+    removeAllCompareStorage,
+    toggleCompareStorage,
 } from "@/storages/compareStorage"
 import { useToast } from "@/contexts/ToastContext"
 import { MAX_QUANTITY } from "@/constants"
@@ -20,6 +26,7 @@ import flagsmith from "@/lib/flagsmith"
 import { createUserCart } from "@/apis/cart/createUserCart"
 import { updateUserCart } from "@/apis/cart/updateUserCart"
 import { deleteUserCart } from "@/apis/cart/deleteUserCart"
+import { debounce } from "@/utils/debounce"
 
 type UserDataType = {
     cartList: CartProduct[]
@@ -46,8 +53,8 @@ type Props = {
 
 export const UserDataProvider = ({ children }: Props) => {
     const dbEnabled = flagsmith.hasFeature("db_enabled")
-    const [cartList, setCartList] = useState<CartProduct[]>(getCart())
-    const [compareList, setCompareList] = useState<number[]>(getCompare())
+    const [cartList, setCartList] = useState<CartProduct[]>(getCartStorage())
+    const [compareList, setCompareList] = useState<number[]>(getCompareStorage())
     const { showToast } = useToast()
 
     const {
@@ -61,17 +68,8 @@ export const UserDataProvider = ({ children }: Props) => {
         enabled: dbEnabled,
     })
 
-    const createCartMutation = useMutation({
+    const { mutate: createCart } = useMutation({
         mutationFn: createUserCart,
-        onSuccess: (data) => {
-            setCartList((prevCartList) => [
-                ...prevCartList,
-                {
-                    ...data.product,
-                    quantity: data.quantity,
-                },
-            ])
-        },
         onError: (error) => {
             showToast({
                 message: (error as Error).message,
@@ -80,20 +78,8 @@ export const UserDataProvider = ({ children }: Props) => {
         },
     })
 
-    const updateCartMutation = useMutation({
+    const { mutate: updateCart } = useMutation({
         mutationFn: updateUserCart,
-        onSuccess: (data) => {
-            setCartList((prevCartList) =>
-                prevCartList.map((item) =>
-                    item.id === data.product_id
-                        ? {
-                              ...item,
-                              quantity: data.quantity,
-                          }
-                        : item
-                )
-            )
-        },
         onError: (error) => {
             showToast({
                 message: (error as Error).message,
@@ -102,13 +88,8 @@ export const UserDataProvider = ({ children }: Props) => {
         },
     })
 
-    const deleteCartMutation = useMutation({
+    const { mutate: deleteCart } = useMutation({
         mutationFn: deleteUserCart,
-        onSuccess: (data) => {
-            setCartList((prevCartList) =>
-                prevCartList.filter((item) => item.id !== data.product_id)
-            )
-        },
         onError: (error) => {
             showToast({
                 message: (error as Error).message,
@@ -128,9 +109,9 @@ export const UserDataProvider = ({ children }: Props) => {
         if (!!userCart?.length && dbEnabled) {
             setCartList(pareCartAPIResponse(userCart))
         } else {
-            setCartList(getCart())
+            setCartList(getCartStorage())
         }
-        setCompareList(getCompare())
+        setCompareList(getCompareStorage())
     }, [userCart])
 
     const checkConditionAddToCart = (
@@ -169,6 +150,17 @@ export const UserDataProvider = ({ children }: Props) => {
         return false
     }
 
+    const debouncedUpdateCart = useMemo(
+        () =>
+            debounce((product_id: number, quantity: number) => {
+                updateCart({
+                    product_id,
+                    quantity,
+                })
+            }, 1000),
+        [updateCart]
+    )
+
     const updateCartList = (
         product_id: number,
         quantity: number,
@@ -180,23 +172,20 @@ export const UserDataProvider = ({ children }: Props) => {
         if (!isSuccess) return
 
         if (dbEnabled) {
-            updateCartMutation.mutate({
-                product_id,
-                quantity,
-            })
+            debouncedUpdateCart(product_id, quantity)
         } else {
-            updateCart(cartList, product_id, quantity)
-            setCartList((prevCartList) =>
-                prevCartList.map((item) =>
-                    item.id === product_id
-                        ? {
-                              ...item,
-                              quantity,
-                          }
-                        : item
-                )
-            )
+            updateCartStorage(cartList, product_id, quantity)
         }
+        setCartList((prevCartList) =>
+            prevCartList.map((item) =>
+                item.id === product_id
+                    ? {
+                          ...item,
+                          quantity,
+                      }
+                    : item
+            )
+        )
     }
 
     const addToCartList = (product_id: number, quantity: number) => {
@@ -204,43 +193,43 @@ export const UserDataProvider = ({ children }: Props) => {
         if (!isSuccess) return
 
         if (dbEnabled) {
-            createCartMutation.mutate({
+            createCart({
                 product_id,
                 quantity,
             })
         } else {
-            addToCart(cartList, product_id, quantity)
-            setCartList((prevCartList) => [
-                ...prevCartList,
-                {
-                    id: product_id,
-                    quantity,
-                },
-            ])
+            addToCartStorage(cartList, product_id, quantity)
         }
+        setCartList((prevCartList) => [
+            ...prevCartList,
+            {
+                id: product_id,
+                quantity,
+            },
+        ])
     }
 
     const removeFromCartList = (product_id: number) => {
         if (dbEnabled) {
-            deleteCartMutation.mutate({
+            deleteCart({
                 product_id,
                 quantity: 0,
             })
         } else {
-            removeFromCart(cartList, product_id)
-            setCartList((prevCartList) =>
-                prevCartList.filter((item) => item.id !== product_id)
-            )
+            removeFromCartStorage(cartList, product_id)
         }
+        setCartList((prevCartList) =>
+            prevCartList.filter((item) => item.id !== product_id)
+        )
     }
 
     const toggleCompareItem = (id: number) => {
-        const newCompareList = toggleCompare(id)
+        const newCompareList = toggleCompareStorage(id)
         setCompareList(newCompareList)
     }
 
     const removeAllCompareItems = () => {
-        removeAllCompare()
+        removeAllCompareStorage()
         setCompareList([])
     }
 

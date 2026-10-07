@@ -21,12 +21,6 @@ export const createUserCart = async (values: CreateUserCartRequest) => {
             product_id: values.product_id,
             quantity: values.quantity,
         })
-        .select(
-            `
-                *,
-                product(*)
-            `
-        )
         .single()
 
     if (error) {
