@@ -19,6 +19,7 @@ import { getUserCart } from "@/apis/cart/getUserCart"
 import flagsmith from "@/lib/flagsmith"
 import { createUserCart } from "@/apis/cart/createUserCart"
 import { updateUserCart } from "@/apis/cart/updateUserCart"
+import { deleteUserCart } from "@/apis/cart/deleteUserCart"
 
 type UserDataType = {
     cartList: CartProduct[]
@@ -84,13 +85,28 @@ export const UserDataProvider = ({ children }: Props) => {
         onSuccess: (data) => {
             setCartList((prevCartList) =>
                 prevCartList.map((item) =>
-                    item.id === data.product.id
+                    item.id === data.product_id
                         ? {
                               ...item,
                               quantity: data.quantity,
                           }
                         : item
                 )
+            )
+        },
+        onError: (error) => {
+            showToast({
+                message: (error as Error).message,
+                variant: "error",
+            })
+        },
+    })
+
+    const deleteCartMutation = useMutation({
+        mutationFn: deleteUserCart,
+        onSuccess: (data) => {
+            setCartList((prevCartList) =>
+                prevCartList.filter((item) => item.id !== data.product_id)
             )
         },
         onError: (error) => {
@@ -204,9 +220,18 @@ export const UserDataProvider = ({ children }: Props) => {
         }
     }
 
-    const removeFromCartList = (id: number) => {
-        const newCartList = removeFromCart(cartList, id)
-        setCartList(newCartList)
+    const removeFromCartList = (product_id: number) => {
+        if (dbEnabled) {
+            deleteCartMutation.mutate({
+                product_id,
+                quantity: 0,
+            })
+        } else {
+            removeFromCart(cartList, product_id)
+            setCartList((prevCartList) =>
+                prevCartList.filter((item) => item.id !== product_id)
+            )
+        }
     }
 
     const toggleCompareItem = (id: number) => {

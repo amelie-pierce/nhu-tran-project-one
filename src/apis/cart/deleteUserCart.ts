@@ -7,7 +7,7 @@ export type UpdateUserCartRequest = {
     quantity: number
 }
 
-export const updateUserCart = async (values: UpdateUserCartRequest) => {
+export const deleteUserCart = async (values: UpdateUserCartRequest) => {
     const {
         data: { session },
     } = await supabase.auth.getSession()
@@ -20,9 +20,7 @@ export const updateUserCart = async (values: UpdateUserCartRequest) => {
 
     const { data, error } = await supabase
         .from("user_cart")
-        .update({
-            quantity: values.quantity,
-        })
+        .delete()
         .eq("user_id", userId)
         .eq("product_id", values.product_id)
         .select("*")
