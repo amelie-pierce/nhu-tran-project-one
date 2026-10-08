@@ -13,7 +13,7 @@ type Props = {
 const ELLIPSIS = -1
 
 const Pagination = ({ currentPage, totalPage, onPageChange }: Props) => {
-    const [inputPage, setInputPage] = useState(currentPage)
+    const [inputPage, setInputPage] = useState<number | string>(currentPage)
 
     const isFirstPage = currentPage === 1
     const isLastPage = currentPage === totalPage
@@ -62,7 +62,7 @@ const Pagination = ({ currentPage, totalPage, onPageChange }: Props) => {
     }
 
     const handleGoToPage = () => {
-        handlePageChange(inputPage)
+        handlePageChange(Number(inputPage))
     }
 
     return (

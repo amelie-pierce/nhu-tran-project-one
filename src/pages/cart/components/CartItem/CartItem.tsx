@@ -19,8 +19,8 @@ const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
     const { maxQtyPerProduct } = useFeatureFlags()
     const screenWidth = useScreenWidth()
 
-    const handleChangeQuantity = (value: number) => {
-        updateCartList(item.id || 0, value, false)
+    const handleChangeQuantity = (value: number | string) => {
+        updateCartList(item.id || 0, Number(value), false)
     }
 
     return (

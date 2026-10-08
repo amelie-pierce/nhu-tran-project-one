@@ -13,7 +13,7 @@ type Props = {
 }
 
 const ProductActions = ({ product }: Props) => {
-    const [quantity, setQuantity] = useState(1)
+    const [quantity, setQuantity] = useState<number | string>(1)
     const { handleProductAction } = useProductAction()
     const location = useLocation()
     const { maxQtyPerProduct } = useFeatureFlags()
@@ -31,7 +31,7 @@ const ProductActions = ({ product }: Props) => {
                 onClick={() =>
                     handleProductAction({
                         type: "add",
-                        items: [{ ...product, quantity }],
+                        items: [{ ...product, quantity: Number(quantity) }],
                         redirectTo: location.pathname + location.search,
                     })
                 }
@@ -44,7 +44,7 @@ const ProductActions = ({ product }: Props) => {
                 onClick={() =>
                     handleProductAction({
                         type: "buy",
-                        items: [{ ...product, quantity }],
+                        items: [{ ...product, quantity: Number(quantity) }],
                         redirectTo: "/checkout",
                     })
                 }

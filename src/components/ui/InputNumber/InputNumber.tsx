@@ -5,9 +5,9 @@ const MIN = 1
 const MAX = 99
 
 type Props = {
-    value: number
+    value: number | string
     max?: number
-    onChange: (value: number) => void
+    onChange: (value: number | string) => void
     className?: string
 }
 
@@ -16,6 +16,7 @@ const InputNumber = ({ value, max = MAX, onChange, ...props }: Props) => {
         const input = e.target.value
 
         if (input === "") {
+            onChange("")
             return
         }
 
@@ -47,6 +48,11 @@ const InputNumber = ({ value, max = MAX, onChange, ...props }: Props) => {
             step={STEP}
             value={value}
             onChange={handleChange}
+            onBlur={() => {
+                if (value === "") {
+                    onChange(MIN)
+                }
+            }}
             {...props}
         />
     )
