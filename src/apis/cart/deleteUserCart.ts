@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase"
 import { getUser } from "../auth/getUser"
 
-export const deleteUserCart = async (product_id: number) => {
+export const deleteUserCart = async (product_ids: number[]) => {
     const user = await getUser()
 
     if (!user?.id) {
@@ -12,7 +12,7 @@ export const deleteUserCart = async (product_id: number) => {
         .from("user_cart")
         .delete()
         .eq("user_id", user?.id)
-        .eq("product_id", product_id)
+        .in("product_id", product_ids)
 
     if (error) {
         throw error

@@ -319,7 +319,7 @@ export const UserDataProvider = ({ children }: Props) => {
 
     const removeFromCartList = (product_id: number) => {
         if (isDBCartEnabled) {
-            deleteCart(product_id)
+            deleteCart([product_id])
         } else {
             removeFromCartStorage(cartList, product_id)
         }

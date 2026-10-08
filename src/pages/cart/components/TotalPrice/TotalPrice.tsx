@@ -26,7 +26,14 @@ const TotalPrice = ({ selectedItems }: Props) => {
                 className={styles["buy-button"]}
                 disabled={!selectedItems.length}
                 onClick={() => {
-                    navigate("/checkout", { state: { items: selectedItems } })
+                    navigate("/checkout", {
+                        state: {
+                            items: selectedItems,
+                            selectedItemIds: selectedItems.map(
+                                (item) => item.id
+                            ),
+                        },
+                    })
                 }}
             >
                 Buy now

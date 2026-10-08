@@ -8,6 +8,8 @@ import { upsertUserContact } from "@/apis/contact/upsertUserContact"
 import { QUERY_KEY_USER_CONTACT } from "@/apis/contact/getUserContact"
 import { useToast } from "@/contexts/ToastContext"
 import { validateEmail } from "@/utils/validateEmail"
+import { deleteUserCart } from "@/apis/cart/deleteUserCart"
+import { QUERY_KEY_USER_CART } from "@/apis/cart/getUserCart"
 
 const Checkout = () => {
     const location = useLocation()
@@ -15,9 +17,26 @@ const Checkout = () => {
     const queryClient = useQueryClient()
     const { showToast } = useToast()
 
+    const { mutate: deleteCart } = useMutation({
+        mutationFn: deleteUserCart,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEY_USER_CART],
+            })
+        },
+        onError: (error) => {
+            showToast({
+                message: (error as Error).message,
+                variant: "error",
+            })
+        },
+    })
+
     const { mutate: upsertContact, isPending } = useMutation({
         mutationFn: upsertUserContact,
         onSuccess: () => {
+            deleteCart(state?.selectedItemIds || [])
+
             queryClient.invalidateQueries({
                 queryKey: [QUERY_KEY_USER_CONTACT],
             })
