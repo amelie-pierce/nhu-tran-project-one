@@ -46,8 +46,7 @@ export const updateCartStorage = (
 export const removeFromCartStorage = (
     cartList: CartProduct[] = getCartStorage(),
     id: number
-): CartProduct[] => {
+) => {
     const newCartList = cartList.filter((item) => item.id !== id)
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(newCartList))
-    return newCartList
 }
