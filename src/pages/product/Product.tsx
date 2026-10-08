@@ -8,6 +8,7 @@ const Product = () => {
                 src="https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/banner.jpg"
                 alt="banner"
                 className={styles["banner-img"]}
+                loading="lazy"
             />
             <ProductList />
         </div>

@@ -36,6 +36,7 @@ const ProductItem = ({ product }: Props) => {
                 src={product.img_url || fallbackImg}
                 alt={product.name}
                 className={styles["product-item-image"]}
+                loading="lazy"
             />
             <div className={styles["product-item-details"]}>
                 <div className={styles["product-item-info"]}>
