@@ -1,20 +1,24 @@
+import React, { Suspense } from "react"
 import { MainLayout } from "@/components"
 import { Routes, Route, Navigate } from "react-router"
 import AuthRoute from "@/routes/AuthRoute"
 import GuestRoute from "@/routes/GuestRoute"
 import Product from "@/pages/product/Product"
-import ProductDetail from "@/pages/product-detail/ProductDetail"
 import Login from "@/pages/login/Login"
 import Signup from "@/pages/signup/SignUp"
-import Checkout from "@/pages/checkout/Checkout"
-import Cart from "@/pages/cart/Cart"
-import Payment from "@/pages/payment/Payment"
-import Compare from "@/pages/compare/Compare"
 import AboutMe from "@/pages/about/About"
 
 import "./index.css"
 import "@/styles/global.css"
 import "@/styles/typography.css"
+
+const Checkout = React.lazy(() => import("@/pages/checkout/Checkout"))
+const Cart = React.lazy(() => import("@/pages/cart/Cart"))
+const Payment = React.lazy(() => import("@/pages/payment/Payment"))
+const ProductDetail = React.lazy(
+    () => import("@/pages/product-detail/ProductDetail")
+)
+const Compare = React.lazy(() => import("@/pages/compare/Compare"))
 
 function App() {
     return (
@@ -47,7 +51,9 @@ function App() {
                     path="/checkout"
                     element={
                         <AuthRoute>
-                            <Checkout />
+                            <Suspense fallback={<div>Loading...</div>}>
+                                <Checkout />
+                            </Suspense>
                         </AuthRoute>
                     }
                 />
