@@ -18,9 +18,9 @@ type GetListProductResponse = {
     currentPage: number
 }
 
-export async function getListProduct(
+export const getListProduct = async (
     params: Partial<GetListProductRequest>
-): Promise<GetListProductResponse> {
+): Promise<GetListProductResponse> => {
     let select = `*, category(name)`
 
     if (params?.extra_fields?.includes("ingredient")) {

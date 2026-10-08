@@ -40,7 +40,9 @@ const ProductItem = ({ product }: Props) => {
             <div className={styles["product-item-details"]}>
                 <div className={styles["product-item-info"]}>
                     <div className={styles["product-item-tags"]}>
-                        <span className={styles["product-item-category"]}>
+                        <span
+                            className={`text-truncate ${styles["product-item-category"]}`}
+                        >
                             {product?.category?.name}
                         </span>
                         <Tag

@@ -18,6 +18,7 @@ const ProductList = () => {
         Number(searchParams.get("category_id"))
     )
     const catalogRef = useRef<HTMLDivElement>(null)
+    const shouldScrollRef = useRef(false)
 
     useEffect(() => {
         setActiveCategoryId(Number(searchParams.get("category_id")))
@@ -48,12 +49,14 @@ const ProductList = () => {
     })
 
     useEffect(() => {
-        if (!isFetching) {
+        if (shouldScrollRef.current && !isFetching) {
             catalogRef.current?.scrollIntoView({
                 behavior: "smooth",
             })
+
+            shouldScrollRef.current = false
         }
-    }, [currentPage, isFetching])
+    }, [isFetching])
 
     const handleChangeCategory = (id: number) => {
         setCurrentPage(1)
@@ -70,6 +73,7 @@ const ProductList = () => {
     }
 
     const handlePageChange = (page: number) => {
+        shouldScrollRef.current = true
         setCurrentPage(page)
 
         const params = new URLSearchParams(searchParams)

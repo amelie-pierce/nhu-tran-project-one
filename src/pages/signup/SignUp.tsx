@@ -4,7 +4,7 @@ import { Input, Button } from "@/components/ui"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
 import { signUp, type SignUpRequest } from "@/apis/auth/signUp"
-import { QUERY_KEY_USER } from "@/apis/auth/getCurrentUserId"
+import { QUERY_KEY_USER } from "@/apis/auth/getUser"
 import { useToast } from "@/contexts/ToastContext"
 import styles from "./SignUp.module.css"
 
@@ -52,7 +52,6 @@ const SignUp = () => {
         <div className={`${styles["signup-container"]} page-padding`}>
             <Form
                 validate={validate}
-                initialValues={{ email: "", password: "" }}
                 onSubmit={handleSubmit}
                 className={styles["signup-form"]}
             >

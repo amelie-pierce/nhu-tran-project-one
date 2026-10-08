@@ -1,6 +1,5 @@
 import { supabase } from "@/lib/supabase"
-import { getCurrentUserId } from "../auth/getCurrentUserId"
-export const QUERY_KEY_USER_CART = "user_cart"
+import { getUser } from "../auth/getUser"
 
 export type UpdateUserCartRequest = {
     product_id: number
@@ -8,9 +7,9 @@ export type UpdateUserCartRequest = {
 }
 
 export const updateUserCart = async (values: UpdateUserCartRequest) => {
-    const userId = await getCurrentUserId()
+    const user = await getUser()
 
-    if (!userId) {
+    if (!user?.id) {
         return null
     }
 
@@ -19,7 +18,7 @@ export const updateUserCart = async (values: UpdateUserCartRequest) => {
         .update({
             quantity: values.quantity,
         })
-        .eq("user_id", userId)
+        .eq("user_id", user?.id)
         .eq("product_id", values.product_id)
 
     if (error) {

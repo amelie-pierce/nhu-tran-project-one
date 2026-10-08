@@ -1,19 +1,17 @@
 import { supabase } from "@/lib/supabase"
-import { getCurrentUserId } from "../auth/getCurrentUserId"
-
-export const QUERY_KEY_USER_CART = "user_cart"
+import { getUser } from "../auth/getUser"
 
 export const deleteUserCart = async (product_id: number) => {
-    const userId = await getCurrentUserId()
+    const user = await getUser()
 
-    if (!userId) {
+    if (!user?.id) {
         return null
     }
 
     const { data, error } = await supabase
         .from("user_cart")
         .delete()
-        .eq("user_id", userId)
+        .eq("user_id", user?.id)
         .eq("product_id", product_id)
 
     if (error) {

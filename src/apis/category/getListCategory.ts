@@ -3,7 +3,7 @@ import type { Category } from "@/types/category"
 
 export const QUERY_KEY_CATEGORIES = "categories"
 
-export async function getListCategory(): Promise<Category[]> {
+export const getListCategory = async (): Promise<Category[]> => {
     const { data, error } = await supabase.from("category").select("*")
 
     if (error) {

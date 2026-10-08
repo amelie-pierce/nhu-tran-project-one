@@ -1,20 +1,20 @@
 import { supabase } from "@/lib/supabase"
 import type { UserCompare } from "@/types/compare"
-import { getCurrentUserId } from "../auth/getCurrentUserId"
+import { getUser } from "../auth/getUser"
 
 export const QUERY_KEY_USER_COMPARE = "user_compare"
 
-export async function getUserCompare(): Promise<UserCompare[]> {
-    const userId = await getCurrentUserId()
+export const getUserCompare = async (): Promise<UserCompare[]> => {
+    const user = await getUser()
 
-    if (!userId) {
+    if (!user?.id) {
         return []
     }
 
     const { data, error } = await supabase
         .from("user_compare")
         .select("*")
-        .eq("user_id", userId)
+        .eq("user_id", user?.id)
 
     if (error) {
         throw error

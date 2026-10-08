@@ -1,6 +1,6 @@
 import { Link } from "react-router"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { QUERY_KEY_USER } from "@/apis/auth/getCurrentUserId"
+import { QUERY_KEY_USER } from "@/apis/auth/getUser"
 import { signOut } from "@/apis/auth/signOut"
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -73,7 +73,7 @@ const Header = () => {
                         >
                             <FontAwesomeIcon
                                 icon={faCartShopping}
-                                className={styles.icon}
+                                className={styles["icon-cart"]}
                             />
                             {!!Number(cartNumber) && (
                                 <div
@@ -85,7 +85,7 @@ const Header = () => {
                         </div>
                         <FontAwesomeIcon
                             icon={faRightFromBracket}
-                            className={styles.icon}
+                            className={styles["icon-logout"]}
                             onClick={() => signOutMutation()}
                         />
                     </>

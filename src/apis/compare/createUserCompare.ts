@@ -1,21 +1,19 @@
 import { supabase } from "@/lib/supabase"
-import { getCurrentUserId } from "../auth/getCurrentUserId"
-
-export const QUERY_KEY_USER_COMPARE = "user_compare"
+import { getUser } from "../auth/getUser"
 
 export type CreateUserCompareRequest = {
     product_id: number
 }
 
 export const createUserCompare = async (values: CreateUserCompareRequest) => {
-    const userId = await getCurrentUserId()
+    const user = await getUser()
 
-    if (!userId) {
+    if (!user?.id) {
         return null
     }
 
     const { data, error } = await supabase.from("user_compare").insert({
-        user_id: userId,
+        user_id: user?.id,
         product_id: values.product_id,
     })
 

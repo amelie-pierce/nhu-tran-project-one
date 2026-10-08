@@ -1,9 +1,5 @@
-import { useEffect, useState } from "react"
-import { FormContext } from "@/contexts/FormContext"
-
 type Props<T extends Record<string, string>> = {
     children?: React.ReactNode
-    initialValues?: T
     validate?: (values: T) => Record<string, string> | null
     onSubmit?: (values: T) => void
     className?: string
@@ -12,48 +8,36 @@ type Props<T extends Record<string, string>> = {
 const Form = <T extends Record<string, string>>({
     children,
     validate,
-    initialValues = {} as T,
     onSubmit,
     className,
 }: Props<T>) => {
-    const [values, setValues] = useState<T>(initialValues)
-    const [errors, setErrors] = useState<Record<string, string> | null>(null)
-
-    useEffect(() => {
-        setValues(initialValues)
-    }, [initialValues])
-
-    const onValuesChange = (name: string, value: string) => {
-        setValues((currentValues) => ({
-            ...currentValues,
-            [name]: value,
-        }))
-    }
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
         event.preventDefault()
 
-        const newErrors = validate ? validate(values) : null
-        setErrors(newErrors)
+        const formData = new FormData(event.currentTarget)
+        const values = Object.fromEntries(formData.entries()) as T
+        console.log(values)
 
-        const hasErrors = newErrors && Object.keys(newErrors).length > 0
+        const errors = validate?.(values) || null
+        const hasErrors = errors && Object.keys(errors).length > 0
+
         if (!hasErrors) {
             onSubmit?.(values)
+        } else {
+            Object.keys(errors).forEach((name) => {
+                const errorElement = document.getElementById(`error-${name}`)
+                if (errorElement) {
+                    errorElement.textContent = errors[name]
+                    errorElement.style.display = "block"
+                }
+            })
         }
     }
 
     return (
-        <FormContext.Provider
-            value={{
-                values,
-                errors,
-                onValuesChange,
-            }}
-        >
-            <form className={className} onSubmit={handleSubmit}>
-                {children}
-            </form>
-        </FormContext.Provider>
+        <form className={className} onSubmit={handleSubmit}>
+            {children}
+        </form>
     )
 }
 

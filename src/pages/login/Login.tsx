@@ -5,14 +5,14 @@ import { Input, Button } from "@/components/ui"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
 import { signIn, type SignInRequest } from "@/apis/auth/signIn"
-import { QUERY_KEY_USER } from "@/apis/auth/getCurrentUserId"
+import { QUERY_KEY_USER } from "@/apis/auth/getUser"
 import { useToast } from "@/contexts/ToastContext"
 import { useUserData } from "@/contexts/UserDataContext"
 import styles from "./Login.module.css"
 import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 import { getCartStorage } from "@/storages/cartStorage"
 import { upsertUserCompare } from "@/apis/compare/upsertCompare"
-import { QUERY_KEY_USER_COMPARE } from "@/apis/compare/createUserCompare"
+import { QUERY_KEY_USER_COMPARE } from "@/apis/compare/getUserCompare"
 
 const Login = () => {
     const { showToast } = useToast()
@@ -64,7 +64,7 @@ const Login = () => {
         })
     }, [bulkUpsertCompare])
 
-    const { mutate: signInMutation } = useMutation({
+    const { mutate: signInMutation, isPending } = useMutation({
         mutationFn: signIn,
         onSuccess: (data) => {
             showToast({ message: "Login successful", variant: "success" })
@@ -91,7 +91,7 @@ const Login = () => {
         return errors
     }
 
-    const handleSubmit = async (values: SignInRequest) => {
+    const handleSubmit = (values: SignInRequest) => {
         signInMutation(values)
     }
 
@@ -99,7 +99,6 @@ const Login = () => {
         <div className={`${styles["login-container"]} page-padding`}>
             <Form
                 validate={validate}
-                initialValues={{ email: "", password: "" }}
                 onSubmit={handleSubmit}
                 className={styles["login-form"]}
             >
@@ -132,7 +131,11 @@ const Login = () => {
                     />
                 </div>
                 <div className={styles["action-button-container"]}>
-                    <Button type="submit" className={styles["login-button"]}>
+                    <Button
+                        type="submit"
+                        className={styles["login-button"]}
+                        disabled={isPending}
+                    >
                         Login
                     </Button>
                     {isSignupEnabled && (

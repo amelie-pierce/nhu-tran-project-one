@@ -30,9 +30,16 @@
     position: relative;
     display: inline-flex;
     cursor: pointer;
+    margin-right: -7px;
 }
 
-.icon {
+.icon-logout {
+    font-size: 26px;
+    margin-right: -1px;
+    cursor: pointer;
+}
+
+.icon-cart {
     font-size: 24px;
     cursor: pointer;
 }
@@ -45,6 +52,7 @@
     top: 0;
     right: 0;
     transform: translate(50%, -50%);
+    margin-right: 5px;
 
     display: flex;
     align-items: center;
@@ -69,8 +77,23 @@
         gap: var(--spacing-s);
     }
 
-    .icon {
+    .icon-wrapper {
+        margin-right: -5px;
+    }
+
+    .icon-cart {
         font-size: 18px;
+    }
+
+    .icon-number {
+        width: 18px;
+        height: 18px;
+        margin-right: 4px;
+    }
+
+    .icon-logout {
+        font-size: 20px;
+        margin-right: -2px;
     }
 
     .cart-number {

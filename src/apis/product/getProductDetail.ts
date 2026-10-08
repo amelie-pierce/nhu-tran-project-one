@@ -7,9 +7,9 @@ export type GetProductDetailParams = {
     id?: number
 }
 
-export async function getProductDetail(
+export const getProductDetail = async (
     params: GetProductDetailParams
-): Promise<Product> {
+): Promise<Product> => {
     const { data, error } = await supabase
         .from("product")
         .select(

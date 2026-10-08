@@ -1,6 +1,6 @@
 import { useFlags } from "@flagsmith/flagsmith/react"
 
-export function useFeatureFlags() {
+export const useFeatureFlags = () => {
     const flags = useFlags([
         "db_cart",
         "db_compare",
