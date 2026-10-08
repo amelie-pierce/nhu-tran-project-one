@@ -3,7 +3,7 @@ import { ProductList } from "./components"
 
 const Product = () => {
     const img =
-        "https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/banner.jpg"
+        "https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/banner.png"
     return (
         <div className={`${styles["wrapper"]} page-padding page-layout`}>
             <img
