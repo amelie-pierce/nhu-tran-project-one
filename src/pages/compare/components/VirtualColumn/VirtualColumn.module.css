@@ -23,6 +23,7 @@
     flex-direction: column;
     align-items: center;
     gap: var(--spacing-xs);
+    cursor: pointer;
 }
 
 .product-img {

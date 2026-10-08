@@ -2,6 +2,7 @@ import { Button } from "@/components/ui"
 import { useUserData } from "@/contexts/UserDataContext"
 import type { ReactVirtualizer } from "@tanstack/react-virtual"
 import type { Product } from "@/types/product"
+import { useNavigate } from "react-router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCartPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { useProductAction } from "@/hooks/useProductAction"
@@ -26,6 +27,7 @@ const VirtualColumn = ({
     size,
     screenWidth,
 }: Props) => {
+    const navigate = useNavigate()
     const { toggleCompareItem } = useUserData()
     const { handleProductAction } = useProductAction()
     const { fallbackImg } = useFeatureFlags()
@@ -42,7 +44,12 @@ const VirtualColumn = ({
                             left: column.start + size.cellWidth,
                         }}
                     >
-                        <div className={styles["product-info"]}>
+                        <div
+                            className={styles["product-info"]}
+                            onClick={() => {
+                                navigate(`/product/${product?.id}`)
+                            }}
+                        >
                             <img
                                 src={product?.img_url || fallbackImg}
                                 alt="product-img"

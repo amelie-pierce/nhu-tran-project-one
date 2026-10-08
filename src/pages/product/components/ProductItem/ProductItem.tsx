@@ -1,6 +1,7 @@
 import { Button, Tag } from "@/components/ui"
 import type { Product } from "@/types/product"
 import { useProductAction } from "@/hooks/useProductAction"
+import { transformImage } from "@/utils/transformImage"
 import { useLocation, useNavigate } from "react-router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -33,7 +34,13 @@ const ProductItem = ({ product }: Props) => {
             }}
         >
             <img
-                src={product.img_url || fallbackImg}
+                src={transformImage(product.img_url || fallbackImg, 270)}
+                srcSet={`
+                    ${transformImage(product.img_url || fallbackImg, 160)} 160w,
+                    ${transformImage(product.img_url || fallbackImg, 200)} 200w,
+                    ${transformImage(product.img_url || fallbackImg, 270)} 270w
+                `}
+                sizes="(max-width: 480px) 160px, (max-width: 1024px) 200px, 270px"
                 alt={product.name}
                 className={styles["product-item-image"]}
                 loading="lazy"
