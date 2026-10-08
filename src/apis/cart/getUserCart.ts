@@ -1,14 +1,15 @@
 import { supabase } from "@/lib/supabase"
 import type { UserCart } from "@/types/cart"
+import { getCurrentUserId } from "../auth/getCurrentUserId"
 
 export const QUERY_KEY_USER_CART = "user_cart"
 
 export async function getUserCart(): Promise<UserCart[]> {
-    const {
-        data: { session },
-    } = await supabase.auth.getSession()
+    const userId = await getCurrentUserId()
 
-    const userId = session?.user.id
+    if (!userId) {
+        return []
+    }
 
     const { data, error } = await supabase
         .from("user_cart")

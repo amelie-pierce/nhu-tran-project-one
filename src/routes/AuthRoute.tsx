@@ -1,7 +1,5 @@
-import { useQuery } from "@tanstack/react-query"
 import { Navigate, useLocation } from "react-router"
-import { getUser, QUERY_KEY_USER } from "@/apis/auth/getUser"
-import { Loader } from "@/components/ui"
+import { useUser } from "@/contexts/UserContext"
 
 type Props = {
     children: React.ReactNode
@@ -10,17 +8,9 @@ type Props = {
 const AuthRoute = ({ children }: Props) => {
     const location = useLocation()
     const state = location.state
+    const { isLoggedIn } = useUser()
 
-    const { data: user, isLoading } = useQuery({
-        queryKey: [QUERY_KEY_USER],
-        queryFn: getUser,
-    })
-
-    if (isLoading) {
-        return <Loader />
-    }
-
-    if (!user) {
+    if (!isLoggedIn) {
         return <Navigate to="/login" replace state={state} />
     }
 

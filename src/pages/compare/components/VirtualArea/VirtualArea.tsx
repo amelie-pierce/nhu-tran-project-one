@@ -13,14 +13,14 @@ import {
 type Props = {
     parentRef: React.RefObject<HTMLDivElement | null>
     products?: Product[]
-    isLoading: boolean
+    isFetching: boolean
     ingredients: string[]
 }
 
 const VirtualArea = ({
     parentRef,
     products,
-    isLoading,
+    isFetching,
     ingredients,
 }: Props) => {
     const screenWidth = useScreenWidth()
@@ -66,7 +66,7 @@ const VirtualArea = ({
         getItemKey: (index) => products?.[index]?.id || 0,
     })
 
-    if (isLoading) {
+    if (isFetching) {
         return <Loader />
     }
 

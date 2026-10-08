@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase"
-
+import { getCurrentUserId } from "../auth/getCurrentUserId"
 export const QUERY_KEY_USER_CART = "user_cart"
 
 export type UpdateUserCartRequest = {
@@ -8,14 +8,10 @@ export type UpdateUserCartRequest = {
 }
 
 export const updateUserCart = async (values: UpdateUserCartRequest) => {
-    const {
-        data: { session },
-    } = await supabase.auth.getSession()
-
-    const userId = session?.user.id
+    const userId = await getCurrentUserId()
 
     if (!userId) {
-        throw new Error("User is not authenticated")
+        return null
     }
 
     const { data, error } = await supabase
@@ -25,7 +21,6 @@ export const updateUserCart = async (values: UpdateUserCartRequest) => {
         })
         .eq("user_id", userId)
         .eq("product_id", values.product_id)
-        .single()
 
     if (error) {
         throw error

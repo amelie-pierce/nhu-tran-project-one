@@ -4,7 +4,7 @@ import { Input, Button } from "@/components/ui"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
 import { signUp, type SignUpRequest } from "@/apis/auth/signUp"
-import { QUERY_KEY_USER } from "@/apis/auth/getUser"
+import { QUERY_KEY_USER } from "@/apis/auth/getCurrentUserId"
 import { useToast } from "@/contexts/ToastContext"
 import styles from "./SignUp.module.css"
 

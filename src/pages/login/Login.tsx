@@ -5,21 +5,39 @@ import { Input, Button } from "@/components/ui"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
 import { signIn, type SignInRequest } from "@/apis/auth/signIn"
-import { QUERY_KEY_USER } from "@/apis/auth/getUser"
+import { QUERY_KEY_USER } from "@/apis/auth/getCurrentUserId"
 import { useToast } from "@/contexts/ToastContext"
 import { useUserData } from "@/contexts/UserDataContext"
 import styles from "./Login.module.css"
 import { useFeatureFlags } from "@/hooks/useFeatureFlags"
+import { getCartStorage } from "@/storages/cartStorage"
+import { upsertUserCompare } from "@/apis/compare/upsertCompare"
+import { QUERY_KEY_USER_COMPARE } from "@/apis/compare/createUserCompare"
 
 const Login = () => {
     const { showToast } = useToast()
     const navigate = useNavigate()
     const queryClient = useQueryClient()
-    const { addToCartList } = useUserData()
     const { isSignupEnabled } = useFeatureFlags()
+    const { addToCartList } = useUserData()
 
     const location = useLocation()
     const action = location.state
+
+    const { mutate: bulkUpsertCompare } = useMutation({
+        mutationFn: upsertUserCompare,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEY_USER_COMPARE],
+            })
+        },
+        onError: (error) => {
+            showToast({
+                message: (error as Error).message,
+                variant: "error",
+            })
+        },
+    })
 
     const handleRedirectAfterLogin = useCallback(() => {
         if (!action) {
@@ -37,11 +55,21 @@ const Login = () => {
         }
     }, [action, addToCartList, navigate])
 
+    const syncCompareListToDB = useCallback(() => {
+        const compareList = getCartStorage()
+        if (!compareList.length) return
+
+        bulkUpsertCompare({
+            product_ids: compareList.map((item) => Number(item.id)),
+        })
+    }, [bulkUpsertCompare])
+
     const { mutate: signInMutation } = useMutation({
         mutationFn: signIn,
         onSuccess: (data) => {
             showToast({ message: "Login successful", variant: "success" })
             queryClient.setQueryData([QUERY_KEY_USER], data.user)
+            syncCompareListToDB()
             handleRedirectAfterLogin()
         },
         onError: () => {

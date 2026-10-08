@@ -7,6 +7,7 @@ import { ToastProvider } from "@/contexts/ToastContext.tsx"
 import { UserDataProvider } from "@/contexts/UserDataContext.tsx"
 import flagsmith from "@flagsmith/flagsmith"
 import { FlagsmithProvider } from "@flagsmith/flagsmith/react"
+import { UserProvider } from "./contexts/UserContext"
 
 const queryClient = new QueryClient()
 
@@ -22,9 +23,11 @@ createRoot(document.getElementById("root")!).render(
             >
                 <BrowserRouter>
                     <ToastProvider>
-                        <UserDataProvider>
-                            <App />
-                        </UserDataProvider>
+                        <UserProvider>
+                            <UserDataProvider>
+                                <App />
+                            </UserDataProvider>
+                        </UserProvider>
                     </ToastProvider>
                 </BrowserRouter>
             </FlagsmithProvider>

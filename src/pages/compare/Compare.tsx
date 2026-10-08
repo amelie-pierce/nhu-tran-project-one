@@ -16,6 +16,7 @@ const Compare = () => {
     const {
         data: products,
         isLoading,
+        isFetching,
         isError,
     } = useQuery({
         queryKey: [QUERY_KEY_PRODUCTS],
@@ -49,7 +50,7 @@ const Compare = () => {
         return <Error />
     }
 
-    if (!compareList?.length) {
+    if (!compareList?.length && !isFetching) {
         return <Empty label="comparison" />
     }
 
@@ -61,7 +62,7 @@ const Compare = () => {
                     <VirtualArea
                         parentRef={parentRef}
                         products={compareProducts}
-                        isLoading={isLoading}
+                        isFetching={isFetching}
                         ingredients={ingredients}
                     />
                 </div>

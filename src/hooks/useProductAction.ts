@@ -1,20 +1,15 @@
-import { useQuery } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
-import { getUser, QUERY_KEY_USER } from "@/apis/auth/getUser"
 import type { ActionState } from "@/types/action"
 import { useUserData } from "@/contexts/UserDataContext"
+import { useUser } from "@/contexts/UserContext"
 
 export const useProductAction = () => {
     const navigate = useNavigate()
     const { addToCartList } = useUserData()
-
-    const { data: user } = useQuery({
-        queryKey: [QUERY_KEY_USER],
-        queryFn: getUser,
-    })
+    const { isLoggedIn } = useUser()
 
     const handleProductAction = (action: ActionState) => {
-        if (!user) {
+        if (!isLoggedIn) {
             navigate("/login", { state: action })
             return
         }

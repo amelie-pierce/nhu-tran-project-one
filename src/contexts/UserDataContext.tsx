@@ -5,7 +5,8 @@ import React, {
     useMemo,
     useState,
 } from "react"
-import { useQuery, useMutation } from "@tanstack/react-query"
+import { useUser } from "@/contexts/UserContext"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { QUERY_KEY_USER_CART } from "@/apis/cart/getUserCart"
 import type { CartProduct, UserCart } from "@/types/cart"
 import {
@@ -26,6 +27,12 @@ import { updateUserCart } from "@/apis/cart/updateUserCart"
 import { deleteUserCart } from "@/apis/cart/deleteUserCart"
 import { debounce } from "@/utils/debounce"
 import { useFeatureFlags } from "@/hooks/useFeatureFlags"
+import {
+    getUserCompare,
+    QUERY_KEY_USER_COMPARE,
+} from "@/apis/compare/getUserCompare"
+import { deleteUserCompare } from "@/apis/compare/deleteUserCompare"
+import { createUserCompare } from "@/apis/compare/createUserCompare"
 
 type UserDataType = {
     cartList: CartProduct[]
@@ -51,11 +58,15 @@ type Props = {
 }
 
 export const UserDataProvider = ({ children }: Props) => {
-    const { isDBCartEnabled, maxQtyPerProduct } = useFeatureFlags()
+    const { isDBCartEnabled, isDBCompareEnabled, maxQtyPerProduct } =
+        useFeatureFlags()
     const [cartList, setCartList] = useState<CartProduct[]>(getCartStorage())
     const [compareList, setCompareList] =
         useState<number[]>(getCompareStorage())
     const { showToast } = useToast()
+    const { isLoggedIn } = useUser()
+
+    const queryClient = useQueryClient()
 
     const {
         data: userCart,
@@ -65,11 +76,16 @@ export const UserDataProvider = ({ children }: Props) => {
     } = useQuery({
         queryKey: [QUERY_KEY_USER_CART],
         queryFn: getUserCart,
-        enabled: isDBCartEnabled,
+        enabled: isDBCartEnabled && isLoggedIn,
     })
 
     const { mutate: createCart } = useMutation({
         mutationFn: createUserCart,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEY_USER_CART],
+            })
+        },
         onError: (error) => {
             showToast({
                 message: (error as Error).message,
@@ -80,6 +96,11 @@ export const UserDataProvider = ({ children }: Props) => {
 
     const { mutate: updateCart } = useMutation({
         mutationFn: updateUserCart,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEY_USER_CART],
+            })
+        },
         onError: (error) => {
             showToast({
                 message: (error as Error).message,
@@ -90,6 +111,11 @@ export const UserDataProvider = ({ children }: Props) => {
 
     const { mutate: deleteCart } = useMutation({
         mutationFn: deleteUserCart,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEY_USER_CART],
+            })
+        },
         onError: (error) => {
             showToast({
                 message: (error as Error).message,
@@ -98,21 +124,66 @@ export const UserDataProvider = ({ children }: Props) => {
         },
     })
 
-    const pareCartAPIResponse = (cartList: UserCart[]): CartProduct[] => {
-        return cartList?.map((item) => ({
-            ...item.product,
-            quantity: item.quantity,
-        }))
+    const pareCartAPIResponse = (cartList?: UserCart[]): CartProduct[] => {
+        return (
+            cartList?.map((item) => ({
+                ...item.product,
+                quantity: item.quantity,
+            })) ?? []
+        )
     }
 
     useEffect(() => {
-        if (!!userCart?.length && isDBCartEnabled) {
+        if (isDBCartEnabled && isLoggedIn) {
             setCartList(pareCartAPIResponse(userCart))
         } else {
             setCartList(getCartStorage())
         }
-        setCompareList(getCompareStorage())
-    }, [userCart])
+    }, [userCart, isDBCartEnabled, isLoggedIn])
+
+    const { data: userCompare } = useQuery({
+        queryKey: [QUERY_KEY_USER_COMPARE],
+        queryFn: getUserCompare,
+        enabled: isDBCompareEnabled && isLoggedIn,
+    })
+
+    const { mutate: createCompare } = useMutation({
+        mutationFn: createUserCompare,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEY_USER_COMPARE],
+            })
+        },
+        onError: (error) => {
+            showToast({
+                message: (error as Error).message,
+                variant: "error",
+            })
+        },
+    })
+
+    const { mutate: deleteCompare } = useMutation({
+        mutationFn: deleteUserCompare,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEY_USER_COMPARE],
+            })
+        },
+        onError: (error) => {
+            showToast({
+                message: (error as Error).message,
+                variant: "error",
+            })
+        },
+    })
+
+    useEffect(() => {
+        if (isDBCompareEnabled && isLoggedIn) {
+            setCompareList(userCompare?.map((item) => item.product_id) ?? [])
+        } else {
+            setCompareList(getCompareStorage())
+        }
+    }, [userCompare, isDBCompareEnabled, isLoggedIn])
 
     const checkConditionAddToCart = (
         productId: number,
@@ -196,6 +267,13 @@ export const UserDataProvider = ({ children }: Props) => {
         if (existingItem) {
             updateCartList(product_id, existingItem.quantity + quantity, false)
         } else {
+            setCartList((prevCartList) => [
+                ...prevCartList,
+                {
+                    id: product_id,
+                    quantity,
+                },
+            ])
             if (isDBCartEnabled) {
                 createCart({
                     product_id,
@@ -204,22 +282,12 @@ export const UserDataProvider = ({ children }: Props) => {
             } else {
                 addToCartStorage(cartList, product_id, quantity)
             }
-            setCartList((prevCartList) => [
-                ...prevCartList,
-                {
-                    id: product_id,
-                    quantity,
-                },
-            ])
         }
     }
 
     const removeFromCartList = (product_id: number) => {
         if (isDBCartEnabled) {
-            deleteCart({
-                product_id,
-                quantity: 0,
-            })
+            deleteCart(product_id)
         } else {
             removeFromCartStorage(cartList, product_id)
         }
@@ -228,9 +296,30 @@ export const UserDataProvider = ({ children }: Props) => {
         )
     }
 
+    const addToCompareListDB = (product_id: number) => {
+        createCompare({ product_id })
+        setCompareList((prevCompareList) => [...prevCompareList, product_id])
+    }
+
+    const removeFromCompareListDB = (product_id: number) => {
+        deleteCompare(product_id)
+        setCompareList((prevCompareList) =>
+            prevCompareList.filter((item) => item !== product_id)
+        )
+    }
+
     const toggleCompareItem = (id: number) => {
-        const newCompareList = toggleCompareStorage(id)
-        setCompareList(newCompareList)
+        if (!isDBCompareEnabled) {
+            const newCompareList = toggleCompareStorage(id)
+            setCompareList(newCompareList)
+            return
+        }
+
+        if (compareList.includes(id)) {
+            removeFromCompareListDB(id)
+        } else {
+            addToCompareListDB(id)
+        }
     }
 
     const removeAllCompareItems = () => {

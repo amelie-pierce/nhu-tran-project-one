@@ -1,24 +1,22 @@
 import { supabase } from "@/lib/supabase"
 import { getCurrentUserId } from "../auth/getCurrentUserId"
 
-export const QUERY_KEY_USER_CART = "user_cart"
+export const QUERY_KEY_USER_COMPARE = "user_compare"
 
-export type CreateUserCartRequest = {
+export type CreateUserCompareRequest = {
     product_id: number
-    quantity: number
 }
 
-export const createUserCart = async (values: CreateUserCartRequest) => {
+export const createUserCompare = async (values: CreateUserCompareRequest) => {
     const userId = await getCurrentUserId()
 
     if (!userId) {
         return null
     }
 
-    const { data, error } = await supabase.from("user_cart").insert({
+    const { data, error } = await supabase.from("user_compare").insert({
         user_id: userId,
         product_id: values.product_id,
-        quantity: values.quantity,
     })
 
     if (error) {

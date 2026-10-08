@@ -1,9 +1,9 @@
 import { supabase } from "@/lib/supabase"
 import { getCurrentUserId } from "../auth/getCurrentUserId"
 
-export const QUERY_KEY_USER_CART = "user_cart"
+export const QUERY_KEY_USER_COMPARE = "user_compare"
 
-export const deleteUserCart = async (product_id: number) => {
+export const deleteUserCompare = async (product_id: number) => {
     const userId = await getCurrentUserId()
 
     if (!userId) {
@@ -11,7 +11,7 @@ export const deleteUserCart = async (product_id: number) => {
     }
 
     const { data, error } = await supabase
-        .from("user_cart")
+        .from("user_compare")
         .delete()
         .eq("user_id", userId)
         .eq("product_id", product_id)
