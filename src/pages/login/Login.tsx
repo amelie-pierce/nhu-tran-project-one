@@ -10,9 +10,11 @@ import { useToast } from "@/contexts/ToastContext"
 import { useUserData } from "@/contexts/UserDataContext"
 import styles from "./Login.module.css"
 import { useFeatureFlags } from "@/hooks/useFeatureFlags"
-import { getCartStorage } from "@/storages/cartStorage"
 import { upsertUserCompare } from "@/apis/compare/upsertCompare"
 import { QUERY_KEY_USER_COMPARE } from "@/apis/compare/getUserCompare"
+import { validateEmail } from "@/utils/validateEmail"
+import { getCompareStorage } from "@/storages/compareStorage"
+import { deleteUserCompare } from "@/apis/compare/deleteUserCompare"
 
 const Login = () => {
     const { showToast } = useToast()
@@ -23,6 +25,21 @@ const Login = () => {
 
     const location = useLocation()
     const action = location.state
+
+    const { mutate: deleteCompare } = useMutation({
+        mutationFn: deleteUserCompare,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEY_USER_COMPARE],
+            })
+        },
+        onError: (error) => {
+            showToast({
+                message: (error as Error).message,
+                variant: "error",
+            })
+        },
+    })
 
     const { mutate: bulkUpsertCompare } = useMutation({
         mutationFn: upsertUserCompare,
@@ -56,11 +73,12 @@ const Login = () => {
     }, [action, addToCartList, navigate])
 
     const syncCompareListToDB = useCallback(() => {
-        const compareList = getCartStorage()
+        const compareList = getCompareStorage()
         if (!compareList.length) return
 
+        deleteCompare()
         bulkUpsertCompare({
-            product_ids: compareList.map((item) => Number(item.id)),
+            product_ids: compareList.map((item) => Number(item)),
         })
     }, [bulkUpsertCompare])
 
@@ -84,8 +102,16 @@ const Login = () => {
             errors.email = "Email is required"
         }
 
+        if (!validateEmail(values.email)) {
+            errors.email = "Please enter a valid email address"
+        }
+
         if (!values.password) {
             errors.password = "Password is required"
+        }
+
+        if (values.password && values.password.length < 6) {
+            errors.password = "Password must be at least 6 characters"
         }
 
         return errors

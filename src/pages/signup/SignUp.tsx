@@ -7,6 +7,7 @@ import { signUp, type SignUpRequest } from "@/apis/auth/signUp"
 import { QUERY_KEY_USER } from "@/apis/auth/getUser"
 import { useToast } from "@/contexts/ToastContext"
 import styles from "./SignUp.module.css"
+import { validateEmail } from "@/utils/validateEmail"
 
 const SignUp = () => {
     const { showToast } = useToast()
@@ -37,8 +38,16 @@ const SignUp = () => {
             errors.email = "Email is required"
         }
 
+        if (!validateEmail(values.email)) {
+            errors.email = "Please enter a valid email address"
+        }
+
         if (!values.password) {
             errors.password = "Password is required"
+        }
+
+        if (values.password && values.password.length < 6) {
+            errors.password = "Password must be at least 6 characters"
         }
 
         return errors

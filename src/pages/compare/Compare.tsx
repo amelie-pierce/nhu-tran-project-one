@@ -15,7 +15,6 @@ const Compare = () => {
 
     const {
         data: products,
-        isLoading,
         isFetching,
         isError,
     } = useQuery({

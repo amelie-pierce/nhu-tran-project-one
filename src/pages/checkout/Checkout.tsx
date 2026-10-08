@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { upsertUserContact } from "@/apis/contact/upsertUserContact"
 import { QUERY_KEY_USER_CONTACT } from "@/apis/contact/getUserContact"
 import { useToast } from "@/contexts/ToastContext"
+import { validateEmail } from "@/utils/validateEmail"
 
 const Checkout = () => {
     const location = useLocation()
@@ -35,6 +36,11 @@ const Checkout = () => {
         if (!values.email) {
             errors.email = "Email is required"
         }
+
+        if (!validateEmail(values.email)) {
+            errors.email = "Please enter a valid email address"
+        }
+
         if (!values.full_name) {
             errors.full_name = "Full Name is required"
         }
