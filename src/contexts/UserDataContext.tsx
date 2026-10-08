@@ -308,21 +308,24 @@ export const UserDataProvider = ({ children }: Props) => {
         )
     }
 
-    const toggleCompareItem = (id: number) => {
-        if (!isDBCompareEnabled) {
-            const newCompareList = toggleCompareStorage(id)
-            setCompareList(newCompareList)
-            return
-        }
+    const toggleCompareItem = (product_id: number) => {
+        const newCompareList = toggleCompareStorage(product_id)
 
-        if (compareList.includes(id)) {
-            removeFromCompareListDB(id)
+        if (isDBCompareEnabled && isLoggedIn) {
+            if (compareList.includes(product_id)) {
+                removeFromCompareListDB(product_id)
+            } else {
+                addToCompareListDB(product_id)
+            }
         } else {
-            addToCompareListDB(id)
+            setCompareList(newCompareList)
         }
     }
 
     const removeAllCompareItems = () => {
+        if (isDBCompareEnabled && isLoggedIn) {
+            deleteCompare()
+        }
         removeAllCompareStorage()
         setCompareList([])
     }
