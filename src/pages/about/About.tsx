@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import {
     Education,
     Introduction,
@@ -7,6 +8,10 @@ import {
 } from "./components"
 
 const AboutMe = () => {
+    useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
+    }, [])
+
     return (
         <div style={{ width: "100%" }}>
             <Introduction />
