@@ -7,11 +7,12 @@ import styles from "./OrderSummary.module.css"
 
 type Props = {
     orderItems: OrderProduct[]
+    isPending?: boolean
 }
 
 const SHIPPING_FEE = 0
 
-const OrderSummary = ({ orderItems }: Props) => {
+const OrderSummary = ({ orderItems, isPending }: Props) => {
     const navigate = useNavigate()
 
     const subTotal = orderItems.reduce(
@@ -54,6 +55,7 @@ const OrderSummary = ({ orderItems }: Props) => {
                     onClick={() => {
                         navigate("/payment", { state: { status: "success" } })
                     }}
+                    disabled={isPending}
                 >
                     Place an order
                 </Button>

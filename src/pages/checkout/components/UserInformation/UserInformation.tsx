@@ -3,10 +3,18 @@ import { Input } from "@/components/ui"
 import styles from "./UserInformation.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHandHoldingDollar } from "@fortawesome/free-solid-svg-icons"
+import { useQuery } from "@tanstack/react-query"
+import {
+    getUserContact,
+    QUERY_KEY_USER_CONTACT,
+} from "@/apis/contact/getUserContact"
 
-type Props = {}
+const UserInformation =  () => {
+    const { data: contactInfo, isFetching } = useQuery({
+        queryKey: [QUERY_KEY_USER_CONTACT],
+        queryFn: getUserContact,
+    })
 
-const UserInformation = ({}: Props) => {
     return (
         <div className={styles["info-container"]}>
             <div className={styles["group-info"]}>
@@ -15,16 +23,26 @@ const UserInformation = ({}: Props) => {
                     label="Email"
                     name="email"
                     required
+                    defaultValue={contactInfo?.email}
                     render={(props) => (
-                        <Input {...props} placeholder="admin@gmail.com" />
+                        <Input
+                            {...props}
+                            placeholder="admin@gmail.com"
+                            disabled={isFetching}
+                        />
                     )}
                 />
                 <FormItem
                     label="Full Name"
                     name="full_name"
                     required
+                    defaultValue={contactInfo?.full_name}
                     render={(props) => (
-                        <Input {...props} placeholder="Nguyen Van A" />
+                        <Input
+                            {...props}
+                            placeholder="Nguyen Van A"
+                            disabled={isFetching}
+                        />
                     )}
                 />
             </div>
@@ -34,15 +52,27 @@ const UserInformation = ({}: Props) => {
                     label="Street Address"
                     name="address"
                     required
+                    defaultValue={contactInfo?.address}
                     render={(props) => (
-                        <Input {...props} placeholder="Street 1" />
+                        <Input
+                            {...props}
+                            placeholder="Street 1"
+                            disabled={isFetching}
+                        />
                     )}
                 />
                 <FormItem
                     label="City"
                     name="city"
                     required
-                    render={(props) => <Input {...props} placeholder="City" />}
+                    defaultValue={contactInfo?.city}
+                    render={(props) => (
+                        <Input
+                            {...props}
+                            placeholder="City"
+                            disabled={isFetching}
+                        />
+                    )}
                 />
                 <div className={styles["country-info"]}>
                     <span>Country</span>

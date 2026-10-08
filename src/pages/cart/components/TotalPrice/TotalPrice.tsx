@@ -26,7 +26,7 @@ const TotalPrice = ({ selectedItems }: Props) => {
                 className={styles["buy-button"]}
                 disabled={!selectedItems.length}
                 onClick={() => {
-                    navigate("/checkout", { state: selectedItems })
+                    navigate("/checkout", { state: { items: selectedItems } })
                 }}
             >
                 Buy now

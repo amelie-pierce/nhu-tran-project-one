@@ -1,14 +1,33 @@
 import { Form, Breadcrumb } from "@/components"
 import { useLocation, Navigate } from "react-router"
 import { OrderSummary, UserInformation } from "./components"
-import { getUserInfoStorage, setUserInfoStorage } from "@/storages/userStorage"
-import type { Contact } from "@/types/user"
+import type { Contact } from "@/types/contact"
 import styles from "./Checkout.module.css"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { upsertUserContact } from "@/apis/contact/upsertUserContact"
+import { QUERY_KEY_USER_CONTACT } from "@/apis/contact/getUserContact"
+import { useToast } from "@/contexts/ToastContext"
 
 const Checkout = () => {
-    const contactInfo = getUserInfoStorage()
     const location = useLocation()
     const state = location.state
+    const queryClient = useQueryClient()
+    const { showToast } = useToast()
+
+    const { mutate: upsertContact, isPending } = useMutation({
+        mutationFn: upsertUserContact,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEY_USER_CONTACT],
+            })
+        },
+        onError: (error) => {
+            showToast({
+                message: (error as Error).message,
+                variant: "error",
+            })
+        },
+    })
 
     const validate = (values: Partial<Contact>) => {
         const errors: Record<string, string> = {}
@@ -30,7 +49,7 @@ const Checkout = () => {
     }
 
     const handleSubmit = (values: Partial<Contact>) => {
-        setUserInfoStorage(values)
+        upsertContact(values)
     }
 
     if (!state) {
@@ -41,13 +60,15 @@ const Checkout = () => {
         <>
             <Breadcrumb title="CHECKOUT" currentPage="Checkout" />
             <Form
-                initialValues={contactInfo}
                 validate={validate}
                 onSubmit={handleSubmit}
                 className={`${styles["wrapper"]} page-padding`}
             >
                 <UserInformation />
-                <OrderSummary orderItems={state?.items || []} />
+                <OrderSummary
+                    orderItems={state?.items || []}
+                    isPending={isPending}
+                />
             </Form>
         </>
     )
