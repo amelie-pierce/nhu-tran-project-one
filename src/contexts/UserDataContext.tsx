@@ -1,5 +1,6 @@
 import React, {
     createContext,
+    useCallback,
     useContext,
     useEffect,
     useMemo,
@@ -42,7 +43,11 @@ type UserDataType = {
         quantity: number,
         checkCondition: boolean
     ) => void
-    addToCartList: (id: number, quantity: number) => void
+    addToCartList: (
+        id: number,
+        quantity: number,
+        isLoggedInBefore?: boolean
+    ) => void
     removeFromCartList: (id: number) => void
     toggleCompareItem: (id: number) => void
     removeAllCompareItems: () => void
@@ -259,31 +264,58 @@ export const UserDataProvider = ({ children }: Props) => {
         )
     }
 
-    const addToCartList = (product_id: number, quantity: number) => {
-        const isSuccess = checkConditionAddToCart(product_id, quantity)
-        if (!isSuccess) return
-
-        const existingItem = cartList?.find((item) => item.id === product_id)
-        if (existingItem) {
-            updateCartList(product_id, existingItem.quantity + quantity, false)
-        } else {
-            setCartList((prevCartList) => [
-                ...prevCartList,
-                {
-                    id: product_id,
-                    quantity,
-                },
-            ])
-            if (isDBCartEnabled) {
-                createCart({
-                    product_id,
-                    quantity,
-                })
-            } else {
-                addToCartStorage(cartList, product_id, quantity)
+    const addToCartList = useCallback(
+        async (
+            product_id: number,
+            quantity: number,
+            isLoggedInBefore = true
+        ) => {
+            let lastestCartList = [...cartList]
+            if (!isLoggedInBefore) {
+                //TODO: find another way
+                const carts = await getUserCart()
+                lastestCartList = pareCartAPIResponse(carts)
+                console.log("lastestCartList", lastestCartList)
             }
-        }
-    }
+
+            const isSuccess = checkConditionAddToCart(product_id, quantity)
+            if (!isSuccess) return
+
+            const existingItem = lastestCartList?.find(
+                (item) => item.id === product_id
+            )
+            if (existingItem) {
+                updateCartList(
+                    product_id,
+                    existingItem.quantity + quantity,
+                    false
+                )
+            } else {
+                setCartList((prevCartList) => [
+                    ...prevCartList,
+                    {
+                        id: product_id,
+                        quantity,
+                    },
+                ])
+                if (isDBCartEnabled) {
+                    createCart({
+                        product_id,
+                        quantity,
+                    })
+                } else {
+                    addToCartStorage(lastestCartList, product_id, quantity)
+                }
+            }
+        },
+        [
+            cartList,
+            checkConditionAddToCart,
+            createCart,
+            isDBCartEnabled,
+            updateCartList,
+        ]
+    )
 
     const removeFromCartList = (product_id: number) => {
         if (isDBCartEnabled) {
