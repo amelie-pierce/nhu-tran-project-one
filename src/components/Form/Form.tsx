@@ -16,7 +16,6 @@ const Form = <T extends Record<string, string>>({
 
         const formData = new FormData(event.currentTarget)
         const values = Object.fromEntries(formData.entries()) as T
-        console.log(values)
 
         const errors = validate?.(values) || null
         const hasErrors = errors && Object.keys(errors).length > 0

@@ -12,8 +12,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         const { data } = supabase.auth.onAuthStateChange((event, session) => {
-            console.log(event, session)
-
             if (event === "INITIAL_SESSION") {
                 setIsLoggedIn(!!session?.user?.id)
             } else if (event === "SIGNED_IN") {

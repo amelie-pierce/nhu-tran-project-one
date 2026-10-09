@@ -183,7 +183,6 @@ export const UserDataProvider = ({ children }: Props) => {
         quantity: number,
         lastestCartList?: CartProduct[]
     ): boolean => {
-        console.log("lastestCartList || cartList", lastestCartList, cartList)
         const itemInCart = lastestCartList?.find(
             (item) => item.id === productId
         )
@@ -254,14 +253,12 @@ export const UserDataProvider = ({ children }: Props) => {
             //TODO: find another way
             const carts = await getUserCart()
             lastestCartList = pareCartAPIResponse(carts)
-            console.log("lastestCartList", lastestCartList)
 
             const isSuccess = checkConditionAddToCart(
                 product_id,
                 quantity,
                 lastestCartList
             )
-            console.log("pass conditionnnnn", isSuccess)
             if (!isSuccess) return
 
             const existingItem = lastestCartList?.find(
