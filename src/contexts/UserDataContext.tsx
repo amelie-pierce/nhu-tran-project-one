@@ -67,7 +67,7 @@ export const UserDataProvider = ({ children }: Props) => {
     const { data: userCart, isFetching: isCartFetching } = useQuery({
         queryKey: [QUERY_KEY_USER_CART],
         queryFn: getUserCart,
-        staleTime: 1000 * 60 * 5,
+        // staleTime: 1000 * 60 * 5,
         enabled: isDBCartEnabled && isLoggedIn,
     })
 
@@ -136,7 +136,7 @@ export const UserDataProvider = ({ children }: Props) => {
     const { data: userCompare, isFetching: isCompareFetching } = useQuery({
         queryKey: [QUERY_KEY_USER_COMPARE],
         queryFn: getUserCompare,
-        staleTime: 1000 * 60 * 5,
+        // staleTime: 1000 * 60 * 5,
         enabled: isDBCompareEnabled && isLoggedIn,
     })
 

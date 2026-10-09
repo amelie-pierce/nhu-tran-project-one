@@ -15,7 +15,7 @@ const UserInformation = () => {
     const { data: contactInfo, isFetching } = useQuery({
         queryKey: [QUERY_KEY_USER_CONTACT],
         queryFn: getUserContact,
-        staleTime: 1000 * 60 * 5,
+        // staleTime: 1000 * 60 * 5,
     })
 
     const flag =
