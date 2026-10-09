@@ -1,14 +1,22 @@
 import { Tag } from "@/components/ui"
 import { MainPoint } from "@/pages/about/components"
 import styles from "./Education.module.css"
+import { transformImage } from "@/utils/transformImage"
 
 const Education = () => {
+    const uitLogo =
+        "https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/logo/logo_uit.png"
     return (
         <div className={`page-padding ${styles.wrapper}`}>
             <div className="heading bold">Education Journey</div>
             <div className={styles["journey-container"]}>
                 <img
-                    src="https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/logo/logo_uit.png"
+                    src={uitLogo}
+                    srcSet={`
+                        ${transformImage(uitLogo, 100)} 100w,
+                        ${transformImage(uitLogo, 150)} 150w,
+                    `}
+                    sizes="(max-width: 1024px) 100px, 150px"
                     alt="UIT"
                     className={styles["uit-logo"]}
                 />

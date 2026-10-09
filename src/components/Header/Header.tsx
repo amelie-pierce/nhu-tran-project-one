@@ -12,6 +12,7 @@ import { useToast } from "@/contexts/ToastContext"
 import { useUserData } from "@/contexts/UserDataContext"
 import { useMemo } from "react"
 import { useUser } from "@/contexts/UserContext"
+import { transformImage } from "@/utils/transformImage"
 
 const Header = () => {
     const navigate = useNavigate()
@@ -39,12 +40,20 @@ const Header = () => {
         return String(cartList?.length) || ""
     }, [cartList?.length])
 
+    const logo =
+        "https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/logo/logo.png"
+
     return (
         <header className={`${styles.header} section-padding`}>
             <nav className={styles["menu-header"]}>
                 <Link to="/product" className={styles["logo-link"]}>
                     <img
-                        src="https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/logo/logo.png"
+                        src={logo}
+                        srcSet={`
+                            ${transformImage(logo, 40)} 40w,
+                            ${transformImage(logo, 50)} 50w,
+                        `}
+                        sizes="(max-width: 480px) 40px, 50px"
                         alt="logo"
                         className={styles["logo-header"]}
                     />

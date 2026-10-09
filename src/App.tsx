@@ -28,7 +28,16 @@ function App() {
                 <Route path="/" element={<Navigate to="/product" replace />} />
                 <Route path="/product" element={<Product />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/cart" element={<Cart />} />
+                <Route
+                    path="/cart"
+                    element={
+                        <AuthRoute>
+                            <Suspense fallback={<Loader />}>
+                                <Cart />
+                            </Suspense>
+                        </AuthRoute>
+                    }
+                />
                 <Route path="/compare-product" element={<Compare />} />
                 <Route path="/payment" element={<Payment />} />
                 <Route path="/about-me" element={<AboutMe />} />

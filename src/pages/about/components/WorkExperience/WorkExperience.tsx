@@ -1,14 +1,25 @@
 import { Tag } from "@/components/ui"
 import styles from "./WorkExperience.module.css"
+import { transformImage } from "@/utils/transformImage"
 
 const WorkExperience = () => {
+    const logoHasaki =
+        "https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/logo/logo_hasaki.jpg"
+    const logoShopback =
+        "https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/logo/logo_shopback.png"
     return (
         <div className={`page-padding ${styles.wrapper}`}>
             <div className="heading bold">Work Experience</div>
             <div className={styles["exp-container"]}>
                 <div className={styles["logo-container"]}>
                     <img
-                        src="https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/logo/logo_hasaki.jpg"
+                        src={logoHasaki}
+                        srcSet={`
+                            ${transformImage(logoHasaki, 200)} 200w,
+                            ${transformImage(logoHasaki, 300)} 300w,
+                            ${transformImage(logoHasaki, 350)} 350w,
+                        `}
+                        sizes="(max-width: 480px) 300px, (max-width: 1024px) 200px, 350px"
                         alt="hasaki.vn"
                         className={styles["logo"]}
                     />
@@ -44,8 +55,14 @@ const WorkExperience = () => {
             <div className={styles["exp-container"]}>
                 <div className={styles["logo-container"]}>
                     <img
-                        src="https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/logo/logo_shopback.png"
-                        alt="hasaki.vn"
+                        src={logoShopback}
+                        srcSet={`
+                            ${transformImage(logoShopback, 200)} 200w,
+                            ${transformImage(logoShopback, 300)} 300w,
+                            ${transformImage(logoShopback, 350)} 350w,
+                        `}
+                        sizes="(max-width: 480px) 300px, (max-width: 1024px) 200px, 350px"
+                        alt="shopback.vn"
                         className={styles["logo"]}
                     />
                 </div>

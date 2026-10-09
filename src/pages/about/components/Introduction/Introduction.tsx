@@ -1,7 +1,10 @@
 import { Tag } from "@/components/ui"
 import styles from "./Introduction.module.css"
+import { transformImage } from "@/utils/transformImage"
 
 const Introduction = () => {
+    const introImage =
+        "https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/about.png"
     return (
         <div className={`page-padding ${styles["wrapper"]}`}>
             <div className={styles.intro}>
@@ -21,7 +24,13 @@ const Introduction = () => {
                 </div>
             </div>
             <img
-                src="https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/about.png"
+                src={introImage}
+                srcSet={`
+                    ${transformImage(introImage, 200)} 200w,
+                    ${transformImage(introImage, 350)} 350w,
+                    ${transformImage(introImage, 500)} 500w,
+                `}
+                sizes="(max-width: 480px) 200px, (max-width: 1500px) 350px, 500px"
                 alt="about me"
                 className={styles["intro-img"]}
             />

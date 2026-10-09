@@ -2,7 +2,7 @@ import type { CartProduct } from "@/types/cart"
 import { CartItem, TotalPrice } from "./components"
 import styles from "./Cart.module.css"
 import Empty from "@/components/Empty/Empty"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 import { useUserData } from "@/contexts/UserDataContext"
 import {
@@ -67,6 +67,12 @@ const Cart = () => {
 
     const onRemoveItem = (id: number) => {
         removeFromCartList(id)
+        const isChecked = selectedItemIds?.has(id || 0)
+        let newSelectedItemIds = new Set(selectedItemIds)
+        if (isChecked) {
+            newSelectedItemIds.delete(id || 0)
+        }
+        setSelectedItemIds(newSelectedItemIds)
     }
 
     const handleSelectAll = () => {
@@ -92,19 +98,22 @@ const Cart = () => {
             newSelectedItemIds.add(item.id || 0)
         }
         setSelectedItemIds(newSelectedItemIds)
+    }
 
-        if (newSelectedItemIds.size === cartProductItems?.length) {
+    useEffect(() => {
+        if (selectedItemIds.size === cartProductItems?.length) {
             setIsSelectAllChecked(true)
         } else {
             setIsSelectAllChecked(false)
         }
-    }
+    }, [selectedItemIds, cartProductItems])
 
     const cartTotalStr = useMemo(() => {
         return `${cartList?.length} ${cartList?.length === 1 ? "item" : "items"}`
     }, [cartList])
 
-    const loadingAPI = !isLoggedIn || (isLoggedIn && userCart === undefined)
+    const loadingAPI = isLoggedIn && userCart === undefined
+    //    || (!isLoggedIn && isFetching)
 
     if (isError) {
         return <Error />
