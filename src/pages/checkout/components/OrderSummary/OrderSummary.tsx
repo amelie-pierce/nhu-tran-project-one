@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router"
 import { toVND } from "@/utils/toVND"
 import { Button, Tag } from "@/components/ui"
 import type { OrderProduct } from "@/types/order"
@@ -13,8 +12,6 @@ type Props = {
 const SHIPPING_FEE = 0
 
 const OrderSummary = ({ orderItems, isPending }: Props) => {
-    const navigate = useNavigate()
-
     const subTotal = orderItems.reduce(
         (total, item) => total + item.quantity * item.price,
         0
@@ -52,9 +49,6 @@ const OrderSummary = ({ orderItems, isPending }: Props) => {
                 <Button
                     type="submit"
                     className={styles["checkout-button"]}
-                    onClick={() => {
-                        navigate("/payment", { state: { status: "success" } })
-                    }}
                     disabled={isPending}
                 >
                     Place an order

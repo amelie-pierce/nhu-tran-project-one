@@ -81,14 +81,6 @@ const ProductList = () => {
         setSearchParams(params)
     }
 
-    if (isLoading) {
-        return (
-            <div className={styles["loader-container"]}>
-                <Loader />
-            </div>
-        )
-    }
-
     if (isError) {
         return <Error />
     }
@@ -102,16 +94,24 @@ const ProductList = () => {
                     onChangeCategory={handleChangeCategory}
                 />
             </div>
-            <div className={styles["product-list"]}>
-                {products?.data?.map((product) => (
-                    <ProductItem key={product.id} product={product} />
-                ))}
-            </div>
-            <Pagination
-                currentPage={currentPage}
-                totalPage={products?.totalPage ?? 1}
-                onPageChange={handlePageChange}
-            />
+            {isLoading ? (
+                <div className={styles["loader-container"]}>
+                    <Loader />
+                </div>
+            ) : (
+                <>
+                    <div className={styles["product-list"]}>
+                        {products?.data?.map((product) => (
+                            <ProductItem key={product.id} product={product} />
+                        ))}
+                    </div>
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPage={products?.totalPage ?? 1}
+                        onPageChange={handlePageChange}
+                    />
+                </>
+            )}
         </>
     )
 }

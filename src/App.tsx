@@ -11,6 +11,7 @@ import AboutMe from "@/pages/about/About"
 import "./index.css"
 import "@/styles/global.css"
 import "@/styles/typography.css"
+import { Loader } from "./components/ui"
 
 const Checkout = React.lazy(() => import("@/pages/checkout/Checkout"))
 const Cart = React.lazy(() => import("@/pages/cart/Cart"))
@@ -51,7 +52,7 @@ function App() {
                     path="/checkout"
                     element={
                         <AuthRoute>
-                            <Suspense fallback={<div>Loading...</div>}>
+                            <Suspense fallback={<Loader />}>
                                 <Checkout />
                             </Suspense>
                         </AuthRoute>

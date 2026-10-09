@@ -5,13 +5,20 @@ const MIN = 1
 const MAX = 99
 
 type Props = {
+    defaultValue?: number | string
     value: number | string
     max?: number
     onChange: (value: number | string) => void
     className?: string
 }
 
-const InputNumber = ({ value, max = MAX, onChange, ...props }: Props) => {
+const InputNumber = ({
+    defaultValue,
+    value,
+    max = MAX,
+    onChange,
+    ...props
+}: Props) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value
 
@@ -20,11 +27,27 @@ const InputNumber = ({ value, max = MAX, onChange, ...props }: Props) => {
             return
         }
 
-        const number = Number(input)
-
-        if (!Number.isInteger(number)) {
+        if (!/^\d+$/.test(input)) {
             return
         }
+
+        const number = Number(input)
+
+        if (number > max) {
+            onChange(max)
+            return
+        }
+
+        onChange(number)
+    }
+
+    const handleBlur = () => {
+        if (value === "") {
+            onChange(defaultValue ?? MIN)
+            return
+        }
+
+        const number = Number(value)
 
         if (number > max) {
             onChange(max)
@@ -41,18 +64,14 @@ const InputNumber = ({ value, max = MAX, onChange, ...props }: Props) => {
 
     return (
         <Input
-            type="number"
+            type="text"
             inputMode="numeric"
             min={MIN}
             max={max}
             step={STEP}
             value={value}
             onChange={handleChange}
-            onBlur={() => {
-                if (value === "") {
-                    onChange(MIN)
-                }
-            }}
+            onBlur={handleBlur}
             {...props}
         />
     )

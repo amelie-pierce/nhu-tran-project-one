@@ -70,6 +70,7 @@ const Pagination = ({ currentPage, totalPage, onPageChange }: Props) => {
             <div className={styles["pagination-go-to-page"]}>
                 Go to page
                 <InputNumber
+                    defaultValue={currentPage}
                     value={inputPage}
                     max={totalPage}
                     onChange={setInputPage}

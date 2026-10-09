@@ -1,5 +1,5 @@
 import { Form, Breadcrumb } from "@/components"
-import { useLocation, Navigate } from "react-router"
+import { useLocation, Navigate, useNavigate } from "react-router"
 import { OrderSummary, UserInformation } from "./components"
 import type { Contact } from "@/types/contact"
 import styles from "./Checkout.module.css"
@@ -16,6 +16,7 @@ const Checkout = () => {
     const state = location.state
     const queryClient = useQueryClient()
     const { showToast } = useToast()
+    const navigate = useNavigate()
 
     const { mutate: deleteCart } = useMutation({
         mutationFn: deleteUserCart,
@@ -40,6 +41,7 @@ const Checkout = () => {
             queryClient.invalidateQueries({
                 queryKey: [QUERY_KEY_USER_CONTACT],
             })
+            navigate("/payment", { state: { status: "success" } })
         },
         onError: (error) => {
             showToast({

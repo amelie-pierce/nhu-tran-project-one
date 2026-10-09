@@ -27,15 +27,18 @@ const Cart = () => {
     )
     const [isSelectAllChecked, setIsSelectAllChecked] = useState(false)
 
-    const productIds = cartList?.map((item) => Number(item.id)) ?? []
+    const productIds = useMemo(
+        () => cartList?.map((item) => Number(item.id)) ?? [],
+        [cartList]
+    )
 
     const {
         data: products,
-        isLoading,
+        // isLoading,
         isFetching,
         isError,
     } = useQuery({
-        queryKey: [QUERY_KEY_PRODUCTS],
+        queryKey: [QUERY_KEY_PRODUCTS, productIds],
         queryFn: () =>
             getListProduct({
                 product_ids: productIds,
@@ -121,7 +124,7 @@ const Cart = () => {
         <>
             <Breadcrumb title="CART" currentPage="Cart" />
 
-            {isLoading || isCartLoading ? (
+            {isCartLoading ? (
                 <Loader />
             ) : (
                 <>

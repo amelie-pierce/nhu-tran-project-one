@@ -15,6 +15,7 @@ type Props = {
 }
 
 const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
+    const { fallbackImg } = useFeatureFlags()
     const { updateCartList } = useUserData()
     const { maxQtyPerProduct } = useFeatureFlags()
     const screenWidth = useScreenWidth()
@@ -31,7 +32,7 @@ const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
                 onChange={() => onToggleCheck(item)}
             />
             <img
-                src={item.img_url || ""}
+                src={item.img_url || fallbackImg}
                 alt={item.name}
                 className={styles["cart-item-image"]}
             />

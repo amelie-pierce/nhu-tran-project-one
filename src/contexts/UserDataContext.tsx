@@ -65,7 +65,8 @@ type Props = {
 export const UserDataProvider = ({ children }: Props) => {
     const { isDBCartEnabled, isDBCompareEnabled, maxQtyPerProduct } =
         useFeatureFlags()
-    const [cartList, setCartList] = useState<CartProduct[]>(getCartStorage())
+    const [localCartList, setLocalCartList] =
+        useState<CartProduct[]>(getCartStorage())
     const [compareList, setCompareList] =
         useState<number[]>(getCompareStorage())
     const { showToast } = useToast()
@@ -84,6 +85,19 @@ export const UserDataProvider = ({ children }: Props) => {
         enabled: isDBCartEnabled && isLoggedIn,
     })
 
+    const pareCartAPIResponse = (cartList?: UserCart[]): CartProduct[] => {
+        return (
+            cartList?.map((item) => ({
+                ...item.product,
+                quantity: item.quantity,
+            })) ?? []
+        )
+    }
+
+    const dbCartList = useMemo(() => pareCartAPIResponse(userCart), [userCart])
+
+    const cartList = isDBCartEnabled ? dbCartList : localCartList
+
     const { mutate: createCart } = useMutation({
         mutationFn: createUserCart,
         onSuccess: () => {
@@ -101,11 +115,11 @@ export const UserDataProvider = ({ children }: Props) => {
 
     const { mutate: updateCart } = useMutation({
         mutationFn: updateUserCart,
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEY_USER_CART],
-            })
-        },
+        // onSuccess: () => {
+        //     queryClient.invalidateQueries({
+        //         queryKey: [QUERY_KEY_USER_CART],
+        //     })
+        // },
         onError: (error) => {
             showToast({
                 message: (error as Error).message,
@@ -116,11 +130,11 @@ export const UserDataProvider = ({ children }: Props) => {
 
     const { mutate: deleteCart } = useMutation({
         mutationFn: deleteUserCart,
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEY_USER_CART],
-            })
-        },
+        // onSuccess: () => {
+        //     queryClient.invalidateQueries({
+        //         queryKey: [QUERY_KEY_USER_CART],
+        //     })
+        // },
         onError: (error) => {
             showToast({
                 message: (error as Error).message,
@@ -128,23 +142,6 @@ export const UserDataProvider = ({ children }: Props) => {
             })
         },
     })
-
-    const pareCartAPIResponse = (cartList?: UserCart[]): CartProduct[] => {
-        return (
-            cartList?.map((item) => ({
-                ...item.product,
-                quantity: item.quantity,
-            })) ?? []
-        )
-    }
-
-    useEffect(() => {
-        if (isDBCartEnabled && isLoggedIn) {
-            setCartList(pareCartAPIResponse(userCart))
-        } else {
-            setCartList(getCartStorage())
-        }
-    }, [userCart, isDBCartEnabled, isLoggedIn])
 
     const { data: userCompare } = useQuery({
         queryKey: [QUERY_KEY_USER_COMPARE],
@@ -192,10 +189,11 @@ export const UserDataProvider = ({ children }: Props) => {
 
     const checkConditionAddToCart = (
         productId: number,
-        quantity: number
+        quantity: number,
+        currentCartList: CartProduct[]
     ): boolean => {
-        const itemInCart = cartList.find((item) => item.id === productId)
-        const quantityInCart = itemInCart?.quantity || 0
+        const itemInCart = currentCartList.find((item) => item.id === productId)
+        const quantityInCart = itemInCart?.quantity ?? 0
         const maxAddable = maxQtyPerProduct - quantityInCart
 
         if (quantity <= maxAddable) {
@@ -229,6 +227,7 @@ export const UserDataProvider = ({ children }: Props) => {
     const debouncedUpdateCart = useMemo(
         () =>
             debounce((product_id: number, quantity: number) => {
+                if (!quantity || !product_id) return
                 updateCart({
                     product_id,
                     quantity,
@@ -242,18 +241,32 @@ export const UserDataProvider = ({ children }: Props) => {
         quantity: number,
         checkCondition = true
     ) => {
-        const isSuccess = checkCondition
-            ? checkConditionAddToCart(product_id, quantity)
-            : true
-        if (!isSuccess) return
+        if (
+            checkCondition &&
+            !checkConditionAddToCart(product_id, quantity, cartList)
+        ) {
+            return
+        }
 
         if (isDBCartEnabled) {
+            queryClient.setQueryData<UserCart[]>([QUERY_KEY_USER_CART], (old) =>
+                old?.map((item) =>
+                    item.product_id === product_id
+                        ? {
+                              ...item,
+                              quantity,
+                          }
+                        : item
+                )
+            )
+
             debouncedUpdateCart(product_id, quantity)
-        } else {
-            updateCartStorage(cartList, product_id, quantity)
+            return
         }
-        setCartList((prevCartList) =>
-            prevCartList.map((item) =>
+
+        setLocalCartList((prev) => {
+            updateCartStorage(prev, product_id, quantity)
+            return prev.map((item) =>
                 item.id === product_id
                     ? {
                           ...item,
@@ -261,7 +274,7 @@ export const UserDataProvider = ({ children }: Props) => {
                       }
                     : item
             )
-        )
+        })
     }
 
     const addToCartList = useCallback(
@@ -270,18 +283,22 @@ export const UserDataProvider = ({ children }: Props) => {
             quantity: number,
             isLoggedInBefore = true
         ) => {
-            let lastestCartList = [...cartList]
+            let latestCartList = [...cartList]
+
             if (!isLoggedInBefore) {
-                //TODO: find another way
                 const carts = await getUserCart()
-                lastestCartList = pareCartAPIResponse(carts)
-                console.log("lastestCartList", lastestCartList)
+                latestCartList = pareCartAPIResponse(carts)
             }
 
-            const isSuccess = checkConditionAddToCart(product_id, quantity)
+            const isSuccess = checkConditionAddToCart(
+                product_id,
+                quantity,
+                latestCartList
+            )
+
             if (!isSuccess) return
 
-            const existingItem = lastestCartList?.find(
+            const existingItem = latestCartList.find(
                 (item) => item.id === product_id
             )
             if (existingItem) {
@@ -290,42 +307,56 @@ export const UserDataProvider = ({ children }: Props) => {
                     existingItem.quantity + quantity,
                     false
                 )
-            } else {
-                setCartList((prevCartList) => [
+                return
+            }
+
+            if (isDBCartEnabled) {
+                createCart({
+                    product_id,
+                    quantity,
+                })
+                return
+            }
+
+            setLocalCartList((prevCartList) => {
+                addToCartStorage(prevCartList, product_id, quantity)
+                return [
                     ...prevCartList,
                     {
                         id: product_id,
                         quantity,
                     },
-                ])
-                if (isDBCartEnabled) {
-                    createCart({
-                        product_id,
-                        quantity,
-                    })
-                } else {
-                    addToCartStorage(lastestCartList, product_id, quantity)
-                }
-            }
+                ]
+            })
         },
         [
             cartList,
-            checkConditionAddToCart,
-            createCart,
             isDBCartEnabled,
+            checkConditionAddToCart,
             updateCartList,
+            createCart,
+            pareCartAPIResponse,
         ]
     )
 
     const removeFromCartList = (product_id: number) => {
         if (isDBCartEnabled) {
+            queryClient.setQueryData<UserCart[]>(
+                [QUERY_KEY_USER_CART],
+                (old = []) =>
+                    old.filter((item) => item.product_id !== product_id)
+            )
+
             deleteCart([product_id])
-        } else {
-            removeFromCartStorage(cartList, product_id)
+
+            return
         }
-        setCartList((prevCartList) =>
-            prevCartList.filter((item) => item.id !== product_id)
-        )
+
+        setLocalCartList((prev) => {
+            removeFromCartStorage(prev, product_id)
+
+            return prev.filter((item) => item.id !== product_id)
+        })
     }
 
     const addToCompareListDB = (product_id: number) => {

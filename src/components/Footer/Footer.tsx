@@ -5,6 +5,7 @@ import { faFacebook, faLinkedin } from "@fortawesome/free-brands-svg-icons"
 import { faPhone } from "@fortawesome/free-solid-svg-icons"
 import styles from "./Footer.module.css"
 import { useScreenWidth } from "@/hooks/useScreenWidth"
+import { transformImage } from "@/utils/transformImage"
 
 const Footer = () => {
     const screenWidth = useScreenWidth()
@@ -19,6 +20,9 @@ const Footer = () => {
         location.pathname === "/login"
     const isLoginMobile = screenWidth <= 480 && location.pathname === "/login"
 
+    const logo =
+        "https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/logo/logo.png"
+
     return (
         <footer
             className={`${styles.footer} page-padding ${isLoginMobile ? styles["footer-login-mobile"] : ""}`}
@@ -29,9 +33,16 @@ const Footer = () => {
                 <div className={styles["logo-area"]}>
                     <div className={styles["logo-container"]}>
                         <img
-                            src="https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/logo/logo.png"
+                            src={transformImage(logo, 100)}
+                            srcSet={`
+                                ${transformImage(logo, 40)} 40w,
+                                ${transformImage(logo, 50)} 50w,
+                                ${transformImage(logo, 100)} 100w
+                            `}
+                            sizes="(max-width: 480px) 40px, (max-width: 1024px) 50px, 100px"
                             alt="logo"
                             className={styles["logo-footer"]}
+                            fetchPriority="high"
                         />
                         <div className="text-primary">Beauty & skincare</div>
                     </div>

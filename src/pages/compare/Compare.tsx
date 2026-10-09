@@ -42,7 +42,7 @@ const Compare = () => {
                 uniqueIngredients.add(ingredient.name)
             })
         })
-        return Array.from(uniqueIngredients)
+        return Array.from(uniqueIngredients)?.sort((a, b) => a.localeCompare(b))
     }, [compareProducts])
 
     if (isError) {
