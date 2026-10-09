@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react"
 import { supabase } from "@/lib/supabase"
-import { setUserStorage } from "@/storages/userStorage"
 
 type UserContextType = {
     isLoggedIn: boolean
@@ -17,13 +16,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
             if (event === "INITIAL_SESSION") {
                 setIsLoggedIn(!!session?.user?.id)
-                setUserStorage(session?.user?.id || "")
             } else if (event === "SIGNED_IN") {
                 setIsLoggedIn(!!session?.user?.id)
-                setUserStorage(session?.user?.id || "")
             } else if (event === "SIGNED_OUT") {
                 setIsLoggedIn(false)
-                setUserStorage("")
             }
         })
 
