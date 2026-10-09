@@ -25,7 +25,7 @@ const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
     const navigate = useNavigate()
 
     const handleChangeQuantity = (value: number | string) => {
-        updateCartList(item.id || 0, Number(value), false)
+        updateCartList(item.id || 0, Number(value))
     }
 
     return (

@@ -13,7 +13,6 @@ import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 import { upsertUserCompare } from "@/apis/compare/upsertCompare"
 import { QUERY_KEY_USER_COMPARE } from "@/apis/compare/getUserCompare"
 import { validateEmail } from "@/utils/validateEmail"
-import { getCompareStorage } from "@/storages/compareStorage"
 import { deleteUserCompare } from "@/apis/compare/deleteUserCompare"
 
 const Login = () => {
@@ -21,13 +20,13 @@ const Login = () => {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
     const { isSignupEnabled } = useFeatureFlags()
-    const { addToCartList } = useUserData()
+    const { addToCartList, compareList } = useUserData()
 
     const location = useLocation()
     const action = location.state
 
-    const { mutate: deleteCompare } = useMutation({
-        mutationFn: deleteUserCompare,
+    const { mutate: bulkUpsertCompare } = useMutation({
+        mutationFn: upsertUserCompare,
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: [QUERY_KEY_USER_COMPARE],
@@ -41,11 +40,11 @@ const Login = () => {
         },
     })
 
-    const { mutate: bulkUpsertCompare } = useMutation({
-        mutationFn: upsertUserCompare,
+    const { mutate: deleteCompare } = useMutation({
+        mutationFn: deleteUserCompare,
         onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEY_USER_COMPARE],
+            bulkUpsertCompare({
+                product_ids: compareList.map((item) => Number(item)),
             })
         },
         onError: (error) => {
@@ -64,7 +63,7 @@ const Login = () => {
 
         if (action.type === "add") {
             const item = action.items?.[0]
-            addToCartList(item?.id, item?.quantity, false)
+            addToCartList(item?.id, item?.quantity)
         }
 
         if (action.type === "buy") {
@@ -73,14 +72,11 @@ const Login = () => {
     }, [action, addToCartList, navigate])
 
     const syncCompareListToDB = useCallback(() => {
-        const compareList = getCompareStorage()
+        // const compareList = getCompareStorage()
         if (!compareList.length) return
 
         deleteCompare()
-        bulkUpsertCompare({
-            product_ids: compareList.map((item) => Number(item)),
-        })
-    }, [bulkUpsertCompare])
+    }, [bulkUpsertCompare, compareList])
 
     const { mutate: signInMutation, isPending } = useMutation({
         mutationFn: signIn,

@@ -38,16 +38,8 @@ import { createUserCompare } from "@/apis/compare/createUserCompare"
 type UserDataType = {
     cartList: CartProduct[]
     compareList: number[]
-    updateCartList: (
-        id: number,
-        quantity: number,
-        checkCondition: boolean
-    ) => void
-    addToCartList: (
-        id: number,
-        quantity: number,
-        isLoggedInBefore?: boolean
-    ) => void
+    updateCartList: (id: number, quantity: number) => void
+    addToCartList: (id: number, quantity: number) => void
     removeFromCartList: (id: number) => void
     toggleCompareItem: (id: number) => void
     removeAllCompareItems: () => void
@@ -151,9 +143,9 @@ export const UserDataProvider = ({ children }: Props) => {
     const { mutate: createCompare } = useMutation({
         mutationFn: createUserCompare,
         onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEY_USER_COMPARE],
-            })
+            // queryClient.invalidateQueries({
+            //     queryKey: [QUERY_KEY_USER_COMPARE],
+            // })
         },
         onError: (error) => {
             showToast({
@@ -166,9 +158,9 @@ export const UserDataProvider = ({ children }: Props) => {
     const { mutate: deleteCompare } = useMutation({
         mutationFn: deleteUserCompare,
         onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEY_USER_COMPARE],
-            })
+            // queryClient.invalidateQueries({
+            //     queryKey: [QUERY_KEY_USER_COMPARE],
+            // })
         },
         onError: (error) => {
             showToast({
@@ -188,9 +180,13 @@ export const UserDataProvider = ({ children }: Props) => {
 
     const checkConditionAddToCart = (
         productId: number,
-        quantity: number
+        quantity: number,
+        lastestCartList?: CartProduct[]
     ): boolean => {
-        const itemInCart = cartList.find((item) => item.id === productId)
+        console.log("lastestCartList || cartList", lastestCartList, cartList)
+        const itemInCart = lastestCartList?.find(
+            (item) => item.id === productId
+        )
         const quantityInCart = itemInCart?.quantity || 0
         const maxAddable = maxQtyPerProduct - quantityInCart
 
@@ -234,16 +230,7 @@ export const UserDataProvider = ({ children }: Props) => {
         [updateCart]
     )
 
-    const updateCartList = (
-        product_id: number,
-        quantity: number,
-        checkCondition = true
-    ) => {
-        const isSuccess = checkCondition
-            ? checkConditionAddToCart(product_id, quantity)
-            : true
-        if (!isSuccess) return
-
+    const updateCartList = (product_id: number, quantity: number) => {
         if (isDBCartEnabled) {
             debouncedUpdateCart(product_id, quantity)
         } else {
@@ -262,31 +249,26 @@ export const UserDataProvider = ({ children }: Props) => {
     }
 
     const addToCartList = useCallback(
-        async (
-            product_id: number,
-            quantity: number,
-            isLoggedInBefore = true
-        ) => {
+        async (product_id: number, quantity: number) => {
             let lastestCartList = [...cartList]
-            if (!isLoggedInBefore) {
-                //TODO: find another way
-                const carts = await getUserCart()
-                lastestCartList = pareCartAPIResponse(carts)
-                console.log("lastestCartList", lastestCartList)
-            }
+            //TODO: find another way
+            const carts = await getUserCart()
+            lastestCartList = pareCartAPIResponse(carts)
+            console.log("lastestCartList", lastestCartList)
 
-            const isSuccess = checkConditionAddToCart(product_id, quantity)
+            const isSuccess = checkConditionAddToCart(
+                product_id,
+                quantity,
+                lastestCartList
+            )
+            console.log("pass conditionnnnn", isSuccess)
             if (!isSuccess) return
 
             const existingItem = lastestCartList?.find(
                 (item) => item.id === product_id
             )
             if (existingItem) {
-                updateCartList(
-                    product_id,
-                    existingItem.quantity + quantity,
-                    false
-                )
+                updateCartList(product_id, existingItem.quantity + quantity)
             } else {
                 setCartList((prevCartList) => [
                     ...prevCartList,
