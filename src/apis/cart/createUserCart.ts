@@ -13,11 +13,14 @@ export const createUserCart = async (values: CreateUserCartRequest) => {
         return null
     }
 
-    const { data, error } = await supabase.from("user_cart").insert({
-        user_id: user?.id,
-        product_id: values.product_id,
-        quantity: values.quantity,
-    })
+    const { data, error } = await supabase
+        .from("user_cart")
+        .insert({
+            user_id: user?.id,
+            product_id: values.product_id,
+            quantity: values.quantity,
+        })
+        .select("*")
 
     if (error) {
         throw error

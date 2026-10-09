@@ -12,10 +12,13 @@ export const createUserCompare = async (values: CreateUserCompareRequest) => {
         return null
     }
 
-    const { data, error } = await supabase.from("user_compare").insert({
-        user_id: user?.id,
-        product_id: values.product_id,
-    })
+    const { data, error } = await supabase
+        .from("user_compare")
+        .insert({
+            user_id: user?.id,
+            product_id: values.product_id,
+        })
+        .select("*")
 
     if (error) {
         throw error

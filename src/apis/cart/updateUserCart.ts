@@ -20,6 +20,7 @@ export const updateUserCart = async (values: UpdateUserCartRequest) => {
         })
         .eq("user_id", user?.id)
         .eq("product_id", values.product_id)
+        .select("*")
 
     if (error) {
         throw error

@@ -13,6 +13,7 @@ export const deleteUserCart = async (product_ids: number[]) => {
         .delete()
         .eq("user_id", user?.id)
         .in("product_id", product_ids)
+        .select("*")
 
     if (error) {
         throw error

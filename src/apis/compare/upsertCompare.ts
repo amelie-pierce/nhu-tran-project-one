@@ -12,13 +12,16 @@ export const upsertUserCompare = async (values: UpsertUserCompareRequest) => {
         return null
     }
 
-    const { data, error } = await supabase.from("user_compare").upsert(
-        values.product_ids.map((product_id) => ({
-            user_id: user?.id,
-            product_id,
-        })),
-        { onConflict: "user_id, product_id" }
-    )
+    const { data, error } = await supabase
+        .from("user_compare")
+        .upsert(
+            values.product_ids.map((product_id) => ({
+                user_id: user?.id,
+                product_id,
+            })),
+            { onConflict: "user_id, product_id" }
+        )
+        .select("*")
 
     if (error) {
         throw error

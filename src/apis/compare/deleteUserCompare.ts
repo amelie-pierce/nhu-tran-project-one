@@ -8,7 +8,11 @@ export const deleteUserCompare = async (product_id?: number) => {
         return null
     }
 
-    const query = supabase.from("user_compare").delete().eq("user_id", user?.id)
+    const query = supabase
+        .from("user_compare")
+        .delete()
+        .eq("user_id", user?.id)
+        .select("*")
 
     if (product_id) {
         query.eq("product_id", product_id)

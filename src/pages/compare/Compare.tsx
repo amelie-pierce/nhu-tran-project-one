@@ -17,14 +17,17 @@ const Compare = () => {
 
     console.log(userCompare, compareList, isLoggedIn)
 
-    const { data: products, isError } = useQuery({
+    const {
+        data: products,
+        isFetching,
+        isError,
+    } = useQuery({
         queryKey: [QUERY_KEY_PRODUCTS],
         queryFn: () =>
             getListProduct({
                 extra_fields: ["ingredient"],
                 product_ids: compareList,
             }),
-        staleTime: 1000 * 60 * 5,
         enabled: compareList?.length > 0,
     })
 
@@ -46,7 +49,8 @@ const Compare = () => {
         return Array.from(uniqueIngredients)?.sort((a, b) => a.localeCompare(b))
     }, [compareProducts])
 
-    const loadingAPI = isLoggedIn && userCompare === undefined
+    const loadingAPI =
+        (isLoggedIn && userCompare === undefined) || (!isLoggedIn && isFetching)
 
     if (isError) {
         return <Error />
