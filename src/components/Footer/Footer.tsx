@@ -6,6 +6,7 @@ import { faPhone } from "@fortawesome/free-solid-svg-icons"
 import styles from "./Footer.module.css"
 import { useScreenWidth } from "@/hooks/useScreenWidth"
 import { transformImage } from "@/utils/transformImage"
+import { getImgSizeWidth } from "@/utils/getImgSizeWidth"
 
 const Footer = () => {
     const screenWidth = useScreenWidth()
@@ -37,9 +38,10 @@ const Footer = () => {
                             srcSet={`
                                 ${transformImage(logo, 40)} 40w,
                                 ${transformImage(logo, 50)} 50w,
-                                ${transformImage(logo, 100)} 100w
+                                ${transformImage(logo, 100)} 100w,
+                                ${transformImage(logo, 150)} 150w
                             `}
-                            sizes="(max-width: 480px) 40px, (max-width: 1024px) 50px, 100px"
+                            sizes={getImgSizeWidth(40, 50, 100, 150)}
                             alt="logo"
                             className={styles["logo-footer"]}
                             fetchPriority="high"

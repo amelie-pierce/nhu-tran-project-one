@@ -1,6 +1,7 @@
 import { Tag } from "@/components/ui"
 import styles from "./Introduction.module.css"
 import { transformImage } from "@/utils/transformImage"
+import { getImgSizeWidth } from "@/utils/getImgSizeWidth"
 
 const Introduction = () => {
     const introImage =
@@ -29,8 +30,9 @@ const Introduction = () => {
                     ${transformImage(introImage, 200)} 200w,
                     ${transformImage(introImage, 350)} 350w,
                     ${transformImage(introImage, 500)} 500w,
+                    ${transformImage(introImage, 800)} 800w,
                 `}
-                sizes="(max-width: 480px) 200px, (max-width: 1500px) 350px, 500px"
+                sizes={getImgSizeWidth(200, 350, 500, 800)}
                 alt="about me"
                 className={styles["intro-img"]}
             />

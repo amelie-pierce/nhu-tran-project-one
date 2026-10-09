@@ -13,6 +13,7 @@ import { useUserData } from "@/contexts/UserDataContext"
 import { useMemo } from "react"
 import { useUser } from "@/contexts/UserContext"
 import { transformImage } from "@/utils/transformImage"
+import { getImgSizeWidth } from "@/utils/getImgSizeWidth"
 
 const Header = () => {
     const navigate = useNavigate()
@@ -52,8 +53,9 @@ const Header = () => {
                         srcSet={`
                             ${transformImage(logo, 40)} 40w,
                             ${transformImage(logo, 50)} 50w,
+                            ${transformImage(logo, 100)} 100w,
                         `}
-                        sizes="(max-width: 480px) 40px, 50px"
+                        sizes={getImgSizeWidth(40, 50, 50, 100)}
                         alt="logo"
                         className={styles["logo-header"]}
                     />

@@ -9,6 +9,8 @@ import { toVND } from "@/utils/toVND"
 import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 import { ProductActions } from "@/pages/product-detail/components"
 import styles from "./ProductInfo.module.css"
+import { transformImage } from "@/utils/transformImage"
+import { getImgSizeWidth } from "@/utils/getImgSizeWidth"
 
 type Props = {
     product: Product
@@ -22,6 +24,11 @@ const ProductInfo = ({ product }: Props) => {
         <div className={styles["product-detail-container"]}>
             <img
                 src={product.img_url || fallbackImg}
+                srcSet={`
+                    ${transformImage(product.img_url || fallbackImg, 350)} 350w,
+                    ${transformImage(product.img_url || fallbackImg, 500)} 500w,
+                `}
+                sizes={getImgSizeWidth(350, 350, 350, 500)}
                 alt="Product Image"
                 className={styles["product-detail-image"]}
             />

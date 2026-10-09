@@ -2,6 +2,7 @@ import { Tag } from "@/components/ui"
 import { MainPoint } from "@/pages/about/components"
 import styles from "./Education.module.css"
 import { transformImage } from "@/utils/transformImage"
+import { getImgSizeWidth } from "@/utils/getImgSizeWidth"
 
 const Education = () => {
     const uitLogo =
@@ -15,8 +16,9 @@ const Education = () => {
                     srcSet={`
                         ${transformImage(uitLogo, 100)} 100w,
                         ${transformImage(uitLogo, 150)} 150w,
+                        ${transformImage(uitLogo, 300)} 300w,
                     `}
-                    sizes="(max-width: 1024px) 100px, 150px"
+                    sizes={getImgSizeWidth(100, 100, 150, 300)}
                     alt="UIT"
                     className={styles["uit-logo"]}
                 />

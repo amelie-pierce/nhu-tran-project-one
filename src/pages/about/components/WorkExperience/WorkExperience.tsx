@@ -1,6 +1,7 @@
 import { Tag } from "@/components/ui"
 import styles from "./WorkExperience.module.css"
 import { transformImage } from "@/utils/transformImage"
+import { getImgSizeWidth } from "@/utils/getImgSizeWidth"
 
 const WorkExperience = () => {
     const logoHasaki =
@@ -18,8 +19,9 @@ const WorkExperience = () => {
                             ${transformImage(logoHasaki, 200)} 200w,
                             ${transformImage(logoHasaki, 300)} 300w,
                             ${transformImage(logoHasaki, 350)} 350w,
+                            ${transformImage(logoHasaki, 500)} 500w,
                         `}
-                        sizes="(max-width: 480px) 300px, (max-width: 1024px) 200px, 350px"
+                        sizes={getImgSizeWidth(200, 300, 350, 500)}
                         alt="hasaki.vn"
                         className={styles["logo"]}
                     />
@@ -60,8 +62,9 @@ const WorkExperience = () => {
                             ${transformImage(logoShopback, 200)} 200w,
                             ${transformImage(logoShopback, 300)} 300w,
                             ${transformImage(logoShopback, 350)} 350w,
+                            ${transformImage(logoShopback, 500)} 500w,
                         `}
-                        sizes="(max-width: 480px) 300px, (max-width: 1024px) 200px, 350px"
+                        sizes={getImgSizeWidth(200, 300, 350, 500)}
                         alt="shopback.vn"
                         className={styles["logo"]}
                     />

@@ -8,6 +8,8 @@ import {
     getUserContact,
     QUERY_KEY_USER_CONTACT,
 } from "@/apis/contact/getUserContact"
+import { transformImage } from "@/utils/transformImage"
+import { getImgSizeWidth } from "@/utils/getImgSizeWidth"
 
 const UserInformation = () => {
     const { data: contactInfo, isFetching } = useQuery({
@@ -15,6 +17,9 @@ const UserInformation = () => {
         queryFn: getUserContact,
         staleTime: 1000 * 60 * 5,
     })
+
+    const flag =
+        "https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/flag-vn.svg"
 
     return (
         <div className={styles["info-container"]}>
@@ -79,6 +84,10 @@ const UserInformation = () => {
                     <span>Country</span>
                     <img
                         src="https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/flag-vn.svg"
+                        srcSet={`
+                            ${transformImage(flag, 24)} 24w,
+                        `}
+                        sizes={getImgSizeWidth(24, 24, 24, 24)}
                         alt="Country"
                         className={styles["country-flag"]}
                     />

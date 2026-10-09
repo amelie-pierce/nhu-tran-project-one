@@ -9,6 +9,8 @@ import { useProductAction } from "@/hooks/useProductAction"
 import styles from "./VirtualColumn.module.css"
 import globalStyles from "../VirtualArea/VirtualArea.module.css"
 import { useFeatureFlags } from "@/hooks/useFeatureFlags"
+import { getImgSizeWidth } from "@/utils/getImgSizeWidth"
+import { transformImage } from "@/utils/transformImage"
 
 type Props = {
     columnVirtualizer: ReactVirtualizer<HTMLDivElement, Element>
@@ -52,6 +54,12 @@ const VirtualColumn = ({
                         >
                             <img
                                 src={product?.img_url || fallbackImg}
+                                srcSet={`
+                                    ${transformImage(product?.img_url || fallbackImg, 50)} 50w,
+                                    ${transformImage(product?.img_url || fallbackImg, 100)} 100w,
+                                    ${transformImage(product?.img_url || fallbackImg, 200)} 200w,
+                                `}
+                                sizes={getImgSizeWidth(50, 100, 100, 200)}
                                 alt="product-img"
                                 className={styles["product-img"]}
                             />

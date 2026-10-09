@@ -1,12 +1,21 @@
 import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { Button, Tag } from "@/components/ui"
+import { transformImage } from "@/utils/transformImage"
 import styles from "./Project.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBook } from "@fortawesome/free-solid-svg-icons"
 import { useScreenWidth } from "@/hooks/useScreenWidth"
+import { getImgSizeWidth } from "@/utils/getImgSizeWidth"
 
 const Project = () => {
     const screenWidth = useScreenWidth()
+
+    const overlappingMobile =
+        "https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/overlapping%202.png"
+    const overlappingDesktop =
+        "https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/overlapping%201.png"
+    const yoloImage =
+        "https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/yolo.png"
 
     return (
         <div className={`page-padding ${styles.wrapper}`}>
@@ -16,9 +25,16 @@ const Project = () => {
                     <img
                         src={
                             screenWidth <= 480
-                                ? "https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/overlapping%202.png"
-                                : "https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/overlapping%201.png"
+                                ? overlappingMobile
+                                : overlappingDesktop
                         }
+                        srcSet={`
+                            ${transformImage(overlappingMobile, 300)} 300w,
+                            ${transformImage(overlappingDesktop, 500)} 500w,
+                            ${transformImage(overlappingDesktop, 600)} 600w,
+                            ${transformImage(overlappingDesktop, 1000)} 1000w,
+                        `}
+                        sizes={getImgSizeWidth(300, 600, 500, 1000)}
                         alt="project img"
                         className={styles["project-img"]}
                     />
@@ -71,7 +87,14 @@ const Project = () => {
                 </div>
                 <div className={styles.project}>
                     <img
-                        src="https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/yolo.png"
+                        src={yoloImage}
+                        srcSet={`
+                            ${transformImage(yoloImage, 300)} 300w,
+                            ${transformImage(yoloImage, 500)} 500w,
+                            ${transformImage(yoloImage, 600)} 600w,
+                            ${transformImage(yoloImage, 1000)} 1000w,
+                        `}
+                        sizes={getImgSizeWidth(300, 600, 500, 1000)}
                         alt="project img"
                         className={styles["project-img"]}
                     />

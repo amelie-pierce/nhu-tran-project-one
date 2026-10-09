@@ -1,4 +1,5 @@
 import { Button, Tag } from "@/components/ui"
+import { getImgSizeWidth } from "@/utils/getImgSizeWidth"
 import type { Product } from "@/types/product"
 import { useProductAction } from "@/hooks/useProductAction"
 import { transformImage } from "@/utils/transformImage"
@@ -39,8 +40,9 @@ const ProductItem = ({ product }: Props) => {
                     ${transformImage(product.img_url || fallbackImg, 160)} 160w,
                     ${transformImage(product.img_url || fallbackImg, 200)} 200w,
                     ${transformImage(product.img_url || fallbackImg, 270)} 270w
+                    ${transformImage(product.img_url || fallbackImg, 500)} 500w
                 `}
-                sizes="(max-width: 480px) 160px, (max-width: 1024px) 200px, 270px"
+                sizes={getImgSizeWidth(160, 200, 270, 500)}
                 alt={product.name}
                 className={styles["product-item-image"]}
                 loading="lazy"

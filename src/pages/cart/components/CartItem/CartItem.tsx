@@ -1,4 +1,5 @@
 import { InputNumber, Button } from "@/components/ui"
+import { useNavigate } from "react-router"
 import type { CartProduct } from "@/types/cart"
 import styles from "./CartItem.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -7,6 +8,8 @@ import { useUserData } from "@/contexts/UserDataContext"
 import { toVND } from "@/utils/toVND"
 import { useScreenWidth } from "@/hooks/useScreenWidth"
 import { useFeatureFlags } from "@/hooks/useFeatureFlags"
+import { getImgSizeWidth } from "@/utils/getImgSizeWidth"
+import { transformImage } from "@/utils/transformImage"
 
 type Props = {
     item: CartProduct
@@ -19,13 +22,19 @@ const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
     const { updateCartList } = useUserData()
     const { maxQtyPerProduct } = useFeatureFlags()
     const screenWidth = useScreenWidth()
+    const navigate = useNavigate()
 
     const handleChangeQuantity = (value: number | string) => {
         updateCartList(item.id || 0, Number(value), false)
     }
 
     return (
-        <div className={styles["cart-item-container"]}>
+        <div
+            className={styles["cart-item-container"]}
+            onClick={() => {
+                navigate(`/product/${item.id}`)
+            }}
+        >
             <input
                 type="checkbox"
                 checked={item.checked}
@@ -33,6 +42,12 @@ const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
             />
             <img
                 src={item.img_url || fallbackImg}
+                srcSet={`
+                    ${transformImage(item.img_url || fallbackImg, 50)} 50w,
+                    ${transformImage(item.img_url || fallbackImg, 100)} 100w,
+                    ${transformImage(item.img_url || fallbackImg, 200)} 200w,
+                `}
+                sizes={getImgSizeWidth(50, 100, 100, 200)}
                 alt={item.name}
                 className={styles["cart-item-image"]}
             />
