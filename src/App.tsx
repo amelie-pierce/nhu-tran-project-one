@@ -1,7 +1,6 @@
-import React, { Suspense } from "react"
+import React from "react"
 import { MainLayout } from "@/components"
 import { Routes, Route, Navigate } from "react-router"
-import AuthRoute from "@/routes/AuthRoute"
 import GuestRoute from "@/routes/GuestRoute"
 import Product from "@/pages/product/Product"
 import Login from "@/pages/login/Login"
@@ -11,7 +10,6 @@ import AboutMe from "@/pages/about/About"
 import "./index.css"
 import "@/styles/global.css"
 import "@/styles/typography.css"
-import { Loader } from "./components/ui"
 
 const Checkout = React.lazy(() => import("@/pages/checkout/Checkout"))
 const Cart = React.lazy(() => import("@/pages/cart/Cart"))
@@ -28,18 +26,10 @@ function App() {
                 <Route path="/" element={<Navigate to="/product" replace />} />
                 <Route path="/product" element={<Product />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
-                <Route
-                    path="/cart"
-                    element={
-                        <AuthRoute>
-                            <Suspense fallback={<Loader />}>
-                                <Cart />
-                            </Suspense>
-                        </AuthRoute>
-                    }
-                />
+                <Route path="/cart" element={<Cart />} />
                 <Route path="/compare-product" element={<Compare />} />
                 <Route path="/payment" element={<Payment />} />
+                <Route path="/checkout" element={<Checkout />} />
                 <Route path="/about-me" element={<AboutMe />} />
                 <Route
                     path="/signup"
@@ -55,16 +45,6 @@ function App() {
                         <GuestRoute>
                             <Login />
                         </GuestRoute>
-                    }
-                />
-                <Route
-                    path="/checkout"
-                    element={
-                        <AuthRoute>
-                            <Suspense fallback={<Loader />}>
-                                <Checkout />
-                            </Suspense>
-                        </AuthRoute>
                     }
                 />
             </Route>

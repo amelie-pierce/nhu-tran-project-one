@@ -80,7 +80,7 @@ const Checkout = () => {
     }
 
     if (!state) {
-        return <Navigate to="/" />
+        return <Navigate to="/login" />
     }
 
     return (

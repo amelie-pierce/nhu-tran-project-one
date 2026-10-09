@@ -6,7 +6,6 @@ export type SignUpRequest = {
 }
 
 export const signUp = async (values: SignUpRequest) => {
-    console.log(JSON.stringify(values.email))
     const { data, error } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,

@@ -25,8 +25,8 @@ const VirtualArea = ({
 }: Props) => {
     const screenWidth = useScreenWidth()
 
-    console.log("products", products)
-    console.log("ingredients", ingredients)
+    // console.log("products", products)
+    // console.log("ingredients", ingredients)
 
     const size = useMemo(() => {
         if (screenWidth <= 480) {
@@ -68,8 +68,8 @@ const VirtualArea = ({
         overscan: OVERSCAN,
         getItemKey: (index) => products?.[index]?.id || 0,
     })
-    console.log("rowVirtualizer", rowVirtualizer)
-    console.log("columnVirtualizer", columnVirtualizer)
+    // console.log("rowVirtualizer", rowVirtualizer)
+    // console.log("columnVirtualizer", columnVirtualizer)
 
     if (isFetching) {
         return <Loader />

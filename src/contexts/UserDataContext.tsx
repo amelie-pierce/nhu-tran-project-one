@@ -34,13 +34,10 @@ import {
 } from "@/apis/compare/getUserCompare"
 import { deleteUserCompare } from "@/apis/compare/deleteUserCompare"
 import { createUserCompare } from "@/apis/compare/createUserCompare"
-import type { UserCompare } from "@/types/compare"
 
 type UserDataType = {
     cartList: CartProduct[]
     compareList: number[]
-    userCompare?: UserCompare[]
-    userCart?: UserCart[]
     updateCartList: (
         id: number,
         quantity: number,
@@ -54,6 +51,8 @@ type UserDataType = {
     removeFromCartList: (id: number) => void
     toggleCompareItem: (id: number) => void
     removeAllCompareItems: () => void
+    isCartFetching: boolean
+    isCompareFetching: boolean
 }
 
 const UserDataContext = createContext<UserDataType | null>(null)
@@ -73,7 +72,7 @@ export const UserDataProvider = ({ children }: Props) => {
 
     const queryClient = useQueryClient()
 
-    const { data: userCart } = useQuery({
+    const { data: userCart, isFetching: isCartFetching } = useQuery({
         queryKey: [QUERY_KEY_USER_CART],
         queryFn: getUserCart,
         staleTime: 1000 * 60 * 5,
@@ -142,7 +141,7 @@ export const UserDataProvider = ({ children }: Props) => {
         }
     }, [userCart, isDBCartEnabled, isLoggedIn])
 
-    const { data: userCompare } = useQuery({
+    const { data: userCompare, isFetching: isCompareFetching } = useQuery({
         queryKey: [QUERY_KEY_USER_COMPARE],
         queryFn: getUserCompare,
         staleTime: 1000 * 60 * 5,
@@ -365,13 +364,13 @@ export const UserDataProvider = ({ children }: Props) => {
             value={{
                 cartList,
                 compareList,
-                userCompare,
-                userCart,
                 updateCartList,
                 addToCartList,
                 removeFromCartList,
                 toggleCompareItem,
                 removeAllCompareItems,
+                isCompareFetching,
+                isCartFetching,
             }}
         >
             {children}

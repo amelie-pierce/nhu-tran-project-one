@@ -12,10 +12,8 @@ import { useUser } from "@/contexts/UserContext"
 
 const Compare = () => {
     const parentRef = useRef<HTMLDivElement>(null)
+    const { compareList, isCompareFetching } = useUserData()
     const { isLoggedIn } = useUser()
-    const { userCompare, compareList } = useUserData()
-
-    console.log(userCompare, compareList, isLoggedIn)
 
     const {
         data: products,
@@ -28,6 +26,7 @@ const Compare = () => {
                 extra_fields: ["ingredient"],
                 product_ids: compareList,
             }),
+        // staleTime: 1000 * 60 * 5,
         enabled: compareList?.length > 0,
     })
 
@@ -50,7 +49,8 @@ const Compare = () => {
     }, [compareProducts])
 
     const loadingAPI =
-        (isLoggedIn && userCompare === undefined) || (!isLoggedIn && isFetching)
+        (isLoggedIn && (isCompareFetching || isFetching)) ||
+        (!isLoggedIn && isFetching)
 
     if (isError) {
         return <Error />

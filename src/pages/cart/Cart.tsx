@@ -12,12 +12,10 @@ import {
 import { useQuery } from "@tanstack/react-query"
 import { Loader } from "@/components/ui"
 import { Error, Breadcrumb } from "@/components"
-import { useUser } from "@/contexts/UserContext"
 
 const Cart = () => {
-    const { isLoggedIn } = useUser()
     const { isDBCartEnabled } = useFeatureFlags()
-    const { cartList, userCart, removeFromCartList } = useUserData()
+    const { cartList, isCartFetching, removeFromCartList } = useUserData()
     const [selectedItemIds, setSelectedItemIds] = useState<Set<number>>(
         new Set()
     )
@@ -112,14 +110,11 @@ const Cart = () => {
         return `${cartList?.length} ${cartList?.length === 1 ? "item" : "items"}`
     }, [cartList])
 
-    const loadingAPI = isLoggedIn && userCart === undefined
-    //    || (!isLoggedIn && isFetching)
-
     if (isError) {
         return <Error />
     }
 
-    if (!cartList?.length && !loadingAPI) {
+    if (!cartList?.length && !isCartFetching) {
         return <Empty />
     }
 
@@ -127,7 +122,7 @@ const Cart = () => {
         <>
             <Breadcrumb title="CART" currentPage="Cart" />
 
-            {loadingAPI ? (
+            {isCartFetching ? (
                 <Loader />
             ) : (
                 <>
