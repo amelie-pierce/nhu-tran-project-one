@@ -29,12 +29,7 @@ const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
     }
 
     return (
-        <div
-            className={styles["cart-item-container"]}
-            onClick={() => {
-                navigate(`/product/${item.id}`)
-            }}
-        >
+        <div className={styles["cart-item-container"]}>
             <input
                 type="checkbox"
                 checked={item.checked}
@@ -50,6 +45,9 @@ const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
                 sizes={getImgSizeWidth(50, 100, 100, 200)}
                 alt={item.name}
                 className={styles["cart-item-image"]}
+                onClick={() => {
+                    navigate(`/product/${item.id}`)
+                }}
             />
             <div className={styles["cart-item-info-container"]}>
                 <div className="bold text-truncate">{item.name}</div>

@@ -83,7 +83,7 @@ const UserInformation = () => {
                 <div className={styles["country-info"]}>
                     <span>Country</span>
                     <img
-                        src="https://xqmtkyrrnebwmziqprii.supabase.co/storage/v1/object/public/assets/flag-vn.svg"
+                        src={flag}
                         srcSet={`
                             ${transformImage(flag, 24)} 24w,
                         `}

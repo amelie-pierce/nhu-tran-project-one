@@ -35,6 +35,7 @@ const Introduction = () => {
                 sizes={getImgSizeWidth(200, 350, 500, 800)}
                 alt="about me"
                 className={styles["intro-img"]}
+                fetchPriority="high"
             />
         </div>
     )

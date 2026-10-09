@@ -10,6 +10,7 @@
     aspect-ratio: 1 / 1;
     border-radius: var(--radius-m);
     object-fit: cover;
+    cursor: pointer;
 }
 
 .cart-item-info-container {

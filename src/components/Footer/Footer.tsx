@@ -44,7 +44,6 @@ const Footer = () => {
                             sizes={getImgSizeWidth(40, 50, 100, 150)}
                             alt="logo"
                             className={styles["logo-footer"]}
-                            fetchPriority="high"
                         />
                         <div className="text-primary">Beauty & skincare</div>
                     </div>

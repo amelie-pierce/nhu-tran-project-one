@@ -58,6 +58,7 @@ const Header = () => {
                         sizes={getImgSizeWidth(40, 50, 50, 100)}
                         alt="logo"
                         className={styles["logo-header"]}
+                        fetchPriority="high"
                     />
                 </Link>
 
