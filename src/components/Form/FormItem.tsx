@@ -37,7 +37,7 @@ const FormItem = ({
 
                 <div
                     id={`error-${name}`}
-                    className={styles["form-item-error"]}
+                    className={`form-item-error ${styles["form-item-error"]}`}
                 />
             </div>
         </div>

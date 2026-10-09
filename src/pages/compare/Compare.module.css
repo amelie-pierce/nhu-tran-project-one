@@ -5,7 +5,10 @@
 
 .view-area {
     width: 100%;
-    height: calc(100vh - var(--header-height) - var(--footer-height));
+    height: calc(
+        100vh - var(--header-height) - var(--breadcrumb-height) -
+            var(--page-padding-y)
+    );
     position: relative;
     overflow: auto;
     border-radius: var(--radius-m);

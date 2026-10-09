@@ -21,6 +21,10 @@ const Form = <T extends Record<string, string>>({
         const errors = validate?.(values) || null
         const hasErrors = errors && Object.keys(errors).length > 0
 
+        document.querySelectorAll(".form-item-error").forEach((element) => {
+            (element as HTMLElement).style.display = "none"
+        })
+
         if (!hasErrors) {
             onSubmit?.(values)
         } else {

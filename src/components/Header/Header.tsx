@@ -75,7 +75,7 @@ const Header = () => {
                                 icon={faCartShopping}
                                 className={styles["icon-cart"]}
                             />
-                            {!!cartNumber && (
+                            {!!cartNumber && cartNumber !== "0" && (
                                 <div
                                     className={`${styles["icon-number"]} caption bold`}
                                 >

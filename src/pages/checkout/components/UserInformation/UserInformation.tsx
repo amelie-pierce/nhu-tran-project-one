@@ -9,10 +9,11 @@ import {
     QUERY_KEY_USER_CONTACT,
 } from "@/apis/contact/getUserContact"
 
-const UserInformation =  () => {
+const UserInformation = () => {
     const { data: contactInfo, isFetching } = useQuery({
         queryKey: [QUERY_KEY_USER_CONTACT],
         queryFn: getUserContact,
+        staleTime: 1000 * 60 * 5,
     })
 
     return (

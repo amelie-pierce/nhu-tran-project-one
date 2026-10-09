@@ -12,16 +12,12 @@ import {
 import { useQuery } from "@tanstack/react-query"
 import { Loader } from "@/components/ui"
 import { Error, Breadcrumb } from "@/components"
+import { useUser } from "@/contexts/UserContext"
 
 const Cart = () => {
+    const { isLoggedIn } = useUser()
     const { isDBCartEnabled } = useFeatureFlags()
-    const {
-        cartList,
-        removeFromCartList,
-        isCartFetching,
-        isCartError,
-        isCartLoading,
-    } = useUserData()
+    const { cartList, userCart, removeFromCartList } = useUserData()
     const [selectedItemIds, setSelectedItemIds] = useState<Set<number>>(
         new Set()
     )
@@ -32,17 +28,13 @@ const Cart = () => {
         [cartList]
     )
 
-    const {
-        data: products,
-        // isLoading,
-        isFetching,
-        isError,
-    } = useQuery({
+    const { data: products, isError } = useQuery({
         queryKey: [QUERY_KEY_PRODUCTS, productIds],
         queryFn: () =>
             getListProduct({
                 product_ids: productIds,
             }),
+        staleTime: 1000 * 60 * 5,
         enabled: productIds.length > 0,
     })
 
@@ -112,11 +104,13 @@ const Cart = () => {
         return `${cartList?.length} ${cartList?.length === 1 ? "item" : "items"}`
     }, [cartList])
 
-    if (isError || isCartError) {
+    const loadingAPI = !isLoggedIn || (isLoggedIn && userCart === undefined)
+
+    if (isError) {
         return <Error />
     }
 
-    if (!cartList?.length && !isCartFetching && !isFetching) {
+    if (!cartList?.length && !loadingAPI) {
         return <Empty />
     }
 
@@ -124,7 +118,7 @@ const Cart = () => {
         <>
             <Breadcrumb title="CART" currentPage="Cart" />
 
-            {isCartLoading ? (
+            {loadingAPI ? (
                 <Loader />
             ) : (
                 <>

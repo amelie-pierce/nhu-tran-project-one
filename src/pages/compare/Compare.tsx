@@ -8,22 +8,23 @@ import { useUserData } from "@/contexts/UserDataContext"
 import { Breadcrumb, Empty, Error } from "@/components"
 import VirtualArea from "./components/VirtualArea/VirtualArea"
 import styles from "./Compare.module.css"
+import { useUser } from "@/contexts/UserContext"
 
 const Compare = () => {
     const parentRef = useRef<HTMLDivElement>(null)
-    const { compareList } = useUserData()
+    const { isLoggedIn } = useUser()
+    const { userCompare, compareList } = useUserData()
 
-    const {
-        data: products,
-        isFetching,
-        isError,
-    } = useQuery({
+    console.log(userCompare, compareList, isLoggedIn)
+
+    const { data: products, isError } = useQuery({
         queryKey: [QUERY_KEY_PRODUCTS],
         queryFn: () =>
             getListProduct({
                 extra_fields: ["ingredient"],
                 product_ids: compareList,
             }),
+        staleTime: 1000 * 60 * 5,
         enabled: compareList?.length > 0,
     })
 
@@ -45,11 +46,13 @@ const Compare = () => {
         return Array.from(uniqueIngredients)?.sort((a, b) => a.localeCompare(b))
     }, [compareProducts])
 
+    const loadingAPI = isLoggedIn && userCompare === undefined
+
     if (isError) {
         return <Error />
     }
 
-    if (!compareList?.length && !isFetching) {
+    if (!compareList?.length && !loadingAPI) {
         return <Empty label="comparison" />
     }
 
@@ -61,7 +64,7 @@ const Compare = () => {
                     <VirtualArea
                         parentRef={parentRef}
                         products={compareProducts}
-                        isFetching={isFetching}
+                        isFetching={loadingAPI}
                         ingredients={ingredients}
                     />
                 </div>

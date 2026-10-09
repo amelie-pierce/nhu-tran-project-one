@@ -46,6 +46,7 @@ const ProductList = () => {
                 limit: limit,
                 category_id: activeCategoryId,
             }),
+        staleTime: 1000 * 60 * 5,
     })
 
     useEffect(() => {

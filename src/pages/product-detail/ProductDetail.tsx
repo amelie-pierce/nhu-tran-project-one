@@ -14,6 +14,7 @@ const ProductDetail = () => {
     const { data, isLoading, isError } = useQuery({
         queryFn: () => getProductDetail({ id: Number(id) }),
         queryKey: [QUERY_KEY_PRODUCT_DETAIL, id],
+        staleTime: 1000 * 60 * 5,
         enabled: !!id,
     })
 

@@ -15,6 +15,7 @@ const Category = ({ activeCategoryId, onChangeCategory }: Props) => {
     const { data: categories } = useQuery({
         queryKey: [QUERY_KEY_CATEGORIES],
         queryFn: getListCategory,
+        staleTime: 1000 * 60 * 5,
     })
 
     return (
