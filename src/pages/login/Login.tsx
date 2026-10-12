@@ -43,6 +43,7 @@ const Login = () => {
     const { mutate: deleteCompare } = useMutation({
         mutationFn: deleteUserCompare,
         onSuccess: () => {
+            if (!compareList.length) return
             bulkUpsertCompare({
                 product_ids: compareList.map((item) => item.product_id),
             })
@@ -72,9 +73,6 @@ const Login = () => {
     }, [action, addToCartList, navigate])
 
     const syncCompareListToDB = useCallback(() => {
-        // const compareList = getCompareStorage()
-        if (!compareList.length) return
-
         deleteCompare()
     }, [bulkUpsertCompare, compareList])
 
