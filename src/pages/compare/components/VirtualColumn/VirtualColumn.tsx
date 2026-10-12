@@ -76,7 +76,7 @@ const VirtualColumn = ({
                                 icon={<FontAwesomeIcon icon={faTrash} />}
                                 className={styles["button-action"]}
                                 onClick={() => {
-                                    toggleCompareItem(Number(column.key))
+                                    toggleCompareItem(product)
                                 }}
                             >
                                 {screenWidth > 1024 ? "Remove" : null}

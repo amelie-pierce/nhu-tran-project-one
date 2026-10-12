@@ -57,13 +57,15 @@ const ProductItem = ({ product }: Props) => {
                         </span>
                         <Tag
                             variant={
-                                compareList.includes(product.id)
+                                compareList.some(
+                                    (item) => item.product_id === product.id
+                                )
                                     ? "light-purple"
                                     : "white"
                             }
                             onClick={(e) => {
                                 e.stopPropagation()
-                                toggleCompareItem(product.id)
+                                toggleCompareItem(product)
                             }}
                         >
                             <FontAwesomeIcon

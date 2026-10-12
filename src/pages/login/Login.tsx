@@ -44,7 +44,7 @@ const Login = () => {
         mutationFn: deleteUserCompare,
         onSuccess: () => {
             bulkUpsertCompare({
-                product_ids: compareList.map((item) => Number(item)),
+                product_ids: compareList.map((item) => item.product_id),
             })
         },
         onError: (error) => {

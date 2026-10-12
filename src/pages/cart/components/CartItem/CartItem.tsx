@@ -57,6 +57,7 @@ const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
                     max={maxQtyPerProduct}
                     onChange={handleChangeQuantity}
                     className={styles["input-quantity"]}
+                    allowClear={false}
                 />
             </div>
             {screenWidth > 1024 && (

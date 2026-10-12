@@ -40,11 +40,13 @@ const ProductInfo = ({ product }: Props) => {
                         </Tag>
                         <Tag
                             variant={
-                                compareList.includes(product.id)
+                                compareList.some(
+                                    (item) => item.product_id === product.id
+                                )
                                     ? "light-purple"
                                     : "white"
                             }
-                            onClick={() => toggleCompareItem(product.id)}
+                            onClick={() => toggleCompareItem(product)}
                         >
                             <FontAwesomeIcon
                                 icon={faScaleBalanced}

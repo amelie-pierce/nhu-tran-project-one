@@ -45,6 +45,7 @@ const ProductList = () => {
                 page: currentPage,
                 limit: limit,
                 category_id: activeCategoryId,
+                extra_fields: ["ingredient"],
             }),
         staleTime: 1000 * 60 * 5,
     })

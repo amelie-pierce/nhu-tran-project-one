@@ -3,7 +3,6 @@ import { CartItem, TotalPrice } from "./components"
 import styles from "./Cart.module.css"
 import Empty from "@/components/Empty/Empty"
 import { useEffect, useMemo, useState } from "react"
-import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 import { useUserData } from "@/contexts/UserDataContext"
 import {
     getListProduct,
@@ -14,7 +13,6 @@ import { Loader } from "@/components/ui"
 import { Error, Breadcrumb } from "@/components"
 
 const Cart = () => {
-    const { isDBCartEnabled } = useFeatureFlags()
     const { cartList, isCartFetching, removeFromCartList } = useUserData()
     const [selectedItemIds, setSelectedItemIds] = useState<Set<number>>(
         new Set()
@@ -39,26 +37,10 @@ const Cart = () => {
     const cartProductItems: CartProduct[] = useMemo(
         () =>
             cartList
-                ?.map((cartItem) => {
-                    if (isDBCartEnabled) {
-                        return {
-                            ...cartItem,
-                            checked: selectedItemIds.has(cartItem?.id || 0),
-                        }
-                    }
-
-                    const product = products?.data?.find(
-                        (product) => product.id === cartItem.id
-                    )
-
-                    if (!product) return null
-
-                    return {
-                        ...product,
-                        quantity: cartItem.quantity,
-                        checked: selectedItemIds.has(product.id),
-                    }
-                })
+                ?.map((cartItem) => ({
+                    ...cartItem,
+                    checked: selectedItemIds.has(cartItem?.id || 0),
+                }))
                 ?.filter((item) => !!item),
         [cartList, products?.data, selectedItemIds]
     )

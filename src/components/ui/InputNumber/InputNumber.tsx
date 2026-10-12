@@ -10,6 +10,7 @@ type Props = {
     max?: number
     onChange: (value: number | string) => void
     className?: string
+    allowClear?: boolean
 }
 
 const InputNumber = ({
@@ -17,13 +18,16 @@ const InputNumber = ({
     value,
     max = MAX,
     onChange,
+    allowClear = true,
     ...props
 }: Props) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value
 
         if (input === "") {
-            onChange("")
+            if (allowClear) {
+                onChange("")
+            }
             return
         }
 

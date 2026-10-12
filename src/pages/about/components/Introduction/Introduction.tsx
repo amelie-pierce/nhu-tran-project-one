@@ -10,7 +10,7 @@ const Introduction = () => {
         <div className={`page-padding ${styles["wrapper"]}`}>
             <div className={styles.intro}>
                 <div className={styles["intro-text"]}>
-                    <span className="heading bold">Hi, I'm Nhu</span>
+                    <span className="heading bold">Hi, I’m Nhu</span>
                     <span className="heading bold">
                         I’m a Frontend Engineer
                     </span>

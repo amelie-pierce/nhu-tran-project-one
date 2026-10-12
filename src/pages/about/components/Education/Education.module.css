@@ -53,6 +53,9 @@
     .uit-logo {
         height: 100px;
     }
+    .journey-info {
+        flex-wrap: wrap;
+    }
     .journey {
         gap: var(--spacing-m);
     }
@@ -67,6 +70,12 @@
         grid-template-columns: repeat(2, 1fr);
         grid-template-rows: repeat(2, 1fr);
         gap: var(--spacing-m);
+    }
+}
+
+@media (min-width: 768px) and (max-width: 768px) {
+    .journey-info {
+        flex-wrap: nowrap;
     }
 }
 

@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useMemo, useEffect } from "react"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import type { Product } from "@/types/product"
 import { Loader } from "@/components/ui"
@@ -70,6 +70,11 @@ const VirtualArea = ({
     })
     // console.log("rowVirtualizer", rowVirtualizer)
     // console.log("columnVirtualizer", columnVirtualizer)
+
+    useEffect(() => {
+        rowVirtualizer.measure()
+        columnVirtualizer.measure()
+    }, [])
 
     if (isFetching) {
         return <Loader />

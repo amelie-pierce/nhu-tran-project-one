@@ -10,12 +10,7 @@ import { useUser } from "@/contexts/UserContext"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { QUERY_KEY_USER_CART } from "@/apis/cart/getUserCart"
 import type { CartProduct, UserCart } from "@/types/cart"
-import {
-    addToCartStorage,
-    getCartStorage,
-    removeFromCartStorage,
-    updateCartStorage,
-} from "@/storages/cartStorage"
+import type { UserCompare } from "@/types/compare"
 import {
     getCompareStorage,
     removeAllCompareStorage,
@@ -34,14 +29,15 @@ import {
 } from "@/apis/compare/getUserCompare"
 import { deleteUserCompare } from "@/apis/compare/deleteUserCompare"
 import { createUserCompare } from "@/apis/compare/createUserCompare"
+import type { Product } from "@/types/product"
 
 type UserDataType = {
     cartList: CartProduct[]
-    compareList: number[]
+    compareList: UserCompare[]
     updateCartList: (id: number, quantity: number) => void
     addToCartList: (id: number, quantity: number) => void
     removeFromCartList: (id: number) => void
-    toggleCompareItem: (id: number) => void
+    toggleCompareItem: (product?: Product) => void
     removeAllCompareItems: () => void
     isCartFetching: boolean
     isCompareFetching: boolean
@@ -54,11 +50,10 @@ type Props = {
 }
 
 export const UserDataProvider = ({ children }: Props) => {
-    const { isDBCartEnabled, isDBCompareEnabled, maxQtyPerProduct } =
-        useFeatureFlags()
-    const [cartList, setCartList] = useState<CartProduct[]>(getCartStorage())
+    const { isDBCompareEnabled, maxQtyPerProduct } = useFeatureFlags()
+    const [cartList, setCartList] = useState<CartProduct[]>([])
     const [compareList, setCompareList] =
-        useState<number[]>(getCompareStorage())
+        useState<UserCompare[]>(getCompareStorage())
     const { showToast } = useToast()
     const { isLoggedIn } = useUser()
 
@@ -68,7 +63,7 @@ export const UserDataProvider = ({ children }: Props) => {
         queryKey: [QUERY_KEY_USER_CART],
         queryFn: getUserCart,
         // staleTime: 1000 * 60 * 5,
-        enabled: isDBCartEnabled && isLoggedIn,
+        enabled: isLoggedIn,
     })
 
     const { mutate: createCart } = useMutation({
@@ -126,12 +121,10 @@ export const UserDataProvider = ({ children }: Props) => {
     }
 
     useEffect(() => {
-        if (isDBCartEnabled && isLoggedIn) {
+        if (isLoggedIn) {
             setCartList(pareCartAPIResponse(userCart))
-        } else {
-            setCartList(getCartStorage())
         }
-    }, [userCart, isDBCartEnabled, isLoggedIn])
+    }, [userCart, isLoggedIn])
 
     const { data: userCompare, isFetching: isCompareFetching } = useQuery({
         queryKey: [QUERY_KEY_USER_COMPARE],
@@ -172,7 +165,7 @@ export const UserDataProvider = ({ children }: Props) => {
 
     useEffect(() => {
         if (isDBCompareEnabled && isLoggedIn) {
-            setCompareList(userCompare?.map((item) => item.product_id) ?? [])
+            setCompareList(userCompare ?? [])
         } else {
             setCompareList(getCompareStorage())
         }
@@ -230,13 +223,9 @@ export const UserDataProvider = ({ children }: Props) => {
     )
 
     const updateCartList = (product_id: number, quantity: number) => {
-        if (isDBCartEnabled) {
-            debouncedUpdateCart(product_id, quantity)
-        } else {
-            updateCartStorage(cartList, product_id, quantity)
-        }
+        debouncedUpdateCart(product_id, quantity)
         setCartList((prevCartList) =>
-            prevCartList.map((item) =>
+            prevCartList?.map((item) =>
                 item.id === product_id
                     ? {
                           ...item,
@@ -274,56 +263,47 @@ export const UserDataProvider = ({ children }: Props) => {
                         quantity,
                     },
                 ])
-                if (isDBCartEnabled) {
-                    createCart({
-                        product_id,
-                        quantity,
-                    })
-                } else {
-                    addToCartStorage(lastestCartList, product_id, quantity)
-                }
+                createCart({
+                    product_id,
+                    quantity,
+                })
             }
         },
-        [
-            cartList,
-            checkConditionAddToCart,
-            createCart,
-            isDBCartEnabled,
-            updateCartList,
-        ]
+        [cartList, checkConditionAddToCart, createCart, updateCartList]
     )
 
     const removeFromCartList = (product_id: number) => {
-        if (isDBCartEnabled) {
-            deleteCart([product_id])
-        } else {
-            removeFromCartStorage(cartList, product_id)
-        }
+        deleteCart([product_id])
         setCartList((prevCartList) =>
             prevCartList.filter((item) => item.id !== product_id)
         )
     }
 
-    const addToCompareListDB = (product_id: number) => {
-        createCompare({ product_id })
-        setCompareList((prevCompareList) => [...prevCompareList, product_id])
+    const addToCompareListDB = (product: Product) => {
+        createCompare({ product_id: product.id })
+        setCompareList((prevCompareList) => [
+            ...prevCompareList,
+            { product_id: product.id, product: product },
+        ])
     }
 
-    const removeFromCompareListDB = (product_id: number) => {
-        deleteCompare(product_id)
+    const removeFromCompareListDB = (product: Product) => {
+        deleteCompare(product.id)
         setCompareList((prevCompareList) =>
-            prevCompareList.filter((item) => item !== product_id)
+            prevCompareList.filter((item) => item.product_id !== product.id)
         )
     }
 
-    const toggleCompareItem = (product_id: number) => {
-        const newCompareList = toggleCompareStorage(product_id)
+    const toggleCompareItem = (product?: Product) => {
+        if (!product) return
+
+        const newCompareList = toggleCompareStorage(product)
 
         if (isDBCompareEnabled && isLoggedIn) {
-            if (compareList.includes(product_id)) {
-                removeFromCompareListDB(product_id)
+            if (compareList.some((item) => item.product_id === product.id)) {
+                removeFromCompareListDB(product)
             } else {
-                addToCompareListDB(product_id)
+                addToCompareListDB(product)
             }
         } else {
             setCompareList(newCompareList)

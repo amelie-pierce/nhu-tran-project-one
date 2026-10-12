@@ -1,60 +1,32 @@
 import { useMemo, useRef } from "react"
-import {
-    getListProduct,
-    QUERY_KEY_PRODUCTS,
-} from "@/apis/product/getListProduct"
-import { useQuery } from "@tanstack/react-query"
 import { useUserData } from "@/contexts/UserDataContext"
-import { Breadcrumb, Empty, Error } from "@/components"
+import { Breadcrumb, Empty } from "@/components"
 import VirtualArea from "./components/VirtualArea/VirtualArea"
 import styles from "./Compare.module.css"
 import { useUser } from "@/contexts/UserContext"
+import type { Product } from "@/types/product"
 
 const Compare = () => {
     const parentRef = useRef<HTMLDivElement>(null)
     const { compareList, isCompareFetching } = useUserData()
     const { isLoggedIn } = useUser()
 
-    const {
-        data: products,
-        isFetching,
-        isError,
-    } = useQuery({
-        queryKey: [QUERY_KEY_PRODUCTS],
-        queryFn: () =>
-            getListProduct({
-                extra_fields: ["ingredient"],
-                product_ids: compareList,
-            }),
-        // staleTime: 1000 * 60 * 5,
-        enabled: compareList?.length > 0,
-    })
-
-    const compareProducts = useMemo(
-        () =>
-            products?.data?.filter((product) =>
-                compareList.includes(product.id)
-            ),
-        [products?.data, compareList]
-    )
-
-    const ingredients: string[] = useMemo(() => {
+    const data = useMemo(() => {
         const uniqueIngredients = new Set<string>()
-        compareProducts?.forEach((item) => {
-            item.ingredient?.forEach((ingredient) => {
+        const products: Product[] = []
+        compareList?.forEach((item) => {
+            products.push(item?.product)
+            item?.product?.ingredient?.forEach((ingredient) => {
                 uniqueIngredients.add(ingredient.name)
             })
         })
-        return Array.from(uniqueIngredients)?.sort((a, b) => a.localeCompare(b))
-    }, [compareProducts])
+        const ingredients = Array.from(uniqueIngredients)?.sort((a, b) =>
+            a.localeCompare(b)
+        )
+        return { products, ingredients }
+    }, [compareList])
 
-    const loadingAPI =
-        (isLoggedIn && (isCompareFetching || isFetching)) ||
-        (!isLoggedIn && isFetching)
-
-    if (isError) {
-        return <Error />
-    }
+    const loadingAPI = isLoggedIn && isCompareFetching
 
     if (!compareList?.length && !loadingAPI) {
         return <Empty label="comparison" />
@@ -67,9 +39,9 @@ const Compare = () => {
                 <div className={styles["view-area"]} ref={parentRef}>
                     <VirtualArea
                         parentRef={parentRef}
-                        products={compareProducts}
+                        products={data.products}
                         isFetching={loadingAPI}
-                        ingredients={ingredients}
+                        ingredients={data.ingredients}
                     />
                 </div>
             </div>

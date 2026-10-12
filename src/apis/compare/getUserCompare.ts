@@ -10,10 +10,24 @@ export const getUserCompare = async (): Promise<UserCompare[]> => {
     if (!user?.id) {
         return []
     }
-
     const { data, error } = await supabase
         .from("user_compare")
-        .select("*")
+        .select(
+            `
+            *,
+            product (
+                *,
+                category (
+                    id,
+                    name
+                ),
+                ingredient (
+                    id,
+                    name
+                )
+            )
+        `
+        )
         .eq("user_id", user?.id)
 
     if (error) {
