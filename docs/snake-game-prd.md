@@ -10,7 +10,7 @@ This document specifies the product; it does not request implementation in this 
 
 ## 2. Modes and cameras
 
-Both 2D and 3D use the same world, smooth free steering, rules, and ongoing match state.
+Both 2D and 3D use the same world, immediate free-direction targeting, rules, and ongoing match state.
 
 | View | Requirements |
 | --- | --- |
@@ -18,7 +18,7 @@ Both 2D and 3D use the same world, smooth free steering, rules, and ongoing matc
 | 3D riding | Default 3D camera, near/above the snake's head to convey riding it. Part of the snake and nearby items remain visible. There is no human rider. |
 | 3D chase | Adjustable alternative behind and above the snake, showing part of its body and surroundings. |
 
-Players choose 2D or 3D during setup and can switch during gameplay. In 3D they can switch riding/chase cameras. Switching keeps position, target, score, length, lives, timers, hazards, and other match state. A minimap is available in 3D.
+Players choose 2D or 3D during setup and can switch during gameplay. In 3D they can switch riding/chase cameras. Switching keeps position, target, score, length, lives, timers, hazards, and other match state. A minimap is available in 3D. Decorative scenery outside the boundary is hidden in 2D, leaving a clean margin around the playable map; it remains visible in 3D.
 
 
 ### Manual camera controls
@@ -35,33 +35,33 @@ Camera inputs must not trigger map targets or held steering. Exact offsets and s
 
 ## 3. Arena, maps, and appearance
 
-Each arena is 150 × 150 world units. This supersedes the earlier 100 × 100 proposal. Snake width is 1 world unit. All maps are available from the start:
+Each arena is 100 × 100 world units. This supersedes the previous 150 × 150 arena. Snake width is 1 world unit. All maps are available from the start:
 
 - Sea.
 - Garden.
 - Forest.
 - Neon / robot / future.
 
-Food has multiple shapes appropriate to the map, such as orange, apple, and grape forms where suitable. Exact food and environmental assets for each theme remain to be selected.
+Food has multiple shapes appropriate to the map, such as orange, apple, and grape forms where suitable. Each match randomly places up to 12 stationary themed obstacles inside the arena, clear of the starting/tutorial area and pickups. Obstacles block the head without costing a life; steer away to resume. They remain solid during protection. Target guidance does not automatically route around obstacles. Sea uses coral, seaweed, and fish reef sculptures; Garden uses blossom trees, mossy logs, and mushrooms; Forest uses leafy trees, logs, and mushrooms; Neon uses luminous towers, rings, and crystals. Their low circular bases show the blocking footprint in 2D and 3D. The minimap includes obstacles.
 
 Players independently select snake color and one of six suits. Every suit is usable on every map:
 
 | Suit | Approved design direction |
 | --- | --- |
-| Bubble Diver | Clear bubbles and fins. |
+| Bubble Diver | Silky aqua wetsuit wrapping the body, with pearl piping. |
 | Petal Parade | Flower petals. |
-| Woodland Sprite | Leaves and mushrooms. |
-| Neon Circuit | Glowing panels. |
-| Candy Ribbon | Pastel stripes. |
-| Cloud Puff | Soft cloud shapes. |
+| Woodland Sprite | Soft leaf-green jacket wrapping the body, with a cream seam. |
+| Neon Circuit | Lilac flight jacket with luminous piping. |
+| Candy Ribbon | Pink silk body wrap with cream ribbons and a bow. |
+| Cloud Puff | Quilted blush puffer wrapping the body, with a fluffy collar. |
 
-Suits differ cosmetically. All provide the same initial outer life layer; none grants an extra ability or a fourth life. Setup shows a snake preview.
+Suits differ cosmetically. All provide the same initial outer life layer; none grants an extra ability or a fourth life. Setup shows a snake preview matching the worn outfit. Petal Parade keeps its original flower-petal appearance. Other suits cover the body like clothing; the head retains the selected snake color.
 
 ## 4. Movement and input
 
 The snake starts with 3 segments and 3 lives. Each match has a 3-second opening countdown. The snake remains stationary until the first movement input; the countdown never starts movement automatically. Movement input is accepted only after the countdown finishes.
 
-Movement follows smooth curves rather than grid-aligned 90-degree turns. Turning is capped at 180 degrees/second; a target is reached within 0.5 world units. Held steering temporarily overrides target guidance. Two movement behaviors are selectable independently of the 2D/3D view:
+Click/tap movement turns immediately toward the destination, without a turning radius or approach arc; a target is reached within 0.5 world units. Left/right controls make one immediate relative 90-degree turn per press and move straight while held. Release and press again for another turn. This supersedes the previous 180-degrees/second turning cap. Held steering temporarily overrides target guidance. Two movement behaviors are selectable independently of the 2D/3D view:
 
 | Behavior | Click/tap target behavior |
 | --- | --- |
@@ -70,7 +70,7 @@ Movement follows smooth curves rather than grid-aligned 90-degree turns. Turning
 
 On desktop, support mouse and keyboard. Keyboard turning uses A/D and left/right arrows, always relative to the snake's own left/right. On mobile/tablet, support touch input without requiring a keyboard.
 
-A click/tap selects a map position. In 3D, it selects a point on the visible ground with the same target behavior as 2D. Holding dedicated visible left/right controls steers in the snake's own direction and avoids a conflict with tapping the map. Keyboard turning has the same steering behavior. Turning from rest moves the snake forward while turning; it does not merely rotate in place.
+A click/tap selects a map position. In 3D, it selects a point on the visible ground with the same target behavior as 2D. Pressing dedicated visible left/right controls turns 90 degrees relative to the snake; holding continues along that heading and avoids a conflict with tapping the map. Keyboard turning has the same steering behavior. Turning from rest moves the snake forward while turning; it does not merely rotate in place.
 
 In Stop mode, releasing steering returns to the latest unreached target, then stops. With no target, it stops immediately. A reached target is cleared, so it is not reused after later steering. In Continue mode, releasing held steering clears the old target and continues along the current heading.
 
@@ -121,7 +121,7 @@ Bomb explosions have no area damage and do not affect nearby snakes. Use contact
 
 ## 7. Robots and marks
 
-Robots start with 3 segments, wander randomly with smooth turns, and move at 80% of the player's current speed. They eat basic food and grow like the player. They can also eat robot marks. They cannot collect hearts, shields, or magnets.
+Robots have rounded bodies and heads like the player, with distinct colors and an antenna. Robots start with 3 segments, wander randomly with immediate heading changes, and move at 80% of the player's current speed. They eat basic food and grow like the player. They can also eat robot marks. They cannot collect hearts, shields, or magnets.
 
 Every robot death leaves one collectible mark per body segment, distributed along its body's last path. Marks are small glowing spots matching the dead robot's color. The owner calls these **marks**, rather than circles. Each mark:
 
@@ -133,7 +133,7 @@ Longer robots leave more marks and therefore more collectible points. Robots eat
 
 ## 8. Food, power-ups, and scoring
 
-Maintain a target population of 40 basic foods. Replace each eaten food after 3 seconds; population may temporarily be below 40 while replacement is pending. Enlarging the arena did not increase the food count.
+Maintain a target population of 40 basic foods. Replace each eaten food after 3 seconds; population may temporarily be below 40 while replacement is pending. The smaller arena retains the food count of 40.
 
 Spawn one random heart/shield/magnet every 15 seconds, with no more than 3 uncollected power-ups on the map. Uncollected power-ups expire after 20 seconds. Exact random distribution is unresolved.
 
@@ -169,7 +169,7 @@ Show the Snake Game name, an animated suited snake, a prominent Play button, fou
 
 ### Play setup
 
-Choose map, suit, snake color, and starting 2D/3D view. Show a snake preview. Stop is the default movement behavior and Riding is the default 3D camera. All maps and suits are immediately available.
+Choose map, suit, snake color, and starting 2D/3D view. Show a snake preview whose background follows the selected map; labels remain readable on Neon’s dark background. Stop is the default movement behavior and Riding is the default 3D camera. All maps and suits are immediately available.
 
 ### Gameplay HUD
 
@@ -200,7 +200,7 @@ A short skippable practice area teaches target taps/clicks, Stop/Continue, held 
 
 ## 10. UI, audio, and accessibility
 
-Use rounded panels, cream backgrounds, coral and teal accents, readable dark text, and rounded lettering. Map artwork supplies theme-specific colors. Add believable visual depth through shadows and tactile-looking controls while retaining the cartoon game style. Use clear hierarchy and contrast; important states must have labels or icons rather than color alone.
+Use rounded panels, blush and peach backgrounds, pastel pink panels, and deep rose/coral accents, readable dark text, and rounded lettering. Map artwork supplies theme-specific colors. Add believable visual depth through shadows and tactile-looking controls while retaining the cartoon game style. Use clear hierarchy and contrast; important states must have labels or icons rather than color alone.
 
 Provide light looping music appropriate to each map, cheerful pickup effects, a distinct damage sound, and a rising speed-warning cue. Provide independent music and sound-effect controls. Asset sources and exact tracks remain unselected.
 
@@ -228,3 +228,19 @@ These details require an owner decision or an explicitly delegated design choice
 10. Unsupported-renderer behavior, browser support, performance targets, loading/error flows, asset selection, and asset licensing.
 
 The agreed features and numeric rules above form the current scope. Open decisions are recorded explicitly rather than invented. No implementation phases or acceptance-criteria section is included.
+
+
+## 2D readability update
+
+The full-map 2D view uses an illustrated canvas layer with screen-size minimums: 17px food symbols, 20px bombs/power-ups, 25px obstacle symbols, and 12px snake bodies. Snake heads show eyes and robots retain antennae. YOU/ROBOT labels, distinct symbols, and a compact legend clarify the object types; a subdued grid reduces clutter. Petal Parade flowers and fabric seams distinguish outfits. Protection uses a steady ring, and damage still changes the appearance. Obstacle bases show their actual blocking radius; enlarged symbols are visual aids, not enlarged collision shapes.
+
+The layer shares Babylon's full-map projection (100-unit arena and five-unit margin), so targeting and gameplay positions remain aligned across viewport sizes. 3D uses the original scene. Camera switches keep match state, and the overlay ignores pointer input so existing tap, keyboard, and touch steering continue to work. No collision sizes, item counts, or movement rules change.
+
+
+## Controls and feedback refinement
+
+- A new reachable target after an obstacle stop reorients the head before its first movement step. Obstacles remain solid: a destination through a blocker still requires the player to choose a route around it.
+- 2D obstacles use gray square badges with desaturated theme symbols and corner studs. Food stays colorful and unboxed. The circular obstacle footprint and collision rules remain unchanged.
+- The default and Reset Camera use the maximum existing camera-distance multiplier, 2.5 (the widest view); manual range remains 0.65–2.5.
+- Bomb contact shows a 1.1-second local starburst/shockwave with sparks, smoke and a distinct explosion sound. 2D also shows BOOM!. This animation adds no area damage or camera shake.
+- Hearts, shields, and magnets have bright colored shells/halos and a sparkle, distinct from food and bombs. Reduced motion uses steady shells and a static blast indicator. All animation timing uses match time, so Pause freezes effects.

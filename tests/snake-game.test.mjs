@@ -1,6 +1,12 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { Match, distance } from "../src/pages/snake-game/model.ts"
+import {
+    Match,
+    distance,
+    ARENA_SIZE,
+    ARENA_LIMIT,
+    SPAWN_LIMIT,
+} from "../src/pages/snake-game/model.ts"
 
 function empty() {
     const m = new Match("#ee927b")
@@ -8,6 +14,7 @@ function empty() {
     m.robots = []
     m.bombs = []
     m.items = []
+    m.obstacles = []
     return m
 }
 function advance(m, seconds) {
@@ -215,14 +222,19 @@ test("magnet affects only food within three units", () => {
 })
 test("boundary stops safely and steering away resumes movement", () => {
     const m = empty()
-    m.player.body = [{ x: 0, z: 74.49 }]
+    m.player.body = [{ x: 0, z: 49.49 }]
     m.player.moving = true
     m.step(1 / 60)
     assert.equal(m.player.moving, false)
     assert.equal(m.lives, 3)
     m.steer(1)
     advance(m, 1.2)
-    assert.ok(m.player.body[0].z < 74)
+    assert.ok(m.player.body[0].x > 7)
+    assert.equal(m.player.body[0].z, 49.49)
+    m.steer(0)
+    m.steer(1)
+    advance(m, 0.2)
+    assert.ok(m.player.body[0].z < 49)
     assert.equal(m.lives, 3)
 })
 test("marks and power-ups expire on match time", () => {
@@ -307,4 +319,127 @@ test("close side and rear targets are approached without endless circling", () =
         assert.equal(m.target, null)
         assert.ok(distance(m.player.body[0], p) <= 0.5)
     }
+})
+
+test("100-unit arena clamps targets and keeps initial spawns inside its inset", () => {
+    assert.equal(ARENA_SIZE, 100)
+    assert.equal(ARENA_LIMIT, 49.5)
+    const m = new Match("#fff")
+    for (const point of [
+        ...m.items,
+        ...m.bombs,
+        ...m.robots.map((r) => r.body[0]),
+    ]) {
+        assert.ok(Math.abs(point.x) <= SPAWN_LIMIT)
+        assert.ok(Math.abs(point.z) <= SPAWN_LIMIT)
+    }
+    m.countdown = 0
+    m.aim({ x: 100, z: -100 })
+    assert.deepEqual(m.target, { x: 49.5, z: -49.5 })
+})
+
+test("solid scenery stops the player without damage and allows steering away", () => {
+    const m = empty()
+    m.obstacles = [{ x: 0, z: 3, radius: 2.4, variant: 0, angle: 0 }]
+    m.aim({ x: 0, z: 10 })
+    advance(m, 1)
+    assert.equal(m.player.moving, false)
+    assert.equal(m.lives, 3)
+    assert.equal(m.target, null)
+    m.steer(1)
+    advance(m, 2)
+    assert.ok(distance(m.player.body[0], { x: 0, z: 0 }) > 1)
+    assert.equal(m.lives, 3)
+})
+test("obstacle placement keeps the start, tutorial route, and pickups clear", () => {
+    const m = new Match("#fff", true)
+    assert.ok(m.obstacles.length > 0)
+    for (const o of m.obstacles) {
+        assert.ok(Math.hypot(o.x, o.z) >= 21)
+        assert.ok(
+            Math.abs(o.x) + o.radius < 50 && Math.abs(o.z) + o.radius < 50
+        )
+        for (const p of [
+            ...m.items,
+            ...m.bombs,
+            ...m.robots.flatMap((r) => r.body),
+        ])
+            assert.ok(distance(o, p) > o.radius + 0.5)
+    }
+})
+test("robots turn inward before the smaller arena boundary", () => {
+    const m = empty()
+    const r = m.snake({ x: 45, z: 0 }, "#fff")
+    r.heading = Math.PI / 2
+    r.wander = r.heading
+    m.robots = [r]
+    advance(m, 2)
+    assert.ok(r.body[0].x < 45)
+})
+
+test("a new target immediately frees a snake stopped against an obstacle", () => {
+    for (const target of [
+        { x: 0, z: -5 },
+        { x: 5, z: 0 },
+        { x: -5, z: 0 },
+    ]) {
+        const m = empty()
+        m.obstacles = [{ x: 0, z: 3, radius: 2.4, variant: 0, angle: 0 }]
+        m.aim({ x: 0, z: 10 })
+        advance(m, 0.3)
+        assert.equal(m.player.moving, false)
+        const before = { ...m.player.body[0] }
+        m.aim(target)
+        m.step(1 / 60)
+        assert.ok(distance(before, m.player.body[0]) > 0.09)
+        assert.ok(distance(m.player.body[0], target) < distance(before, target))
+        advance(m, 2)
+        assert.ok(distance(m.player.body[0], target) <= 0.5)
+        assert.equal(m.lives, 3)
+    }
+})
+test("target turns have no arc, including an immediate reverse", () => {
+    for (const behavior of ["Stop", "Continue"]) {
+        const m = empty()
+        m.behavior = behavior
+        m.aim({ x: 5, z: 0 })
+        m.step(1 / 60)
+        assert.ok(Math.abs(m.player.heading - Math.PI / 2) < 1e-10)
+        assert.ok(Math.abs(m.player.body[0].z) < 1e-10)
+        m.aim({ x: -5, z: 0 })
+        m.step(1 / 60)
+        assert.ok(Math.abs(m.player.body[0].x) < 1e-10)
+        assert.ok(Math.abs(m.player.body[0].z) < 1e-10)
+    }
+})
+test("a held direction turns once, continues straight, and can turn again after release", () => {
+    const m = empty()
+    m.steer(1)
+    m.steer(1)
+    assert.equal(m.player.heading, Math.PI / 2)
+    advance(m, 0.5)
+    assert.ok(Math.abs(m.player.body[0].z) < 1e-10)
+    assert.ok(m.player.body[0].x > 2.9)
+    m.steer(0)
+    assert.equal(m.player.moving, false)
+    m.steer(1)
+    assert.equal(m.player.heading, Math.PI)
+})
+test("explosions last 1.1 match seconds, pause correctly and cause no area damage", () => {
+    const m = empty()
+    const bomb = { id: 4321, x: 0, z: 0 }
+    m.bombs = [bomb]
+    m.explode(bomb)
+    m.explode(bomb)
+    assert.equal(m.explosions.length, 1)
+    assert.equal(m.events.filter((e) => e === "explode").length, 1)
+    advance(m, 0.8)
+    assert.equal(m.explosions.length, 1)
+    assert.equal(m.lives, 3)
+    m.pause()
+    advance(m, 2)
+    assert.equal(m.explosions.length, 1)
+    m.paused = false
+    advance(m, 0.4)
+    assert.equal(m.explosions.length, 0)
 })

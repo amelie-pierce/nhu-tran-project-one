@@ -1,9 +1,9 @@
 .sg-app {
-    --ink: #294c44;
-    --muted: #78847a;
-    --cream: #faf7ef;
-    --coral: #e78c76;
-    --teal: #426e60;
+    --ink: #583b46;
+    --muted: #84616d;
+    --cream: #fff6f2;
+    --coral: #b85e62;
+    --rose: #a34e65;
     min-height: 100dvh;
     background: var(--cream);
     color: var(--ink);
@@ -23,9 +23,9 @@
 }
 .sg-app button {
     cursor: pointer;
-    border: 1px solid #dcded0;
+    border: 1px solid #efd1d4;
     border-radius: 12px;
-    background: #fffdf6;
+    background: #fffaf7;
     color: var(--ink);
     padding: 11px 18px;
     transition:
@@ -35,19 +35,19 @@
 }
 .sg-app button:hover {
     transform: translateY(-2px);
-    background: #f0eddf;
+    background: #ffe8e7;
 }
 .sg-app button:focus-visible,
 .sg-app a:focus-visible,
 .sg-app input:focus-visible,
 .sg-app canvas:focus-visible {
-    outline: 3px solid #147b7e;
+    outline: 3px solid #a34e65;
     outline-offset: 4px;
 }
 .sg-app button[aria-pressed="true"] {
-    border-color: var(--teal);
-    background: #e5eee0;
-    box-shadow: 0 0 0 1px var(--teal);
+    border-color: var(--rose);
+    background: #fbdce3;
+    box-shadow: 0 0 0 1px var(--rose);
 }
 .sg-app h1,
 .sg-app h2,
@@ -68,18 +68,18 @@
     font-size: 22px;
 }
 .sg-app p {
-    color: #69796d;
+    color: #795966;
 }
 .sg-app .sg-primary {
-    background: var(--teal);
-    border-color: var(--teal);
+    background: var(--rose);
+    border-color: var(--rose);
     color: #fffaf0;
-    box-shadow: 0 5px 0 #2e5247;
+    box-shadow: 0 5px 0 #7b374f;
     padding: 16px 28px;
     font-weight: 700;
 }
 .sg-app .sg-primary:hover {
-    background: #345b4e;
+    background: #8f3f57;
 }
 .sg-shell {
     max-width: 1360px;
@@ -91,7 +91,7 @@
     justify-content: space-between;
     align-items: center;
     min-height: 116px;
-    border-bottom: 1px solid #e4e5d8;
+    border-bottom: 1px solid #efd1d4;
     gap: 18px;
 }
 .sg-app .sg-brand {
@@ -124,8 +124,8 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    background: #dfe9cf;
-    color: #5c8965;
+    background: #f9d7df;
+    color: #a34e65;
     font-size: 42px;
     margin-right: 12px;
 }
@@ -135,7 +135,7 @@
     gap: 28px;
 }
 .sg-nav a {
-    color: #657668;
+    color: #795966;
     font-size: 12px;
 }
 .sg-nav > div button {
@@ -156,7 +156,7 @@
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 2px;
-    color: #6f8370;
+    color: #795966;
     display: block;
 }
 .sg-kicker {
@@ -170,7 +170,7 @@
     height: 7px;
     width: 7px;
     border-radius: 50%;
-    background: #a7b993;
+    background: #d5869a;
 }
 .sg-hero h1 {
     margin: 23px 0 20px;
@@ -205,7 +205,7 @@
     gap: 23px;
     margin-top: 29px;
     font-size: 10px;
-    color: #899180;
+    color: #795966;
 }
 .sg-hero-art {
     position: relative;
@@ -215,8 +215,8 @@
     min-height: 390px;
     background: radial-gradient(
         ellipse,
-        #e4ebd5 0%,
-        #e9eddd 45%,
+        #f8d3df 0%,
+        #ffe4d8 45%,
         transparent 70%
     );
 }
@@ -235,20 +235,20 @@
     font-size: 8px;
     letter-spacing: 2px;
     white-space: nowrap;
-    color: #91a18b;
+    color: #906371;
 }
 .sg-art-orbit {
     position: absolute;
     width: 90%;
     height: 75%;
-    border: 1px dashed #c4d0b6;
+    border: 1px dashed #dfadba;
     border-radius: 50%;
     transform: rotate(-15deg);
 }
 .sg-float {
     position: absolute;
-    background: #fffdf2;
-    border: 1px solid #e4e5d2;
+    background: #fffaf7;
+    border: 1px solid #efd1d4;
     border-radius: 8px;
     padding: 8px 12px;
     font-size: 10px;
@@ -280,7 +280,7 @@
 }
 .sg-section-heading > span {
     font-size: 10px;
-    color: #899180;
+    color: #795966;
 }
 .sg-world-grid {
     display: grid;
@@ -292,9 +292,9 @@
     text-align: left;
     border-radius: 17px;
     overflow: hidden;
-    background: #fffdf7;
-    border: 1px solid #e4e6d8;
-    box-shadow: 0 4px 0 #eeeede;
+    background: #fffaf7;
+    border: 1px solid #efd1d4;
+    box-shadow: 0 4px 0 #f5dfe1;
 }
 .sg-world-picture {
     position: relative;
@@ -388,22 +388,22 @@
 .sg-world-description > span {
     display: flex;
     justify-content: space-between;
-    border-top: 1px solid #ececdf;
+    border-top: 1px solid #efd1d4;
     padding-top: 12px;
     font-size: 8px;
     letter-spacing: 1px;
-    color: #84907b;
+    color: #795966;
 }
 .sg-world-description strong {
     font-size: 12px;
-    color: #58705a;
+    color: #795966;
 }
 .sg-home-footer {
     display: flex;
     justify-content: space-between;
     padding: 24px 0;
-    border-top: 1px solid #e4e5d8;
-    color: #939b87;
+    border-top: 1px solid #efd1d4;
+    color: #795966;
     font-size: 10px;
 }
 .sg-home-footer span:last-child {
@@ -430,12 +430,12 @@
 }
 .sg-customize legend {
     font-size: 12px;
-    color: #a0ab94;
+    color: #906371;
     margin-bottom: 12px;
 }
 .sg-customize legend span {
     font-weight: 700;
-    color: #47604e;
+    color: #583b46;
     margin-left: 10px;
     font-size: 15px;
 }
@@ -498,12 +498,12 @@
 }
 .sg-preview p {
     font-size: 12px;
-    color: #46644f;
+    color: #795966;
     margin-bottom: 25px;
 }
 .sg-preview small {
     font-size: 9px;
-    color: #48684e;
+    color: #795966;
     margin-top: 20px;
 }
 .sg-overlay {
@@ -514,7 +514,7 @@
     align-items: center;
     justify-content: center;
     padding: 20px;
-    background: #25473966;
+    background: #583b4666;
     backdrop-filter: blur(7px);
 }
 .sg-modal {
@@ -543,7 +543,7 @@
     font-size: 14px;
 }
 .sg-modal input {
-    accent-color: #4d7d67;
+    accent-color: #a34e65;
     max-width: 50%;
 }
 .sg-storage {
@@ -597,7 +597,7 @@
 }
 .sg-result-stats span {
     font-size: 12px;
-    color: #8b947f;
+    color: #795966;
 }
 .sg-play {
     height: 100dvh;
@@ -610,8 +610,8 @@
     align-items: center;
     gap: 36px;
     padding: 13px 25px;
-    background: #faf7ef;
-    border-bottom: 1px solid #e0e4d6;
+    background: #fff6f2;
+    border-bottom: 1px solid #efd1d4;
     z-index: 2;
 }
 .sg-hud .sg-eyebrow {
@@ -626,17 +626,17 @@
     margin-left: auto;
 }
 .sg-lives {
-    color: #d98574;
+    color: #b7526b;
     white-space: nowrap;
 }
 .sg-lives span {
-    color: #a6ac9a;
+    color: #b18e99;
 }
 .sg-stage {
     position: relative;
     flex: 1;
     min-height: 0;
-    background: #f6f1e7;
+    background: #fff1ed;
     overflow: hidden;
 }
 .sg-stage > canvas {
@@ -651,9 +651,9 @@
     justify-content: space-between;
     gap: 14px;
     padding: 12px 22px;
-    border-top: 1px solid #e0e4d6;
+    border-top: 1px solid #efd1d4;
     z-index: 3;
-    background: #faf7ef;
+    background: #fff6f2;
 }
 .sg-control-group {
     display: flex;
@@ -675,8 +675,8 @@
     user-select: none;
     font-size: 28px;
     line-height: 1;
-    background: #e5ecd9;
-    border-bottom: 4px solid #c4d0b6;
+    background: #fbdce3;
+    border-bottom: 4px solid #dfadba;
     min-height: 59px;
 }
 .sg-steer small {
@@ -690,7 +690,7 @@
     right: 15px;
     top: 15px;
     padding: 7px;
-    background: #faf7efed;
+    background: #fff6f2ed;
     border-radius: 12px;
     box-shadow: 0 4px 20px #24463515;
     pointer-events: none;
@@ -719,7 +719,7 @@
 .sg-effects span {
     padding: 6px 12px;
     background: #fff9e9ed;
-    border: 1px solid #dfe5d5;
+    border: 1px solid #efd1d4;
     border-radius: 10px;
     font-size: 12px;
     box-shadow: 0 3px 10px #30534512;
@@ -744,7 +744,7 @@
 }
 .sg-countdown b {
     font-size: 110px;
-    color: #3e6652;
+    color: #a34e65;
     line-height: 1.4;
 }
 .sg-countdown p {
@@ -771,7 +771,7 @@
     left: 15px;
     max-width: 340px;
     background: #fff9edee;
-    border: 1px solid #d6dfcc;
+    border: 1px solid #efd1d4;
     border-radius: 16px;
     padding: 17px;
     box-shadow: 0 6px 20px #324f3920;
@@ -779,7 +779,7 @@
 .sg-lesson small {
     font-size: 9px;
     letter-spacing: 1.7px;
-    color: #7d8f73;
+    color: #795966;
 }
 .sg-lesson h3 {
     font-size: 21px;
@@ -1106,5 +1106,52 @@
     }
     .sg-countdown b {
         font-size: 65px;
+    }
+}
+
+.sg-preview.sg-preview-dark .sg-eyebrow,
+.sg-preview.sg-preview-dark h2,
+.sg-preview.sg-preview-dark p,
+.sg-preview.sg-preview-dark small {
+    color: #fff2fa;
+}
+
+.sg-stage > .sg-readable-map {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+.sg-map-key {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    gap: 6px 12px;
+    flex-wrap: wrap;
+    width: max-content;
+    max-width: calc(100% - 20px);
+    padding: 4px 10px;
+    border-radius: 10px;
+    background: #fff8f2ed;
+    color: #583b46;
+    font-size: 10px;
+    pointer-events: none;
+}
+.sg-map-key span {
+    white-space: nowrap;
+}
+.sg-stage:has(.sg-map-key) .sg-hint {
+    bottom: 44px;
+}
+.sg-stage:has(.sg-lesson) .sg-map-key {
+    display: none;
+}
+@media (max-height: 550px) {
+    .sg-map-key {
+        bottom: 2px;
+        font-size: 9px;
+        padding: 2px 8px;
     }
 }

@@ -1,10 +1,22 @@
 import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router"
-import { Match, readSettings, themes, suits, palettes } from "./model"
+import {
+    Match,
+    readSettings,
+    themes,
+    suits,
+    palettes,
+    suitStyles,
+    ARENA_SIZE,
+    ARENA_HALF,
+    CAMERA_ZOOM_MIN,
+    CAMERA_ZOOM_MAX,
+} from "./model"
 import type { Settings, Suit } from "./model"
 import { GameScene } from "./scene"
 import { GameAudio } from "./audio"
 import "./snake.css"
+import { drawArena2D } from "./arena2d"
 
 function SnakeArt({
     color,
@@ -53,6 +65,40 @@ function SnakeArt({
                     strokeWidth="60"
                     strokeLinecap="round"
                 />
+                {suit !== "Petal Parade" && (
+                    <>
+                        <path
+                            d="M100 252 C160 290 228 258 212 214 S122 178 146 131 S237 135 278 183 S374 222 376 146 L376 132"
+                            fill="none"
+                            stroke={suitStyles[suit].fabric}
+                            strokeWidth="64"
+                            strokeLinecap="round"
+                        />
+                        <path
+                            d="M100 252 C160 290 228 258 212 214 S122 178 146 131 S237 135 278 183 S374 222 376 146 L376 132"
+                            fill="none"
+                            stroke={suitStyles[suit].trim}
+                            strokeWidth="2"
+                            strokeDasharray={
+                                suit === "Neon Circuit" ? undefined : "5 5"
+                            }
+                            strokeLinecap="round"
+                        />
+                        <path
+                            d="M347 135 Q376 146 405 135"
+                            fill="none"
+                            stroke={suitStyles[suit].trim}
+                            strokeWidth={suit === "Cloud Puff" ? 14 : 7}
+                            strokeLinecap="round"
+                        />
+                        {suit === "Candy Ribbon" && (
+                            <g fill="#fff0d4" stroke="#d77899" strokeWidth="2">
+                                <path d="M376 144 Q343 119 349 148 Q352 165 376 144 Q402 120 404 145 Q406 162 376 144" />
+                                <circle cx="376" cy="144" r="6" />
+                            </g>
+                        )}
+                    </>
+                )}
                 <path
                     d="M100 243 C160 281 228 249 212 205 S122 169 146 122 S237 126 278 174 S374 213 376 137 L376 107"
                     fill="none"
@@ -85,54 +131,14 @@ function SnakeArt({
                                 </g>
                                 <circle r="8" fill="#f4c265" />
                             </>
-                        ) : suit === "Bubble Diver" ? (
-                            <>
-                                <circle
-                                    r="24"
-                                    fill="#d2ffff"
-                                    fillOpacity=".3"
-                                    stroke="#e4ffff"
-                                    strokeWidth="2"
-                                />
-                                <circle cx="-9" cy="-9" r="4" fill="white" />
-                            </>
-                        ) : suit === "Neon Circuit" ? (
-                            <rect
-                                x="-13"
-                                y="-9"
-                                width="26"
-                                height="18"
-                                rx="4"
-                                fill="#b6ffe0"
-                                stroke="#468580"
-                                strokeWidth="3"
-                            />
-                        ) : suit === "Cloud Puff" ? (
-                            <g fill="#fff9ee">
-                                <circle r="13" />
-                                <circle cx="-12" cy="5" r="10" />
-                                <circle cx="12" cy="5" r="10" />
-                            </g>
-                        ) : suit === "Candy Ribbon" ? (
-                            <path
-                                d="M-14 -12L14 12M-19 -4L9 20"
-                                stroke={i % 2 ? "#b7a5de" : "#fff0ce"}
-                                strokeWidth="9"
-                            />
                         ) : (
-                            <>
-                                <ellipse
-                                    rx="20"
-                                    ry="9"
-                                    transform="rotate(-25)"
-                                    fill="#669353"
-                                />
-                                <path
-                                    d="M-14 6L14 -6"
-                                    stroke="#c6dc94"
-                                    strokeWidth="2"
-                                />
-                            </>
+                            <path
+                                d="M-19 -7 Q0 5 19 -7"
+                                fill="none"
+                                stroke={suitStyles[suit].trim}
+                                strokeWidth={suit === "Cloud Puff" ? 5 : 3}
+                                strokeLinecap="round"
+                            />
                         )}
                     </g>
                 ))}
@@ -161,7 +167,7 @@ function SnakeArt({
 const tutorialSteps = [
     [
         "Make your first move",
-        "After the countdown, tap the arena to set a destination. Your snake follows a smooth curve.",
+        "After the countdown, tap the arena to set a destination. Your snake turns immediately toward the destination.",
     ],
     [
         "A moment to breathe",
@@ -169,7 +175,7 @@ const tutorialSteps = [
     ],
     [
         "Follow your own direction",
-        "Hold the left or right button, A / D, or the arrow keys. Left and right are always relative to your snake.",
+        "Press left or right, A / D, or an arrow key to turn 90° immediately. Hold to keep moving in that direction. Left and right are relative to your snake.",
     ],
     [
         "Three little lives",
@@ -210,6 +216,7 @@ function Arena({
 }) {
     const canvas = useRef<HTMLCanvasElement>(null),
         map = useRef<HTMLCanvasElement>(null),
+        readableMap = useRef<HTMLCanvasElement>(null),
         scene = useRef<GameScene | null>(null)
     const settingsRef = useRef(settings),
         finishRef = useRef(finish)
@@ -247,14 +254,21 @@ function Arena({
                 c.fillStyle = color
                 c.beginPath()
                 c.arc(
-                    ((x + 75) / 150) * 156 + 2,
-                    ((75 - z) / 150) * 156 + 2,
+                    ((x + ARENA_HALF) / ARENA_SIZE) * 156 + 2,
+                    ((ARENA_HALF - z) / ARENA_SIZE) * 156 + 2,
                     size,
                     0,
                     Math.PI * 2
                 )
                 c.fill()
             }
+            for (const obstacle of match.obstacles)
+                dot(
+                    obstacle.x,
+                    obstacle.z,
+                    palettes[settingsRef.current.theme].edge,
+                    (obstacle.radius / ARENA_SIZE) * 156
+                )
             for (const i of match.items)
                 dot(
                     i.x,
@@ -293,6 +307,8 @@ function Arena({
             for (const e of match.events.splice(0))
                 audio.effect(e, settingsRef.current.sound)
             game.draw(dt)
+            if (settingsRef.current.view === "2D" && readableMap.current)
+                drawArena2D(readableMap.current, match, settingsRef.current)
             drawMap()
             hud += dt
             if (hud > 0.08) {
@@ -380,8 +396,8 @@ function Arena({
                 const d = Math.hypot(a.x - b.x, a.y - b.y)
                 if (d > 0)
                     game.zoom = Math.max(
-                        0.65,
-                        Math.min(2.5, (game.zoom * pinch) / d)
+                        CAMERA_ZOOM_MIN,
+                        Math.min(CAMERA_ZOOM_MAX, (game.zoom * pinch) / d)
                     )
                 pinch = d
             }
@@ -410,8 +426,11 @@ function Arena({
             if (settingsRef.current.view === "3D") {
                 e.preventDefault()
                 game.zoom = Math.max(
-                    0.65,
-                    Math.min(2.5, game.zoom * Math.exp(e.deltaY * 0.001))
+                    CAMERA_ZOOM_MIN,
+                    Math.min(
+                        CAMERA_ZOOM_MAX,
+                        game.zoom * Math.exp(e.deltaY * 0.001)
+                    )
                 )
             }
         }
@@ -480,15 +499,31 @@ function Arena({
                     aria-label="Snake arena. Tap to travel; A and D or arrow keys to steer."
                     tabIndex={0}
                 />
+                <canvas
+                    ref={readableMap}
+                    className="sg-readable-map"
+                    aria-hidden="true"
+                    style={{
+                        display: settings.view === "2D" ? "block" : "none",
+                    }}
+                />
+                {settings.view === "2D" && (
+                    <div className="sg-map-key">
+                        <span>🍎 Food</span>
+                        <span>💣 Bomb</span>
+                        <span>▧ Gray blocks = obstacles</span>
+                        <span>✦ Glowing shells = boosts</span>
+                    </div>
+                )}
                 {settings.view === "3D" && (
                     <div className="sg-minimap">
                         <canvas
                             ref={map}
                             width="160"
                             height="160"
-                            aria-label="Minimap showing arena, snakes and pickups"
+                            aria-label="Minimap showing arena, snakes, pickups and obstacles"
                         />
-                        <span>● YOU · ◆ ROBOTS · ● ITEMS</span>
+                        <span>● YOU · ◆ ROBOTS · ● ITEMS · ● OBSTACLES</span>
                     </div>
                 )}
                 <div className="sg-effects" aria-live="polite">
@@ -640,7 +675,7 @@ function Arena({
                     {[-1, 1].map((n) => (
                         <button
                             key={n}
-                            aria-label={`Hold to steer ${n === -1 ? "left" : "right"}`}
+                            aria-label={`Turn ${n === -1 ? "left" : "right"} 90°, hold to move`}
                             onPointerDown={(e) => {
                                 e.currentTarget.setPointerCapture(e.pointerId)
                                 match.steer(n)
@@ -1032,10 +1067,14 @@ export default function SnakeGame() {
                                     </fieldset>
                                 </div>
                                 <div
-                                    className="sg-preview"
+                                    className={`sg-preview ${settings.theme === "Neon" ? "sg-preview-dark" : ""}`}
                                     style={{
                                         background:
                                             palettes[settings.theme].ground,
+                                        color:
+                                            settings.theme === "Neon"
+                                                ? "#fff2fa"
+                                                : undefined,
                                     }}
                                 >
                                     <span className="sg-eyebrow">
@@ -1047,7 +1086,9 @@ export default function SnakeGame() {
                                         reduced={settings.reduced}
                                     />
                                     <h2>{settings.suit}</h2>
-                                    <p>Three lives. One very good outfit.</p>
+                                    <p>
+                                        {suitStyles[settings.suit].description}
+                                    </p>
                                     <button
                                         className="sg-primary"
                                         onClick={() => start()}

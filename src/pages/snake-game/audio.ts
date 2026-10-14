@@ -31,6 +31,11 @@ export class GameAudio {
         oscillator.stop(c.currentTime + duration)
     }
     effect(name: string, volume: number) {
+        if (name === "explode") {
+            this.tone(65, 0.45, volume, "triangle")
+            this.tone(115, 0.22, volume * 0.65, "sawtooth")
+            return
+        }
         this.tone(
             name === "damage" ? 95 : name === "warning" ? 740 : 520,
             0.18,

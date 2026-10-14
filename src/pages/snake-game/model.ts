@@ -1,3 +1,19 @@
+export const EXPLOSION_DURATION = 1.1
+export const CAMERA_ZOOM_MIN = 0.65
+export const CAMERA_ZOOM_MAX = 2.5
+
+export const ARENA_SIZE = 100
+export const ARENA_HALF = ARENA_SIZE / 2
+export const ARENA_LIMIT = ARENA_HALF - 0.5
+export const SPAWN_LIMIT = ARENA_HALF - 5
+
+export type Obstacle = {
+    x: number
+    z: number
+    radius: number
+    variant: number
+    angle: number
+}
 export type Point = { x: number; z: number }
 export type Theme = "Sea" | "Garden" | "Forest" | "Neon"
 export type Suit =
@@ -43,6 +59,41 @@ export const suits: Suit[] = [
     "Candy Ribbon",
     "Cloud Puff",
 ]
+export const suitStyles: Record<
+    Suit,
+    { fabric: string; trim: string; description: string }
+> = {
+    "Bubble Diver": {
+        fabric: "#a7d9de",
+        trim: "#fff4e9",
+        description: "A silky aqua wetsuit with pearl piping.",
+    },
+    "Petal Parade": {
+        fabric: "#ffded7",
+        trim: "#f4c265",
+        description: "Your favorite soft petals, in full bloom.",
+    },
+    "Woodland Sprite": {
+        fabric: "#c2cda5",
+        trim: "#fff0d4",
+        description: "A soft leaf-green jacket with a cream seam.",
+    },
+    "Neon Circuit": {
+        fabric: "#b9a7da",
+        trim: "#b6ffe0",
+        description: "A lilac flight jacket with luminous piping.",
+    },
+    "Candy Ribbon": {
+        fabric: "#f2b6c9",
+        trim: "#fff0d4",
+        description: "A pink silk wrap tied with candy ribbons.",
+    },
+    "Cloud Puff": {
+        fabric: "#f5e5e9",
+        trim: "#ffffff",
+        description: "A quilted blush puffer with a fluffy collar.",
+    },
+}
 export const palettes: Record<
     Theme,
     {
@@ -125,7 +176,6 @@ export function readSettings(): { settings: Settings; failed: boolean } {
     }
 }
 export const distance = (a: Point, b: Point) => Math.hypot(a.x - b.x, a.z - b.z)
-const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a))
 let nextId = 1
 export class Match {
     player: Snake
@@ -144,7 +194,6 @@ export class Match {
     paused = false
     over = false
     target: Point | null = null
-    guide: Point | null = null
     behavior: "Stop" | "Continue" = "Stop"
     steering = 0
     milestones = 0
@@ -154,10 +203,33 @@ export class Match {
     contacts = new Set<string>()
     nextPower = 15
     events: string[] = []
+    obstacles: Obstacle[] = []
     practice: boolean
     constructor(color: string, practice = false) {
         this.practice = practice
         this.player = this.snake({ x: 0, z: 0 }, color)
+        // Keep the starting area and tutorial route clear; generate once per match.
+        for (
+            let attempt = 0;
+            attempt < 300 && this.obstacles.length < 12;
+            attempt++
+        ) {
+            const p = {
+                x: (Math.random() * 2 - 1) * 42,
+                z: (Math.random() * 2 - 1) * 42,
+            }
+            if (
+                Math.hypot(p.x, p.z) < 21 ||
+                this.obstacles.some((o) => distance(o, p) < 12)
+            )
+                continue
+            this.obstacles.push({
+                ...p,
+                radius: 2.4,
+                variant: this.obstacles.length % 3,
+                angle: Math.random() * Math.PI * 2,
+            })
+        }
         for (let i = 0; i < 40; i++) this.spawn("food")
         for (let i = 0; i < 2; i++) this.spawn("robot")
         for (let i = 0; i < 3; i++) this.spawn("bomb")
@@ -191,10 +263,14 @@ export class Match {
         }
     }
     free(): Point {
-        let p = { x: 60, z: 60 }
+        let p = { x: 0, z: 0 }
         for (let i = 0; i < 500; i++) {
-            p = { x: Math.random() * 140 - 70, z: Math.random() * 140 - 70 }
+            p = {
+                x: Math.random() * (SPAWN_LIMIT * 2) - SPAWN_LIMIT,
+                z: Math.random() * (SPAWN_LIMIT * 2) - SPAWN_LIMIT,
+            }
             if (
+                this.obstacles.every((o) => distance(o, p) > o.radius + 3) &&
                 this.player.body.every((b) => distance(b, p) > 12) &&
                 this.robots.every((r) =>
                     r.body.every((b) => distance(b, p) > 3)
@@ -204,7 +280,16 @@ export class Match {
             )
                 return p
         }
-        return p
+        // Crowding may relax item spacing, but never place a pickup inside scenery.
+        for (let x = -SPAWN_LIMIT; x <= SPAWN_LIMIT; x += 3)
+            for (let z = -SPAWN_LIMIT; z <= SPAWN_LIMIT; z += 3)
+                if (
+                    this.obstacles.every(
+                        (o) => distance(o, { x, z }) > o.radius + 3
+                    )
+                )
+                    return { x, z }
+        return { x: 0, z: 0 }
     }
     spawn(kind: "food" | "robot" | "bomb" | "power") {
         const p = this.free()
@@ -236,10 +321,10 @@ export class Match {
     }
     aim(p: Point) {
         if (this.countdown > 0 || this.paused || this.over) return
-        this.guide = null
+
         this.target = {
-            x: Math.max(-74.5, Math.min(74.5, p.x)),
-            z: Math.max(-74.5, Math.min(74.5, p.z)),
+            x: Math.max(-ARENA_LIMIT, Math.min(ARENA_LIMIT, p.x)),
+            z: Math.max(-ARENA_LIMIT, Math.min(ARENA_LIMIT, p.z)),
         }
         this.player.moving = true
     }
@@ -248,11 +333,11 @@ export class Match {
         const was = this.steering
         this.steering = n
         if (n) {
+            if (n !== was) this.player.heading += (Math.sign(n) * Math.PI) / 2
             this.player.moving = true
-            this.guide = null
         } else if (was && this.behavior === "Continue") {
             this.target = null
-            this.guide = null
+
             this.player.moving = true
         } else if (was) this.player.moving = !!this.target
     }
@@ -297,7 +382,8 @@ export class Match {
     explode(b: Point & { id: number }) {
         if (!this.bombs.includes(b)) return
         this.bombs = this.bombs.filter((x) => x !== b)
-        this.explosions.push({ ...b, until: this.time + 0.6 })
+        this.explosions.push({ ...b, until: this.time + EXPLOSION_DURATION })
+        this.events.push("explode")
         this.pending.push({ at: this.time + 5, kind: "bomb" })
     }
     move(s: Snake, dt: number, speed: number) {
@@ -305,8 +391,17 @@ export class Match {
         const h = s.body[0],
             x = h.x + Math.sin(s.heading) * speed * dt,
             z = h.z + Math.cos(s.heading) * speed * dt
-        if (Math.abs(x) > 74.5 || Math.abs(z) > 74.5) {
+        if (Math.abs(x) > ARENA_LIMIT || Math.abs(z) > ARENA_LIMIT) {
             s.moving = false
+            return
+        }
+        if (
+            this.obstacles.some((o) => distance(o, { x, z }) < o.radius + 0.5)
+        ) {
+            s.moving = false
+            if (s === this.player) {
+                this.target = null
+            }
             return
         }
         h.x = x
@@ -374,62 +469,36 @@ export class Match {
         )
         if (this.target && distance(this.player.body[0], this.target) <= 0.5) {
             this.target = null
-            this.guide = null
+
             if (!this.steering)
                 this.player.moving = this.behavior === "Continue"
         }
         if (this.steering) {
-            this.player.heading += this.steering * Math.PI * dt
             this.player.moving = true
         } else if (this.target) {
             const head = this.player.body[0]
-            if (distance(head, this.target) <= 0.5) {
-                this.target = null
-                this.player.moving = this.behavior === "Continue"
-            } else {
-                if (this.guide && distance(head, this.guide) < 1)
-                    this.guide = null
-                const angleToTarget = Math.atan2(
-                    this.target.x - head.x,
-                    this.target.z - head.z
-                )
-                // Give a close target outside the turning circle a fresh approach.
-                if (
-                    !this.guide &&
-                    distance(head, this.target) < (this.speed / Math.PI) * 2 &&
-                    Math.abs(wrap(angleToTarget - this.player.heading)) > 0.65
-                ) {
-                    const candidate = {
-                        x: head.x + Math.sin(this.player.heading) * 9,
-                        z: head.z + Math.cos(this.player.heading) * 9,
-                    }
-                    this.guide =
-                        Math.abs(candidate.x) < 72 && Math.abs(candidate.z) < 72
-                            ? candidate
-                            : { x: head.x * 0.7, z: head.z * 0.7 }
-                }
-                const destination = this.guide || this.target
-                const angle = Math.atan2(
-                    destination.x - head.x,
-                    destination.z - head.z
-                )
-                this.player.heading += Math.max(
-                    -Math.PI * dt,
-                    Math.min(Math.PI * dt, wrap(angle - this.player.heading))
-                )
-            }
+            // Reorient before the first step: no turning arc into the old obstacle.
+            this.player.heading = Math.atan2(
+                this.target.x - head.x,
+                this.target.z - head.z
+            )
         }
         this.move(this.player, dt, this.speed)
         for (const r of this.robots) {
             const h = r.body[0]
-            if (Math.abs(h.x) > 66 || Math.abs(h.z) > 66)
+            const obstacle = this.obstacles.find(
+                (o) => distance(o, h) < o.radius + 5
+            )
+            if (obstacle)
+                r.wander = Math.atan2(h.x - obstacle.x, h.z - obstacle.z)
+            else if (
+                Math.abs(h.x) > ARENA_HALF - 9 ||
+                Math.abs(h.z) > ARENA_HALF - 9
+            )
                 r.wander = Math.atan2(-h.x, -h.z)
             else if (Math.random() < dt * 0.65)
                 r.wander = r.heading + (Math.random() - 0.5) * Math.PI
-            r.heading += Math.max(
-                -Math.PI * dt,
-                Math.min(Math.PI * dt, wrap(r.wander - r.heading))
-            )
+            r.heading = r.wander
             r.moving = true
             this.move(r, dt, this.speed * 0.8)
         }
