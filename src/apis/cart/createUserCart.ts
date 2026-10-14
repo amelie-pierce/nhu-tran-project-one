@@ -1,12 +1,15 @@
 import { supabase } from "@/lib/supabase"
 import { getUser } from "../auth/getUser"
+import type { UserCart } from "@/types/cart"
 
 export type CreateUserCartRequest = {
     product_id: number
     quantity: number
 }
 
-export const createUserCart = async (values: CreateUserCartRequest) => {
+export const createUserCart = async (
+    values: CreateUserCartRequest
+): Promise<UserCart[] | null> => {
     const user = await getUser()
 
     if (!user?.id) {

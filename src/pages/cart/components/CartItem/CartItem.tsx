@@ -10,66 +10,79 @@ import { useScreenWidth } from "@/hooks/useScreenWidth"
 import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 import { getImgSizeWidth } from "@/utils/getImgSizeWidth"
 import { transformImage } from "@/utils/transformImage"
+import React from "react"
 
 type Props = {
     item: CartProduct
-    onRemove: () => void
+    onRemove: (id: number) => void
     onToggleCheck: (item: CartProduct) => void
 }
 
-const CartItem = ({ item, onRemove, onToggleCheck }: Props) => {
-    const { fallbackImg } = useFeatureFlags()
-    const { updateCartList } = useUserData()
-    const { maxQtyPerProduct } = useFeatureFlags()
-    const screenWidth = useScreenWidth()
-    const navigate = useNavigate()
+const CartItem = React.memo(
+    ({ item, onRemove, onToggleCheck }: Props) => {
+        const { fallbackImg } = useFeatureFlags()
+        const { updateCartList } = useUserData()
+        const { maxQtyPerProduct } = useFeatureFlags()
+        const screenWidth = useScreenWidth()
+        const navigate = useNavigate()
 
-    const handleChangeQuantity = (value: number | string) => {
-        updateCartList(item.id || 0, Number(value))
-    }
+        const handleChangeQuantity = (value: number | string) => {
+            updateCartList(item.id || 0, Number(value), true)
+        }
 
-    return (
-        <div className={styles["cart-item-container"]}>
-            <input
-                type="checkbox"
-                checked={item.checked}
-                onChange={() => onToggleCheck(item)}
-            />
-            <img
-                src={item.img_url || fallbackImg}
-                srcSet={`
-                    ${transformImage(item.img_url || fallbackImg, 50)} 50w,
-                    ${transformImage(item.img_url || fallbackImg, 100)} 100w,
-                    ${transformImage(item.img_url || fallbackImg, 200)} 200w,
-                `}
-                sizes={getImgSizeWidth(50, 100, 100, 200)}
-                alt={item.name}
-                className={styles["cart-item-image"]}
-                onClick={() => {
-                    navigate(`/product/${item.id}`)
-                }}
-            />
-            <div className={styles["cart-item-info-container"]}>
-                <div className="bold text-truncate">{item.name}</div>
-                <div>{toVND(item.price)}</div>
-                <InputNumber
-                    value={item.quantity}
-                    max={maxQtyPerProduct}
-                    onChange={handleChangeQuantity}
-                    className={styles["input-quantity"]}
-                    allowClear={false}
+        return (
+            <div className={styles["cart-item-container"]}>
+                <input
+                    type="checkbox"
+                    checked={item.checked}
+                    onChange={() => onToggleCheck(item)}
+                />
+                <img
+                    src={item.img_url || fallbackImg}
+                    srcSet={`
+                        ${transformImage(item.img_url || fallbackImg, 50)} 50w,
+                        ${transformImage(item.img_url || fallbackImg, 100)} 100w,
+                        ${transformImage(item.img_url || fallbackImg, 200)} 200w,
+                    `}
+                    sizes={getImgSizeWidth(50, 100, 100, 200)}
+                    alt={item.name}
+                    className={styles["cart-item-image"]}
+                    onClick={() => {
+                        navigate(`/product/${item.id}`)
+                    }}
+                />
+                <div className={styles["cart-item-info-container"]}>
+                    <div className="bold text-truncate">{item.name}</div>
+                    <div>{toVND(item.price)}</div>
+                    <InputNumber
+                        value={item.quantity}
+                        max={maxQtyPerProduct}
+                        onChange={handleChangeQuantity}
+                        className={styles["input-quantity"]}
+                        allowClear={false}
+                    />
+                </div>
+                {screenWidth > 1024 && (
+                    <p>{toVND((item.price || 0) * (item.quantity || 0))}</p>
+                )}
+                <Button
+                    variant="secondary"
+                    icon={<FontAwesomeIcon icon={faTrash} />}
+                    onClick={() => onRemove(item.id || 0)}
                 />
             </div>
-            {screenWidth > 1024 && (
-                <p>{toVND((item.price || 0) * (item.quantity || 0))}</p>
-            )}
-            <Button
-                variant="secondary"
-                icon={<FontAwesomeIcon icon={faTrash} />}
-                onClick={onRemove}
-            />
-        </div>
-    )
-}
+        )
+    },
+    (prevProps, nextProps) => {
+        return (
+            prevProps.item.id === nextProps.item.id &&
+            prevProps.item.quantity === nextProps.item.quantity &&
+            prevProps.item.checked === nextProps.item.checked &&
+            prevProps.item.name === nextProps.item.name &&
+            prevProps.item.price === nextProps.item.price &&
+            prevProps.item.img_url === nextProps.item.img_url
+        )
+    }
+)
 
 export default CartItem

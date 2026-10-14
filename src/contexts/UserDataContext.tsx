@@ -34,8 +34,12 @@ import type { Product } from "@/types/product"
 type UserDataType = {
     cartList: CartProduct[]
     compareList: UserCompare[]
-    updateCartList: (id: number, quantity: number) => void
-    addToCartList: (id: number, quantity: number) => void
+    updateCartList: (
+        id: number,
+        quantity: number,
+        debounceEnabled?: boolean
+    ) => void
+    addToCartList: (product: CartProduct, quantity: number) => void
     removeFromCartList: (id: number) => void
     toggleCompareItem: (product?: Product) => void
     removeAllCompareItems: () => void
@@ -68,7 +72,14 @@ export const UserDataProvider = ({ children }: Props) => {
 
     const { mutate: createCart } = useMutation({
         mutationFn: createUserCart,
-        onSuccess: () => {
+        onSuccess: (data) => {
+            setCartList((prevCartList) => [
+                ...prevCartList,
+                {
+                    ...data?.[0]?.product,
+                    quantity: data?.[0]?.quantity || 1,
+                },
+            ])
             queryClient.invalidateQueries({
                 queryKey: [QUERY_KEY_USER_CART],
             })
@@ -83,11 +94,11 @@ export const UserDataProvider = ({ children }: Props) => {
 
     const { mutate: updateCart } = useMutation({
         mutationFn: updateUserCart,
-        // onSuccess: () => {
-        //     queryClient.invalidateQueries({
-        //         queryKey: [QUERY_KEY_USER_CART],
-        //     })
-        // },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEY_USER_CART],
+            })
+        },
         onError: (error) => {
             showToast({
                 message: (error as Error).message,
@@ -98,11 +109,14 @@ export const UserDataProvider = ({ children }: Props) => {
 
     const { mutate: deleteCart } = useMutation({
         mutationFn: deleteUserCart,
-        // onSuccess: () => {
-        //     queryClient.invalidateQueries({
-        //         queryKey: [QUERY_KEY_USER_CART],
-        //     })
-        // },
+        onSuccess: (data) => {
+            setCartList((prevCartList) =>
+                prevCartList.filter((item) => item.id !== data?.[0]?.product_id)
+            )
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEY_USER_CART],
+            })
+        },
         onError: (error) => {
             showToast({
                 message: (error as Error).message,
@@ -176,6 +190,7 @@ export const UserDataProvider = ({ children }: Props) => {
         quantity: number,
         lastestCartList?: CartProduct[]
     ): boolean => {
+        if (!productId) return false
         const itemInCart = lastestCartList?.find(
             (item) => item.id === productId
         )
@@ -213,7 +228,6 @@ export const UserDataProvider = ({ children }: Props) => {
     const debouncedUpdateCart = useMemo(
         () =>
             debounce((product_id: number, quantity: number) => {
-                if (!quantity || !product_id) return
                 updateCart({
                     product_id,
                     quantity,
@@ -222,8 +236,22 @@ export const UserDataProvider = ({ children }: Props) => {
         [updateCart]
     )
 
-    const updateCartList = (product_id: number, quantity: number) => {
-        debouncedUpdateCart(product_id, quantity)
+    const updateCartList = (
+        product_id: number,
+        quantity: number,
+        debounceEnabled?: boolean
+    ) => {
+        if (!quantity || !product_id) return
+
+        if (debounceEnabled) {
+            debouncedUpdateCart(product_id, quantity)
+        } else {
+            updateCart({
+                product_id,
+                quantity,
+            })
+        }
+
         setCartList((prevCartList) =>
             prevCartList?.map((item) =>
                 item.id === product_id
@@ -237,34 +265,24 @@ export const UserDataProvider = ({ children }: Props) => {
     }
 
     const addToCartList = useCallback(
-        async (product_id: number, quantity: number) => {
-            let lastestCartList = [...cartList]
-            //TODO: find another way
-            const carts = await getUserCart()
-            lastestCartList = pareCartAPIResponse(carts)
-
+        (product: CartProduct, quantity: number) => {
             const isSuccess = checkConditionAddToCart(
-                product_id,
+                product.id || 0,
                 quantity,
-                lastestCartList
+                cartList
             )
             if (!isSuccess) return
 
-            const existingItem = lastestCartList?.find(
-                (item) => item.id === product_id
-            )
+            const existingItem = cartList.find((item) => item.id === product.id)
+
             if (existingItem) {
-                updateCartList(product_id, existingItem.quantity + quantity)
+                updateCartList(
+                    product.id || 0,
+                    existingItem.quantity + quantity
+                )
             } else {
-                setCartList((prevCartList) => [
-                    ...prevCartList,
-                    {
-                        id: product_id,
-                        quantity,
-                    },
-                ])
                 createCart({
-                    product_id,
+                    product_id: product.id || 0,
                     quantity,
                 })
             }
@@ -274,9 +292,6 @@ export const UserDataProvider = ({ children }: Props) => {
 
     const removeFromCartList = (product_id: number) => {
         deleteCart([product_id])
-        setCartList((prevCartList) =>
-            prevCartList.filter((item) => item.id !== product_id)
-        )
     }
 
     const addToCompareListDB = (product: Product) => {

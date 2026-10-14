@@ -2,7 +2,7 @@ import type { CartProduct } from "@/types/cart"
 import { CartItem, TotalPrice } from "./components"
 import styles from "./Cart.module.css"
 import Empty from "@/components/Empty/Empty"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useUserData } from "@/contexts/UserDataContext"
 import {
     getListProduct,
@@ -45,43 +45,52 @@ const Cart = () => {
         [cartList, products?.data, selectedItemIds]
     )
 
-    const onRemoveItem = (id: number) => {
-        removeFromCartList(id)
-        const isChecked = selectedItemIds?.has(id || 0)
-        let newSelectedItemIds = new Set(selectedItemIds)
-        if (isChecked) {
-            newSelectedItemIds.delete(id || 0)
-        }
-        setSelectedItemIds(newSelectedItemIds)
-    }
+    const onRemoveItem = useCallback(
+        (id: number) => {
+            removeFromCartList(id)
+            setSelectedItemIds((prev) => {
+                if (!prev.has(id)) return prev
+                const newSet = new Set(prev)
+                newSet.delete(id)
+                return newSet
+            })
+        },
+        [removeFromCartList]
+    )
 
-    const handleSelectAll = () => {
-        const isChecked = !isSelectAllChecked
-        setIsSelectAllChecked(isChecked)
+    const handleToggleSelectItem = useCallback((item: CartProduct) => {
+        const id = item.id || 0
+        setSelectedItemIds((prev) => {
+            const newSet = new Set(prev)
+            if (newSet.has(id)) {
+                newSet.delete(id)
+            } else {
+                newSet.add(id)
+            }
+            return newSet
+        })
+    }, [])
 
-        if (isChecked) {
-            const setOfItems = new Set(
-                cartProductItems?.map((item) => Number(item.id))
-            )
-            setSelectedItemIds(setOfItems)
-        } else {
-            setSelectedItemIds(new Set())
-        }
-    }
-
-    const handleToggleSelectItem = (item: CartProduct) => {
-        const isChecked = selectedItemIds?.has(item.id || 0)
-        let newSelectedItemIds = new Set(selectedItemIds)
-        if (isChecked) {
-            newSelectedItemIds.delete(item.id || 0)
-        } else {
-            newSelectedItemIds.add(item.id || 0)
-        }
-        setSelectedItemIds(newSelectedItemIds)
-    }
+    const handleSelectAll = useCallback(() => {
+        setIsSelectAllChecked((prevSelectAll) => {
+            const nextSelectAll = !prevSelectAll
+            if (nextSelectAll) {
+                const setOfItems = new Set(
+                    cartProductItems?.map((item) => Number(item.id))
+                )
+                setSelectedItemIds(setOfItems)
+            } else {
+                setSelectedItemIds(new Set())
+            }
+            return nextSelectAll
+        })
+    }, [cartProductItems])
 
     useEffect(() => {
-        if (selectedItemIds.size === cartProductItems?.length) {
+        if (
+            cartProductItems?.length > 0 &&
+            selectedItemIds.size === cartProductItems.length
+        ) {
             setIsSelectAllChecked(true)
         } else {
             setIsSelectAllChecked(false)
@@ -104,7 +113,7 @@ const Cart = () => {
         <>
             <Breadcrumb title="CART" currentPage="Cart" />
 
-            {isCartFetching ? (
+            {!cartList?.length && isCartFetching ? (
                 <Loader />
             ) : (
                 <>

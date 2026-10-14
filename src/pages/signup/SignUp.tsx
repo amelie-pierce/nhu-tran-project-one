@@ -26,8 +26,11 @@ const SignUp = () => {
                 state: action,
             })
         },
-        onError: () => {
-            showToast({ message: "Sign up failed", variant: "error" })
+        onError: (error) => {
+            showToast({
+                message: error?.message ?? "Sign up failed",
+                variant: "error",
+            })
         },
     })
 

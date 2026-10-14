@@ -16,7 +16,7 @@ export const useProductAction = () => {
 
         if (action.type === "add") {
             const item = action.items?.[0]
-            addToCartList(item.id || 0, item.quantity)
+            addToCartList(item, item.quantity)
             return
         }
 

@@ -1,7 +1,10 @@
 import { supabase } from "@/lib/supabase"
 import { getUser } from "../auth/getUser"
+import type { UserCart } from "@/types/cart"
 
-export const deleteUserCart = async (product_ids: number[]) => {
+export const deleteUserCart = async (
+    product_ids: number[]
+): Promise<UserCart[] | null> => {
     const user = await getUser()
 
     if (!user?.id) {

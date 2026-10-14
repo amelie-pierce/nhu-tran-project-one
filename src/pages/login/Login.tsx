@@ -64,7 +64,7 @@ const Login = () => {
 
         if (action.type === "add") {
             const item = action.items?.[0]
-            addToCartList(item?.id, item?.quantity)
+            addToCartList(item, item?.quantity)
         }
 
         if (action.type === "buy") {
