@@ -1,7 +1,6 @@
 import React from "react"
 import { MainLayout } from "@/components"
 import { Routes, Route, Navigate } from "react-router"
-import GuestRoute from "@/routes/GuestRoute"
 import Product from "@/pages/product/Product"
 import Login from "@/pages/login/Login"
 import Signup from "@/pages/signup/SignUp"
@@ -34,29 +33,22 @@ function App() {
                 <Route path="/payment" element={<Payment />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/about-me" element={<AboutMe />} />
-                <Route
-                    path="/signup"
-                    element={
-                        <GuestRoute>
-                            <Signup />
-                        </GuestRoute>
-                    }
-                />
-                <Route
-                    path="/login"
-                    element={
-                        <GuestRoute>
-                            <Login />
-                        </GuestRoute>
-                    }
-                />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/login" element={<Login />} />
             </Route>
             <Route
                 path="/snake-game"
                 element={
                     <React.Suspense
                         fallback={
-                            <div style={{height: "100vh", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                            <div
+                                style={{
+                                    height: "100vh",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                            >
                                 <Loader />
                             </div>
                         }

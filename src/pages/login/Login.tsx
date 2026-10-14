@@ -1,5 +1,5 @@
-import { useCallback } from "react"
-import { useLocation } from "react-router"
+import { useCallback, useRef } from "react"
+import { Navigate, useLocation } from "react-router"
 import { Form, FormItem } from "@/components"
 import { Input, Button } from "@/components/ui"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -14,13 +14,16 @@ import { upsertUserCompare } from "@/apis/compare/upsertCompare"
 import { QUERY_KEY_USER_COMPARE } from "@/apis/compare/getUserCompare"
 import { validateEmail } from "@/utils/validateEmail"
 import { deleteUserCompare } from "@/apis/compare/deleteUserCompare"
+import { useUser } from "@/contexts/UserContext"
+import { getCompareStorage } from "@/storages/compareStorage"
 
 const Login = () => {
     const { showToast } = useToast()
     const navigate = useNavigate()
     const queryClient = useQueryClient()
     const { isSignupEnabled } = useFeatureFlags()
-    const { addToCartList, compareList } = useUserData()
+    const { addToCartList } = useUserData()
+    const { isLoggedIn } = useUser()
 
     const location = useLocation()
     const action = location.state
@@ -43,7 +46,7 @@ const Login = () => {
     const { mutate: deleteCompare } = useMutation({
         mutationFn: deleteUserCompare,
         onSuccess: () => {
-            if (!compareList.length) return
+            const compareList = getCompareStorage()
             bulkUpsertCompare({
                 product_ids: compareList.map((item) => item.product_id),
             })
@@ -57,34 +60,32 @@ const Login = () => {
     })
 
     const handleRedirectAfterLogin = useCallback(() => {
-        if (!action) {
+        if (!action?.redirectTo) {
             navigate("/")
             return
         }
 
-        if (action.type === "add") {
-            const item = action.items?.[0]
+        if (action?.type === "add") {
+            navigate(action?.redirectTo)
+            const item = action?.items?.[0]
             addToCartList(item, item?.quantity)
         }
 
-        if (action.type === "buy") {
+        if (action?.type === "buy") {
             navigate(action.redirectTo, { state: action })
         }
     }, [action, addToCartList, navigate])
-
-    const syncCompareListToDB = useCallback(() => {
-        deleteCompare()
-    }, [bulkUpsertCompare, compareList])
 
     const { mutate: signInMutation, isPending } = useMutation({
         mutationFn: signIn,
         onSuccess: (data) => {
             showToast({ message: "Login successful", variant: "success" })
             queryClient.setQueryData([QUERY_KEY_USER], data.user)
-            syncCompareListToDB()
+            deleteCompare()
             handleRedirectAfterLogin()
         },
-        onError: () => {
+        onError: (err) => {
+            console.log(err)
             showToast({ message: "Login failed", variant: "error" })
         },
     })
@@ -113,6 +114,10 @@ const Login = () => {
 
     const handleSubmit = (values: SignInRequest) => {
         signInMutation(values)
+    }
+
+    if (isLoggedIn && !action?.fromSignup) {
+        return <Navigate to={"/"} replace />
     }
 
     return (

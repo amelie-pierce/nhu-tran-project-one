@@ -1,29 +1,31 @@
-import { useLocation } from "react-router"
+import { Navigate, useLocation } from "react-router"
 import { Form, FormItem } from "@/components"
 import { Input, Button } from "@/components/ui"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
 import { signUp, type SignUpRequest } from "@/apis/auth/signUp"
-import { QUERY_KEY_USER } from "@/apis/auth/getUser"
 import { useToast } from "@/contexts/ToastContext"
 import styles from "./SignUp.module.css"
 import { validateEmail } from "@/utils/validateEmail"
+import { useUser } from "@/contexts/UserContext"
+import { useRef } from "react"
 
 const SignUp = () => {
     const { showToast } = useToast()
     const navigate = useNavigate()
-    const queryClient = useQueryClient()
+    const { isLoggedIn } = useUser()
+    const isRedirectingRef = useRef(false)
 
     const location = useLocation()
     const action = location.state
 
     const { mutate: signUpMutation } = useMutation({
         mutationFn: signUp,
-        onSuccess: (data) => {
+        onSuccess: () => {
             showToast({ message: "Sign up successful", variant: "success" })
-            queryClient.setQueryData([QUERY_KEY_USER], data.user)
+            isRedirectingRef.current = true
             navigate("/login", {
-                state: action,
+                state: { ...action, fromSignup: true },
             })
         },
         onError: (error) => {
@@ -58,6 +60,10 @@ const SignUp = () => {
 
     const handleSubmit = async (values: SignUpRequest) => {
         signUpMutation(values)
+    }
+
+    if (isLoggedIn && !isRedirectingRef.current) {
+        return <Navigate to={"/"} replace />
     }
 
     return (
