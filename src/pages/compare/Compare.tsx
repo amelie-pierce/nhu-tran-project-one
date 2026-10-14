@@ -29,7 +29,7 @@ const Compare = () => {
     const loadingAPI = isLoggedIn && isCompareFetching
 
     if (!compareList?.length && !loadingAPI) {
-        return <Empty label="comparison" />
+        return <Empty label="Your comparison" />
     }
 
     return (

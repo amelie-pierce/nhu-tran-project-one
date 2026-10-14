@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router"
 import { Loader } from "@/components/ui"
-import { Pagination, Error } from "@/components"
+import { Pagination, Error, Empty } from "@/components"
 import {
     QUERY_KEY_PRODUCTS,
     getListProduct,
@@ -87,6 +87,23 @@ const ProductList = () => {
         return <Error />
     }
 
+    const productItems = useMemo(() => {
+        if (!products?.data?.length) {
+            return (
+                <div className={styles.container}>
+                    <Empty label="Product catalog" />
+                </div>
+            )
+        }
+        return (
+            <div className={styles["product-list"]}>
+                {products?.data?.map((product) => (
+                    <ProductItem key={product.id} product={product} />
+                ))}
+            </div>
+        )
+    }, [products?.data])
+
     return (
         <>
             <div className={styles["product-catalog"]} ref={catalogRef}>
@@ -97,19 +114,15 @@ const ProductList = () => {
                 />
             </div>
             {isLoading ? (
-                <div className={styles["loader-container"]}>
+                <div className={styles.container}>
                     <Loader />
                 </div>
             ) : (
                 <>
-                    <div className={styles["product-list"]}>
-                        {products?.data?.map((product) => (
-                            <ProductItem key={product.id} product={product} />
-                        ))}
-                    </div>
+                    {productItems}
                     <Pagination
                         currentPage={currentPage}
-                        totalPage={products?.totalPage ?? 1}
+                        totalPage={products?.totalPage ?? 0}
                         onPageChange={handlePageChange}
                     />
                 </>

@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faChevronRight, faEllipsis } from "@fortawesome/free-solid-svg-icons"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button, InputNumber } from "@/components/ui"
 import styles from "./Pagination.module.css"
 
@@ -64,6 +64,12 @@ const Pagination = ({ currentPage, totalPage, onPageChange }: Props) => {
     const handleGoToPage = () => {
         handlePageChange(Number(inputPage))
     }
+
+    useEffect(() => {
+        setInputPage(currentPage)
+    }, [currentPage])
+
+    if(!totalPage) return null
 
     return (
         <div className={styles["pagination-container"]}>
