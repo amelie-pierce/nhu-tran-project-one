@@ -28,12 +28,18 @@ const Project = () => {
                                 ? overlappingMobile
                                 : overlappingDesktop
                         }
-                        srcSet={`
-                            ${transformImage(overlappingMobile, 300)} 300w,
-                            ${transformImage(overlappingDesktop, 500)} 500w,
-                            ${transformImage(overlappingDesktop, 600)} 600w,
-                            ${transformImage(overlappingDesktop, 1000)} 1000w,
-                        `}
+                        srcSet={
+                            screenWidth <= 480
+                                ? `
+                                ${transformImage(overlappingMobile, 300)} 300w,
+                                ${transformImage(overlappingMobile, 600)} 600w
+                                `
+                                : `
+                                ${transformImage(overlappingDesktop, 500)} 500w,
+                                ${transformImage(overlappingDesktop, 600)} 600w,
+                                ${transformImage(overlappingDesktop, 1000)} 1000w
+                                `
+                        }
                         sizes={getImgSizeWidth(300, 600, 500, 1000)}
                         alt="project img"
                         className={styles["project-img"]}

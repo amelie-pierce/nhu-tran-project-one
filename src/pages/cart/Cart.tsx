@@ -1,8 +1,10 @@
 import type { CartProduct } from "@/types/cart"
+import { Navigate } from "react-router"
 import { CartItem, TotalPrice } from "./components"
 import styles from "./Cart.module.css"
 import Empty from "@/components/Empty/Empty"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { useUser } from "@/contexts/UserContext"
 import { useUserData } from "@/contexts/UserDataContext"
 import {
     getListProduct,
@@ -13,6 +15,7 @@ import { Loader } from "@/components/ui"
 import { Error, Breadcrumb } from "@/components"
 
 const Cart = () => {
+    const { isLoggedIn } = useUser()
     const { cartList, isCartFetching, removeFromCartList } = useUserData()
     const [selectedItemIds, setSelectedItemIds] = useState<Set<number>>(
         new Set()
@@ -100,6 +103,10 @@ const Cart = () => {
     const cartTotalStr = useMemo(() => {
         return `${cartList?.length} ${cartList?.length === 1 ? "item" : "items"}`
     }, [cartList])
+
+    if (!isLoggedIn) {
+        return <Navigate to="/login" replace />
+    }
 
     if (isError) {
         return <Error />
