@@ -19,9 +19,25 @@ const ProductDetail = React.lazy(
 )
 const Compare = React.lazy(() => import("@/pages/compare/Compare"))
 
+const SnakeGame = React.lazy(() => import("@/pages/snake-game/SnakeGame"))
+
 function App() {
     return (
         <Routes>
+            <Route
+                path="/snake-game"
+                element={
+                    <React.Suspense
+                        fallback={
+                            <div role="status">
+                                Loading your little adventure…
+                            </div>
+                        }
+                    >
+                        <SnakeGame />
+                    </React.Suspense>
+                }
+            />
             <Route element={<MainLayout />}>
                 <Route path="/" element={<Navigate to="/product" replace />} />
                 <Route path="/product" element={<Product />} />
