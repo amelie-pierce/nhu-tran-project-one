@@ -10,6 +10,7 @@ import AboutMe from "@/pages/about/About"
 import "./index.css"
 import "@/styles/global.css"
 import "@/styles/typography.css"
+import { Loader } from "./components/ui"
 
 const Checkout = React.lazy(() => import("@/pages/checkout/Checkout"))
 const Cart = React.lazy(() => import("@/pages/cart/Cart"))
@@ -24,20 +25,6 @@ const SnakeGame = React.lazy(() => import("@/pages/snake-game/SnakeGame"))
 function App() {
     return (
         <Routes>
-            <Route
-                path="/snake-game"
-                element={
-                    <React.Suspense
-                        fallback={
-                            <div role="status">
-                                Loading your little adventure…
-                            </div>
-                        }
-                    >
-                        <SnakeGame />
-                    </React.Suspense>
-                }
-            />
             <Route element={<MainLayout />}>
                 <Route path="/" element={<Navigate to="/product" replace />} />
                 <Route path="/product" element={<Product />} />
@@ -64,6 +51,20 @@ function App() {
                     }
                 />
             </Route>
+            <Route
+                path="/snake-game"
+                element={
+                    <React.Suspense
+                        fallback={
+                            <div style={{height: "100vh", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                                <Loader />
+                            </div>
+                        }
+                    >
+                        <SnakeGame />
+                    </React.Suspense>
+                }
+            />
         </Routes>
     )
 }

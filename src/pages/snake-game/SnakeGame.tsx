@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
-import { Link } from "react-router"
+import { Link, Navigate } from "react-router"
+import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 import {
     Match,
     readSettings,
@@ -27,6 +28,10 @@ function SnakeArt({
     suit: Suit
     reduced?: boolean
 }) {
+    const { isGameplayEnabled } = useFeatureFlags()
+
+    if(!isGameplayEnabled) return <Navigate to="/" replace />
+
     return (
         <svg
             className={`sg-snake-art ${reduced ? "still" : ""}`}

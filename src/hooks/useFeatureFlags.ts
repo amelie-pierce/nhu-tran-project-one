@@ -7,6 +7,7 @@ export const useFeatureFlags = () => {
         "signup",
         "max_qty_per_product",
         "fallback_img",
+        "gameplay"
     ])
 
     return {
@@ -15,5 +16,6 @@ export const useFeatureFlags = () => {
         isSignupEnabled: flags.signup.enabled,
         maxQtyPerProduct: Number(flags.max_qty_per_product.value) || 1,
         fallbackImg: String(flags.fallback_img.value || ""),
+        isGameplayEnabled: flags.gameplay.enabled,
     }
 }
