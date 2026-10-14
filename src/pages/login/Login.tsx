@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react"
+import { useCallback } from "react"
 import { Navigate, useLocation } from "react-router"
 import { Form, FormItem } from "@/components"
 import { Input, Button } from "@/components/ui"
@@ -72,7 +72,7 @@ const Login = () => {
         }
 
         if (action?.type === "buy") {
-            navigate(action.redirectTo, { state: action })
+            navigate(action?.redirectTo, { state: action })
         }
     }, [action, addToCartList, navigate])
 
@@ -84,9 +84,11 @@ const Login = () => {
             deleteCompare()
             handleRedirectAfterLogin()
         },
-        onError: (err) => {
-            console.log(err)
-            showToast({ message: "Login failed", variant: "error" })
+        onError: (error) => {
+            showToast({
+                message: error.message ?? "Login failed",
+                variant: "error",
+            })
         },
     })
 
@@ -116,7 +118,7 @@ const Login = () => {
         signInMutation(values)
     }
 
-    if (isLoggedIn && !action?.fromSignup) {
+    if (isLoggedIn && !action?.fromSignup && !action?.redirectTo) {
         return <Navigate to={"/"} replace />
     }
 

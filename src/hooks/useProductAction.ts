@@ -14,14 +14,14 @@ export const useProductAction = () => {
             return
         }
 
-        if (action.type === "add") {
-            const item = action.items?.[0]
-            addToCartList(item, item.quantity)
+        if (action?.type === "add") {
+            const item = action?.items?.[0]
+            addToCartList(item, item?.quantity)
             return
         }
 
-        if (action.type === "buy") {
-            navigate(action.redirectTo, { state: action })
+        if (action?.type === "buy") {
+            navigate(action?.redirectTo, { state: action })
         }
     }
 
