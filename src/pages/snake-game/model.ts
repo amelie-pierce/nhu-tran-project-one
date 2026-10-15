@@ -196,6 +196,8 @@ export class Match {
     target: Point | null = null
     behavior: "Stop" | "Continue" = "Stop"
     steering = 0
+    forwardHeld = false
+    private travelKeys = new Set<string>()
     milestones = 0
     applied = 0
     warnings: number[] = []
@@ -328,6 +330,39 @@ export class Match {
         }
         this.player.moving = true
     }
+    travelKey(key: string, down: boolean, repeat = false) {
+        key = key.toLowerCase()
+        if (!["w", "arrowup", "s", "arrowdown"].includes(key)) return
+        if (down) {
+            if (
+                repeat ||
+                this.travelKeys.has(key) ||
+                this.countdown > 0 ||
+                this.paused ||
+                this.over
+            )
+                return
+            const reversing =
+                this.travelKeys.has("s") || this.travelKeys.has("arrowdown")
+            this.travelKeys.add(key)
+            if ((key === "s" || key === "arrowdown") && !reversing)
+                this.player.heading += Math.PI
+            this.forward(true)
+        } else if (this.travelKeys.delete(key)) {
+            if (!this.travelKeys.size) this.forward(false)
+        }
+    }
+    forward(down: boolean) {
+        if (down && (this.countdown > 0 || this.paused || this.over)) return
+        const was = this.forwardHeld
+        this.forwardHeld = down
+        if (down) {
+            this.target = null
+            this.player.moving = true
+        } else if (was) {
+            this.player.moving = !!this.steering || this.behavior === "Continue"
+        }
+    }
     steer(n: number) {
         if (this.countdown > 0 || this.paused || this.over) return
         const was = this.steering
@@ -339,10 +374,12 @@ export class Match {
             this.target = null
 
             this.player.moving = true
-        } else if (was) this.player.moving = !!this.target
+        } else if (was) this.player.moving = this.forwardHeld || !!this.target
     }
     pause() {
         this.paused = true
+        this.travelKeys.clear()
+        this.forwardHeld = false
         this.steering = 0
         if (this.behavior === "Stop" && !this.target) this.player.moving = false
     }
@@ -470,10 +507,10 @@ export class Match {
         if (this.target && distance(this.player.body[0], this.target) <= 0.5) {
             this.target = null
 
-            if (!this.steering)
+            if (!this.steering && !this.forwardHeld)
                 this.player.moving = this.behavior === "Continue"
         }
-        if (this.steering) {
+        if (this.steering || this.forwardHeld) {
             this.player.moving = true
         } else if (this.target) {
             const head = this.player.body[0]

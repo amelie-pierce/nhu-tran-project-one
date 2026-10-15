@@ -1,3 +1,4 @@
+import { CameraFollow } from "./camera-follow"
 import "@babylonjs/core/Culling/ray"
 import { Engine } from "@babylonjs/core/Engines/engine"
 import { Scene } from "@babylonjs/core/scene"
@@ -32,6 +33,7 @@ export class GameScene {
     match: Match
     orbit = 0
     zoom = CAMERA_ZOOM_MAX
+    private follow = new CameraFollow()
     tilt = 0
     nodes = new Map<string, TransformNode>()
     materials = new Map<string, StandardMaterial>()
@@ -787,6 +789,7 @@ export class GameScene {
         )
         this.locator.position.set(h.x, 0.06, h.z)
         if (this.settings.view === "2D") {
+            this.follow.reset()
             this.camera.mode = FreeCamera.ORTHOGRAPHIC_CAMERA
             const aspect =
                     this.engine.getRenderWidth() /
@@ -800,29 +803,26 @@ export class GameScene {
             this.camera.setTarget(Vector3.Zero())
         } else {
             this.camera.mode = FreeCamera.PERSPECTIVE_CAMERA
-            const riding = this.settings.camera === "Riding",
-                angle = m.player.heading + this.orbit
-            const back = (riding ? 2.5 : 10) * this.zoom,
-                height = Math.max(
-                    1.7,
-                    (riding ? 2.8 : 9) * this.zoom + this.tilt
-                )
-            const position = new Vector3(
-                h.x - Math.sin(angle) * back,
-                height,
-                h.z - Math.cos(angle) * back
+            const pose = this.follow.update(
+                {
+                    x: h.x,
+                    z: h.z,
+                    heading: m.player.heading,
+                    orbit: this.orbit,
+                    zoom: this.zoom,
+                    tilt: this.tilt,
+                    riding: this.settings.camera === "Riding",
+                    reduced: this.settings.reduced,
+                },
+                dt
             )
-            this.camera.position = Vector3.Lerp(
-                this.camera.position,
-                position,
-                this.settings.reduced ? 1 : Math.min(1, dt * 8)
+            this.camera.position.set(
+                pose.position.x,
+                pose.position.y,
+                pose.position.z
             )
             this.camera.setTarget(
-                new Vector3(
-                    h.x + Math.sin(m.player.heading) * (riding ? 6 : 2),
-                    0.5,
-                    h.z + Math.cos(m.player.heading) * (riding ? 6 : 2)
-                )
+                new Vector3(pose.target.x, pose.target.y, pose.target.z)
             )
         }
         this.scene.render()

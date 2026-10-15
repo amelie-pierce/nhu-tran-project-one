@@ -443,3 +443,113 @@ test("explosions last 1.1 match seconds, pause correctly and cause no area damag
     advance(m, 0.4)
     assert.equal(m.explosions.length, 0)
 })
+
+test("W moves straight and release stops without resuming the old destination", () => {
+    const m = empty()
+    m.aim({ x: 20, z: 20 })
+    const heading = m.player.heading
+    m.forward(true)
+    advance(m, 0.25)
+    assert.equal(m.player.heading, heading)
+    assert.equal(m.target, null)
+    assert.ok(distance(m.player.body[0], { x: 0, z: 0 }) > 1)
+    m.forward(false)
+    const stopped = { ...m.player.body[0] }
+    advance(m, 0.25)
+    assert.deepEqual(m.player.body[0], stopped)
+})
+
+test("W combines with turning and each held control releases independently", () => {
+    const m = empty()
+    m.forward(true)
+    m.steer(1)
+    m.steer(0)
+    assert.equal(m.player.moving, true)
+    advance(m, 0.2)
+    assert.ok(m.player.body[0].x > 0)
+    m.steer(-1)
+    m.forward(false)
+    assert.equal(m.player.moving, true)
+    m.steer(0)
+    assert.equal(m.player.moving, false)
+})
+
+test("forward input respects countdown, pause and game over", () => {
+    const m = empty()
+    m.countdown = 1
+    m.forward(true)
+    assert.equal(m.forwardHeld, false)
+    m.countdown = 0
+    m.forward(true)
+    m.pause()
+    assert.equal(m.forwardHeld, false)
+    assert.equal(m.player.moving, false)
+    m.forward(true)
+    assert.equal(m.forwardHeld, false)
+    m.paused = false
+    advance(m, 0.2)
+    assert.deepEqual(m.player.body[0], { x: 0, z: 0 })
+    m.over = true
+    m.forward(true)
+    assert.equal(m.forwardHeld, false)
+})
+
+test("Continue mode keeps moving after forward release", () => {
+    const m = empty()
+    m.behavior = "Continue"
+    m.forward(true)
+    m.forward(false)
+    assert.equal(m.player.moving, true)
+})
+
+test("held W cannot pass through obstacles", () => {
+    const m = empty()
+    m.obstacles = [{ id: 1, x: 0, z: 4, radius: 2.4, kind: "tree" }]
+    m.forward(true)
+    advance(m, 1)
+    assert.ok(m.player.body[0].z < 1.1)
+    assert.equal(m.lives, 3)
+    m.forward(false)
+    assert.equal(m.player.moving, false)
+})
+
+test("W and Up aliases keep moving until both are released", () => {
+    const m = empty()
+    m.travelKey("W", true)
+    m.travelKey("ArrowUp", true)
+    m.travelKey("w", false)
+    assert.equal(m.player.moving, true)
+    advance(m, 0.2)
+    assert.ok(m.player.body[0].z > 0)
+    m.travelKey("ArrowUp", false)
+    assert.equal(m.player.moving, false)
+})
+
+test("S and Down reverse once per held group and stop on release", () => {
+    const m = empty()
+    m.travelKey("s", true)
+    m.travelKey("s", true, true)
+    m.travelKey("ArrowDown", true)
+    assert.equal(m.player.heading, Math.PI)
+    advance(m, 0.2)
+    assert.ok(m.player.body[0].z < 0)
+    m.travelKey("s", false)
+    assert.equal(m.player.moving, true)
+    m.travelKey("ArrowDown", false)
+    assert.equal(m.player.moving, false)
+    m.travelKey("ArrowDown", true)
+    assert.equal(m.player.heading, 2 * Math.PI)
+})
+
+test("pause clears aliases and repeated keys cannot restart movement", () => {
+    const m = empty()
+    m.travelKey("ArrowDown", true)
+    m.pause()
+    m.paused = false
+    m.travelKey("ArrowDown", true, true)
+    assert.equal(m.player.moving, false)
+    m.travelKey("ArrowDown", false)
+    m.travelKey("ArrowUp", true)
+    m.travelKey("ArrowUp", false)
+    assert.equal(m.player.moving, false)
+})

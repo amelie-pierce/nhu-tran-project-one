@@ -20,7 +20,7 @@ Implemented at `/snake-game` from `docs/snake-game-prd.md`. The owner explicitly
 7. **Cameras:** Riding is 2.5 units behind and 2.8 above the head, looking six units ahead. Chase is ten behind and nine above, looking two ahead. Orbit offset persists relative to the heading. Zoom multiplier defaults and resets to 2.5 and clamps to 0.65–2.5; vertical position stays above 1.7. Pitch adjustment clamps to -1–12 units. A two-finger gesture suppresses tap targeting until the gesture ends. 2D fits the complete arena with a five-unit margin on every aspect ratio. A non-colliding locator ring makes the one-unit snake easier to find.
 8. **Pause:** Resume and Return home are offered. Escape toggles pause. Focus loss clears held input and leaves the match paused. Pauses and countdown are excluded from survival time.
 9. **Presentation/assets:** original SVG preview, procedural Babylon geometry, and synthesized Web Audio loops/effects; no downloaded media or new asset licenses. Each map uses a different palette and musical sequence base/tempo. Suits use overlapping fabric sleeves with seams and cuffs, plus a bow or fluffy collar where appropriate; Petal Parade retains its original petal geometry. Suits are cosmetic geometry, and one-life snakes use ivory bones. Power-ups use heart, shield, and magnet geometry.
-10. **Accessibility:** native keyboard buttons, labels, a trapped settings/welcome dialog, visible focus rings, touch steering, adjustable independent audio levels, reduced animation, and storage-failure notices. System reduced-motion preference is respected on first use; reduced mode removes decorative bobbing/flicker and camera smoothing. Protection remains labelled in the HUD and indicated by a ring.
+10. **Accessibility:** native keyboard buttons, labels, a trapped settings/welcome dialog, visible focus rings, touch steering, adjustable independent audio levels, reduced animation, and storage-failure notices. System reduced-motion preference is respected on first use; reduced mode removes decorative bobbing/flicker and automatic camera rotation; camera translation remains smooth. Protection remains labelled in the HUD and indicated by a ring.
 11. **Compatibility and errors:** target current WebGL-capable desktop and mobile browsers. A renderer-start failure displays recovery advice and Home. No backend, account, external asset request, or match persistence is introduced. Settings are validated and stored under `snake-garden.v1`; failures fall back to memory. No guaranteed device performance target has been established; initial arena is modest, but very long robot bodies increase collision work.
 
 ## Verification
@@ -69,3 +69,22 @@ The layer shares Babylon's full-map projection (100-unit arena and five-unit mar
 - Bomb effects last 1.1 match seconds: local warm burst, expanding ring, eight sparks and smoke; 2D adds a BOOM! label. A dedicated synthesized explosion cue respects the effects volume. Reduced motion removes particle travel/pulsing and uses a steady local indicator. No area damage is added.
 
 Validation: all 30 simulation tests pass, including obstacle retargeting, immediate reversal, held-input behavior, boundary recovery and explosion expiry/pause/no-area-damage. Focused lint passes for model, renderer, 2D drawing, audio and tests. Browser checks confirmed gray obstacle badges, power-up shells, both explosion renderers, reduced-motion behavior and the 2.5 default camera distance without console errors.
+
+
+## 3D camera comfort update
+
+Keyboard turns remain immediate in the simulation. A separate camera-follow state smooths the heading, follow position, orbit, camera distance, height and look-ahead. Both camera position and look target derive from that same state, avoiding the old instant look-direction jump during a 90-degree turn. Automatic rotation follows the shortest angular path, eases out, and is capped at 144 degrees/second. Exponential easing makes follow behavior consistent across frame rates; long frame gaps cannot cause a large single-frame camera jump.
+
+Entering 3D initializes directly at the current follow pose, avoiding a sweep from the overhead 2D camera. Riding/Chase, zoom and Reset Camera changes ease into place. Reduced-motion mode holds the current world-facing heading while smoothly following position; deliberate orbit and zoom still work. Switching reduced motion off smoothly resumes heading follow. No gameplay turning, collision or scoring rules change.
+
+Camera validation: production build and focused lint passed; all 36 camera/gameplay tests passed. Browser smoke checks exercised rapid left/right keyboard input in 3D with no console errors. Camera tests cover 30/60/144 FPS, shortest-angle wrap, long-frame limits, stable reduced-motion heading, and direct 3D initialization.
+
+
+### Hold W to move forward
+
+In either camera view, holding W moves straight along the current heading. In Stop mode, releasing W stops immediately unless a left/right control remains held. W clears the previous click destination; it does not resume on release. A/D and arrow keys still turn immediately while W is held, and releasing a turn keeps forward movement active. Continue mode retains forward movement after W release. Pause or focus loss clears held forward input; resuming requires a fresh W press. Countdown and game-over states ignore forward presses. Obstacles and arena boundaries still block movement without damage.
+
+
+### Up/Down keyboard controls
+
+W and Up Arrow share hold-to-move behavior. S and Down Arrow turn the snake around immediately (180 degrees) once per press, then move along that heading while held. Key repeat never triggers additional turns; overlapping S/Down presses count as one held reverse control. Releasing one alias keeps movement active while another travel key is held. Releasing all travel keys stops in Stop mode unless a turn control remains held; Continue mode keeps moving. Pause/focus loss clears held keys and requires fresh presses. Both views use the same controls, and arrow keys do not scroll the page during play.

@@ -30,7 +30,7 @@ function SnakeArt({
 }) {
     const { isGameplayEnabled } = useFeatureFlags()
 
-    if(!isGameplayEnabled) return <Navigate to="/" replace />
+    if (!isGameplayEnabled) return <Navigate to="/" replace />
 
     return (
         <svg
@@ -180,7 +180,7 @@ const tutorialSteps = [
     ],
     [
         "Follow your own direction",
-        "Press left or right, A / D, or an arrow key to turn 90° immediately. Hold to keep moving in that direction. Left and right are relative to your snake.",
+        "Press left or right, A / D, or an arrow key to turn 90° immediately. Hold to keep moving in that direction. Hold W / Up Arrow to move straight. S / Down Arrow turns around once and moves while held. Release to stop in Stop mode. Left and right are relative to your snake.",
     ],
     [
         "Three little lives",
@@ -327,11 +327,27 @@ function Arena({
         })
         const held = new Set<string>()
         const key = (e: KeyboardEvent, down: boolean) => {
+            const travelKey = ["w", "arrowup", "s", "arrowdown"].includes(
+                e.key.toLowerCase()
+            )
+            // Release held controls even when focus moves into a form field.
+            if (!down && travelKey) {
+                match.travelKey(e.key, false)
+                return
+            }
             if (
                 e.target instanceof HTMLInputElement ||
-                e.target instanceof HTMLSelectElement
+                e.target instanceof HTMLSelectElement ||
+                e.target instanceof HTMLTextAreaElement ||
+                (e.target instanceof HTMLElement && e.target.isContentEditable)
             )
                 return
+            if (travelKey) {
+                e.preventDefault()
+                // A fresh press is required after countdown or pause.
+                match.travelKey(e.key, down, e.repeat)
+                return
+            }
             if (
                 ["ArrowLeft", "ArrowRight", "a", "A", "d", "D"].includes(e.key)
             ) {
@@ -501,7 +517,7 @@ function Arena({
             <div className="sg-stage">
                 <canvas
                     ref={canvas}
-                    aria-label="Snake arena. Tap to travel; A and D or arrow keys to steer."
+                    aria-label="Snake arena. Tap to travel; Hold W or Up Arrow to move forward; hold S or Down Arrow to turn around and move. Release to stop in Stop mode. A and D or arrow keys to steer."
                     tabIndex={0}
                 />
                 <canvas
@@ -648,7 +664,8 @@ function Arena({
                             if (
                                 match.behavior === "Stop" &&
                                 !match.target &&
-                                !match.steering
+                                !match.steering &&
+                                !match.forwardHeld
                             )
                                 match.player.moving = false
                             render((n) => n + 1)
