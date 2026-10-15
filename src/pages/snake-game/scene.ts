@@ -15,6 +15,9 @@ import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator"
 import "@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent"
 import {
     Match,
+    MAGNET_RADIUS,
+    POWER_HALO_DIAMETER,
+    POWER_HALO_THICKNESS,
     palettes,
     suitStyles,
     ARENA_SIZE,
@@ -622,7 +625,11 @@ export class GameScene {
                 shell.isPickable = false
                 const halo = MeshBuilder.CreateTorus(
                     "power halo",
-                    { diameter: 2.1, thickness: 0.12, tessellation: 32 },
+                    {
+                        diameter: POWER_HALO_DIAMETER,
+                        thickness: POWER_HALO_THICKNESS,
+                        tessellation: 32,
+                    },
                     this.scene
                 )
                 halo.parent = n
@@ -667,6 +674,72 @@ export class GameScene {
             for (let i = 0; i < s.body.length; i++)
                 alive.add(this.snakePart(s, i))
         for (const item of m.items) alive.add(this.item(item))
+        if (m.magnet > m.time && this.settings.view === "3D") {
+            const head = m.player.body[0]
+            const key = "magnet-range"
+            alive.add(key)
+            if (!this.nodes.has(key)) {
+                const ring = MeshBuilder.CreateTorus(
+                    key,
+                    {
+                        diameter: MAGNET_RADIUS * 2,
+                        thickness: 0.08,
+                        tessellation: 96,
+                    },
+                    this.scene
+                )
+                ring.material = this.material("#d399e4", true)
+                ring.isPickable = false
+                this.nodes.set(key, ring)
+            }
+            this.nodes.get(key)!.position.set(head.x, 0.12, head.z)
+            for (const food of m.items) {
+                if (
+                    food.kind !== "food" ||
+                    Math.hypot(food.x - head.x, food.z - head.z) >=
+                        MAGNET_RADIUS
+                )
+                    continue
+                const trailKey = `magnet-food-${food.id}`
+                alive.add(trailKey)
+                if (!this.nodes.has(trailKey)) {
+                    const n = new TransformNode(trailKey, this.scene)
+                    const halo = MeshBuilder.CreateTorus(
+                        "food attraction",
+                        { diameter: 1.4, thickness: 0.08, tessellation: 24 },
+                        this.scene
+                    )
+                    halo.parent = n
+                    halo.material = this.material("#e7b4ff", true)
+                    halo.isPickable = false
+                    for (let j = 0; j < 3; j++) {
+                        const spark = this.part(
+                            n,
+                            "sphere",
+                            [0.16, 0.16, 0.16],
+                            [0, 0, 0],
+                            "#ffe5aa",
+                            true
+                        )
+                        this.shadow.removeShadowCaster(spark)
+                        spark.receiveShadows = false
+                    }
+                    this.nodes.set(trailKey, n)
+                }
+                const meshes = this.nodes.get(trailKey)!.getChildMeshes()
+                meshes[0].position.set(food.x, 0.2, food.z)
+                for (let j = 1; j < meshes.length; j++) {
+                    meshes[j].setEnabled(!this.settings.reduced)
+                    const t = (m.time * 1.4 + food.id * 0.13 + (j - 1) / 3) % 1
+                    meshes[j].position.set(
+                        food.x + (head.x - food.x) * t,
+                        0.5 + Math.sin(t * Math.PI) * 0.5,
+                        food.z + (head.z - food.z) * t
+                    )
+                }
+            }
+        }
+
         for (const b of m.bombs) {
             const key = `b${b.id}`
             alive.add(key)

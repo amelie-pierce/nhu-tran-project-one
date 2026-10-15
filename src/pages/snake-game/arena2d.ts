@@ -1,5 +1,7 @@
 import {
     ARENA_HALF,
+    MAGNET_RADIUS,
+    mapGeometry,
     ARENA_SIZE,
     palettes,
     suitStyles,
@@ -71,7 +73,7 @@ export function drawArena2D(
             circle(
                 x,
                 y,
-                diameter * 0.56,
+                diameter * 0.56 - 0.75,
                 background,
                 dark ? "#fbd6ed" : "#7d5864"
             )
@@ -105,7 +107,7 @@ export function drawArena2D(
     c.strokeStyle = palettes[settings.theme].edge
     c.lineWidth = 3
     c.strokeRect(left, top, size, size)
-    const itemSize = Math.max(17, Math.min(26, scale * 3.8))
+    const { itemSize } = mapGeometry(scale)
     for (const o of match.obstacles) {
         const { x, y } = position(o)
         // Gray square badges distinguish solid scenery from colorful round food.
@@ -153,9 +155,44 @@ export function drawArena2D(
                 "#5b6570"
             )
     }
+    if (match.magnet > match.time) {
+        const head = position(match.player.body[0])
+        c.save()
+        c.beginPath()
+        c.rect(left, top, size, size)
+        c.clip()
+        circle(head.x, head.y, MAGNET_RADIUS * scale, "#d6a0f218", "#b575cd")
+        for (const food of match.items) {
+            const d = Math.hypot(
+                food.x - match.player.body[0].x,
+                food.z - match.player.body[0].z
+            )
+            if (food.kind !== "food" || d >= MAGNET_RADIUS) continue
+            const p = position(food)
+            circle(p.x, p.y, itemSize * 0.65, "#ffe4fb55", "#c17bdb")
+            c.beginPath()
+            c.moveTo(p.x, p.y)
+            c.lineTo(head.x, head.y)
+            c.strokeStyle = "#be7bc055"
+            c.lineWidth = 1.5
+            c.stroke()
+            if (!settings.reduced) {
+                for (let j = 0; j < 3; j++) {
+                    const t = (match.time * 1.4 + food.id * 0.13 + j / 3) % 1
+                    circle(
+                        p.x + (head.x - p.x) * t,
+                        p.y + (head.y - p.y) * t,
+                        2.5 * (1 - t) + 1,
+                        "#fff0b9"
+                    )
+                }
+            }
+        }
+        c.restore()
+    }
     for (const item of match.items) {
         if (item.kind === "food")
-            icon(item, ["🍊", "🍎", "🍇"][item.shape], itemSize)
+            icon(item, ["🍊", "🍎", "🍇"][item.shape], itemSize, "#fff1d6")
         else if (item.kind === "mark") {
             const { x, y } = position(item)
             circle(x, y, Math.max(3.5, scale * 0.8), item.color, "#ffffff")
@@ -172,8 +209,14 @@ export function drawArena2D(
                 : 1 + Math.sin(match.time * 3 + item.id) * 0.06
             c.save()
             c.shadowColor = color
-            c.shadowBlur = 12
-            circle(x, y, (itemSize * 0.7 + 3) * pulse, "#fffef2", color)
+            c.shadowBlur = 12 * pulse
+            circle(
+                x,
+                y,
+                mapGeometry(scale).powerRadius - 0.75,
+                "#fffef2",
+                color
+            )
             c.shadowBlur = 0
             circle(x, y, itemSize * 0.6, "#fff9e9", "#ffe29a")
             icon(
@@ -208,7 +251,7 @@ export function drawArena2D(
     }
     const drawSnake = (s: Snake, player: boolean) => {
         const head = position(s.body[0]),
-            bodyWidth = Math.max(12, Math.min(19, scale * 2.6))
+            bodyWidth = mapGeometry(scale).bodyWidth
         const suited = player && match.lives === 3,
             skeleton = player && match.lives === 1
         const color = skeleton

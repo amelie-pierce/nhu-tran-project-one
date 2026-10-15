@@ -1,3 +1,8 @@
+export const POWER_HALO_DIAMETER = 2.1
+export const POWER_HALO_THICKNESS = 0.12
+export const POWER_RADIUS = (POWER_HALO_DIAMETER + POWER_HALO_THICKNESS) / 2
+export const MAGNET_RADIUS = 10
+export const MAGNET_PULL_SPEED = 14
 export const EXPLOSION_DURATION = 1.1
 export const CAMERA_ZOOM_MIN = 0.65
 export const CAMERA_ZOOM_MAX = 2.5
@@ -191,13 +196,69 @@ export class Match {
     shield = 0
     magnet = 0
     recovery = 0
+    private blockedContact = false
     paused = false
     over = false
     target: Point | null = null
-    behavior: "Stop" | "Continue" = "Stop"
+    behavior: "Stop" | "Continue" = "Continue"
     steering = 0
     forwardHeld = false
     private travelKeys = new Set<string>()
+    private mapKeys = new Map<string, number>()
+    private inputView: "2D" | "3D" = "3D"
+    private mapScale = 1
+    presentation(view: "2D" | "3D", scale: number) {
+        if (view !== this.inputView) {
+            this.travelKeys.clear()
+            this.mapKeys.clear()
+            this.steering = 0
+            this.forward(false)
+        }
+        this.inputView = view
+        this.mapScale = Math.max(0.01, scale)
+    }
+    mapKey(key: string, down: boolean, repeat = false) {
+        key = key.toLowerCase()
+        const headings: Record<string, number> = {
+            w: 0,
+            arrowup: 0,
+            s: Math.PI,
+            arrowdown: Math.PI,
+            a: -Math.PI / 2,
+            arrowleft: -Math.PI / 2,
+            d: Math.PI / 2,
+            arrowright: Math.PI / 2,
+        }
+        if (!(key in headings)) return
+        if (down) {
+            if (repeat || this.countdown > 0 || this.paused || this.over) return
+            this.mapKeys.delete(key)
+            this.mapKeys.set(key, headings[key])
+        } else if (!this.mapKeys.delete(key)) return
+        const heading = [...this.mapKeys.values()].at(-1)
+        if (heading !== undefined) {
+            if (down || this.behavior === "Stop") this.player.heading = heading
+            this.forward(true)
+        } else this.forward(false)
+    }
+    contactRadius(kind: "food" | "bomb" | "power") {
+        if (this.inputView === "3D")
+            return kind === "power"
+                ? POWER_RADIUS + 0.5
+                : kind === "food"
+                  ? 0.95
+                  : 1.05
+        const geometry = mapGeometry(this.mapScale)
+        return (
+            (geometry.snakeRadius +
+                (kind === "food"
+                    ? geometry.foodRadius
+                    : kind === "power"
+                      ? geometry.powerRadius
+                      : geometry.bombRadius)) /
+            this.mapScale
+        )
+    }
     milestones = 0
     applied = 0
     warnings: number[] = []
@@ -300,6 +361,48 @@ export class Match {
                 p,
                 ["#a495df", "#e6a642", "#68a9d6"][Math.floor(Math.random() * 3)]
             )
+            const length = 3 + Math.floor(Math.random() * 10)
+            let placed = false
+            for (let attempt = 0; attempt < 60; attempt++) {
+                const head = attempt === 0 ? p : this.free()
+                const heading = Math.random() * Math.PI * 2
+                const body = Array.from({ length }, (_, i) => ({
+                    x: head.x - Math.sin(heading) * i * 0.85,
+                    z: head.z - Math.cos(heading) * i * 0.85,
+                }))
+                if (
+                    !body.every(
+                        (b) =>
+                            Math.abs(b.x) < ARENA_LIMIT &&
+                            Math.abs(b.z) < ARENA_LIMIT &&
+                            this.obstacles.every(
+                                (o) => distance(o, b) > o.radius + 0.5
+                            ) &&
+                            this.bombs.every(
+                                (bomb) =>
+                                    distance(bomb, b) >
+                                    this.contactRadius("bomb")
+                            ) &&
+                            this.player.body.every(
+                                (segment) => distance(segment, b) > 3
+                            ) &&
+                            this.robots.every((robot) =>
+                                robot.body.every(
+                                    (segment) => distance(segment, b) > 3
+                                )
+                            )
+                    )
+                )
+                    continue
+                r.body = body
+                r.heading = r.wander = heading
+                placed = true
+                break
+            }
+            if (!placed) {
+                this.pending.push({ at: this.time + 1, kind: "robot" })
+                return
+            }
             r.moving = true
             this.robots.push(r)
         } else if (kind === "bomb") this.bombs.push({ ...p, id: nextId++ })
@@ -360,6 +463,7 @@ export class Match {
             this.target = null
             this.player.moving = true
         } else if (was) {
+            if (this.behavior === "Continue") this.target = null
             this.player.moving = !!this.steering || this.behavior === "Continue"
         }
     }
@@ -379,6 +483,7 @@ export class Match {
     pause() {
         this.paused = true
         this.travelKeys.clear()
+        this.mapKeys.clear()
         this.forwardHeld = false
         this.steering = 0
         if (this.behavior === "Stop" && !this.target) this.player.moving = false
@@ -428,19 +533,21 @@ export class Match {
         const h = s.body[0],
             x = h.x + Math.sin(s.heading) * speed * dt,
             z = h.z + Math.cos(s.heading) * speed * dt
-        if (Math.abs(x) > ARENA_LIMIT || Math.abs(z) > ARENA_LIMIT) {
-            s.moving = false
-            return
-        }
         if (
+            Math.abs(x) > ARENA_LIMIT ||
+            Math.abs(z) > ARENA_LIMIT ||
             this.obstacles.some((o) => distance(o, { x, z }) < o.radius + 0.5)
         ) {
             s.moving = false
             if (s === this.player) {
                 this.target = null
-            }
+                // Holding into the same solid surface is one contact, even after recovery.
+                if (!this.blockedContact) this.damage()
+                this.blockedContact = true
+            } else this.kill(s)
             return
         }
+        if (s === this.player) this.blockedContact = false
         h.x = x
         h.z = z
         for (let i = 1; i < s.body.length; i++) {
@@ -477,6 +584,8 @@ export class Match {
         if (this.paused || this.over) return
         if (this.countdown > 0) {
             this.countdown = Math.max(0, this.countdown - dt)
+            if (this.countdown === 0)
+                this.player.moving = this.behavior === "Continue"
             return
         }
         this.time += dt
@@ -500,10 +609,6 @@ export class Match {
             )
                 this.spawn("power")
         }
-        const snakes = [this.player, ...this.robots]
-        const before = new Map(
-            snakes.map((s) => [s.id, s.body.map((p) => ({ ...p }))])
-        )
         if (this.target && distance(this.player.body[0], this.target) <= 0.5) {
             this.target = null
 
@@ -521,7 +626,8 @@ export class Match {
             )
         }
         this.move(this.player, dt, this.speed)
-        for (const r of this.robots) {
+        if (this.over) return
+        for (const r of [...this.robots]) {
             const h = r.body[0]
             const obstacle = this.obstacles.find(
                 (o) => distance(o, h) < o.radius + 5
@@ -542,15 +648,24 @@ export class Match {
         if (this.magnet > this.time)
             for (const i of this.items) {
                 const d = distance(i, this.player.body[0])
-                if (i.kind === "food" && d < 3 && d > 0.01) {
-                    const f = Math.min(1, (dt * 9) / d)
+                if (i.kind === "food" && d < MAGNET_RADIUS && d > 0.01) {
+                    const f = Math.min(1, (dt * MAGNET_PULL_SPEED) / d)
                     i.x += (this.player.body[0].x - i.x) * f
                     i.z += (this.player.body[0].z - i.z) * f
                 }
             }
+        const snakes = [this.player, ...this.robots]
         for (const s of snakes)
             for (const item of [...this.items])
-                if (distance(s.body[0], item) < 0.95) this.collect(s, item)
+                if (
+                    distance(s.body[0], item) <
+                    (item.kind === "mark"
+                        ? 0.95
+                        : this.contactRadius(
+                              item.kind === "food" ? "food" : "power"
+                          ))
+                )
+                    this.collect(s, item)
         const newContacts = new Set<string>(),
             deaths = new Set<Snake>(),
             consumed = new Set<Point & { id: number }>()
@@ -559,48 +674,36 @@ export class Match {
         for (let a = 0; a < snakes.length; a++)
             for (let b = a + 1; b < snakes.length; b++) {
                 const s = snakes[a],
-                    t = snakes[b],
-                    key = `${s.id}:${t.id}`
-                let touch = false,
-                    sIn = false,
-                    tIn = false
-                for (let i = 0; i < s.body.length; i++)
-                    for (let j = 0; j < t.body.length; j++) {
-                        const p = s.body[i],
-                            q = t.body[j]
-                        if (distance(p, q) >= 1) continue
-                        touch = true
-                        const oldP = before.get(s.id)![
-                                Math.min(i, before.get(s.id)!.length - 1)
-                            ],
-                            oldQ = before.get(t.id)![
-                                Math.min(j, before.get(t.id)!.length - 1)
-                            ]
-                        const dx = oldQ.x - oldP.x,
-                            dz = oldQ.z - oldP.z
-                        sIn ||=
-                            (p.x - oldP.x) * dx + (p.z - oldP.z) * dz > 0.000001
-                        tIn ||=
-                            (q.x - oldQ.x) * -dx + (q.z - oldQ.z) * -dz >
-                            0.000001
-                    }
-                if (!touch) continue
-                newContacts.add(key)
-                if (
-                    this.contacts.has(key) ||
-                    (s === this.player && protectedAtStart)
-                )
-                    continue
-                if (sIn) {
-                    if (s === this.player) hurt = true
-                    else deaths.add(s)
+                    t = snakes[b]
+                const sHeadHit = t.body.some((p) => distance(s.body[0], p) < 1)
+                const tHeadHit = s.body.some((p) => distance(t.body[0], p) < 1)
+                // Track each head separately: body overlap never assigns responsibility.
+                for (const [attacker, hit, other] of [
+                    [s, sHeadHit, t],
+                    [t, tHeadHit, s],
+                ] as const) {
+                    if (!hit) continue
+                    const key = `head:${attacker.id}:${other.id}`
+                    newContacts.add(key)
+                    if (
+                        this.contacts.has(key) ||
+                        ((s === this.player || t === this.player) &&
+                            protectedAtStart)
+                    )
+                        continue
+                    if (attacker === this.player) hurt = true
+                    else deaths.add(attacker)
                 }
-                if (tIn) deaths.add(t)
             }
         for (const s of snakes)
             for (const b of this.bombs) {
                 const key = `${s.id}:b${b.id}`
-                if (!s.body.some((p) => distance(p, b) < 1.05)) continue
+                if (
+                    !s.body.some(
+                        (p) => distance(p, b) < this.contactRadius("bomb")
+                    )
+                )
+                    continue
                 newContacts.add(key)
                 if (
                     this.contacts.has(key) ||
@@ -615,5 +718,19 @@ export class Match {
         if (hurt) this.damage()
         for (const r of deaths) this.kill(r)
         for (const b of consumed) this.explode(b)
+    }
+}
+
+// Screen-space sizes shared by the readable 2D renderer and collision model.
+export function mapGeometry(scale: number) {
+    const itemSize = Math.max(17, Math.min(26, scale * 3.8))
+    const bodyWidth = Math.max(12, Math.min(19, scale * 2.6))
+    return {
+        itemSize,
+        bodyWidth,
+        snakeRadius: (bodyWidth + 3) / 2,
+        powerRadius: itemSize * 0.7 + 3.75,
+        foodRadius: itemSize * 0.56,
+        bombRadius: (itemSize + 3) * 0.56,
     }
 }

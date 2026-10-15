@@ -172,7 +172,7 @@ function SnakeArt({
 const tutorialSteps = [
     [
         "Make your first move",
-        "After the countdown, tap the arena to set a destination. Your snake turns immediately toward the destination.",
+        "Continue mode starts moving automatically after the countdown. Tap the arena to set a destination. Your snake turns immediately toward the destination.",
     ],
     [
         "A moment to breathe",
@@ -180,7 +180,7 @@ const tutorialSteps = [
     ],
     [
         "Follow your own direction",
-        "Press left or right, A / D, or an arrow key to turn 90° immediately. Hold to keep moving in that direction. Hold W / Up Arrow to move straight. S / Down Arrow turns around once and moves while held. Release to stop in Stop mode. Left and right are relative to your snake.",
+        "Press left or right, A / D, or an arrow key to turn 90° immediately. Hold to keep moving in that direction. Hold W / Up Arrow to move straight. S / Down Arrow turns around once and moves while held. Release to stop in Stop mode. In 3D, directions are relative to your snake. In 2D, W / Up, S / Down, A / Left and D / Right follow the map directions.",
     ],
     [
         "Three little lives",
@@ -188,7 +188,7 @@ const tutorialSteps = [
     ],
     [
         "Pick up something good",
-        "Food grows your snake. Hearts restore a life; shields protect and magnets pull nearby food for five seconds.",
+        "Food grows your snake. Bombs, obstacles and boundaries cost one life unless protected. Hearts restore a life; shields protect and magnets pull nearby food for five seconds.",
     ],
     [
         "A new perspective",
@@ -298,6 +298,13 @@ function Arena({
             const now = performance.now(),
                 dt = Math.min(0.1, (now - previous) / 1000)
             previous = now
+            match.presentation(
+                settingsRef.current.view,
+                Math.min(
+                    canvas.current!.clientWidth,
+                    canvas.current!.clientHeight
+                ) / 110
+            )
             accumulated += dt
             while (accumulated >= 1 / 60) {
                 match.step(1 / 60)
@@ -327,6 +334,17 @@ function Arena({
         })
         const held = new Set<string>()
         const key = (e: KeyboardEvent, down: boolean) => {
+            const mapControl = [
+                "w",
+                "s",
+                "a",
+                "d",
+                "arrowup",
+                "arrowdown",
+                "arrowleft",
+                "arrowright",
+            ].includes(e.key.toLowerCase())
+            if (!down && mapControl) match.mapKey(e.key, false)
             const travelKey = ["w", "arrowup", "s", "arrowdown"].includes(
                 e.key.toLowerCase()
             )
@@ -335,13 +353,33 @@ function Arena({
                 match.travelKey(e.key, false)
                 return
             }
+            const turnKey = ["arrowleft", "arrowright", "a", "d"].includes(
+                e.key.toLowerCase()
+            )
+            if (!down && turnKey) {
+                held.delete(e.key.toLowerCase())
+                if (settingsRef.current.view === "3D")
+                    match.steer(
+                        (held.has("arrowright") || held.has("d") ? 1 : 0) -
+                            (held.has("arrowleft") || held.has("a") ? 1 : 0)
+                    )
+                return
+            }
             if (
-                e.target instanceof HTMLInputElement ||
+                (e.target instanceof HTMLInputElement &&
+                    !["range", "checkbox", "radio", "button"].includes(
+                        e.target.type
+                    )) ||
                 e.target instanceof HTMLSelectElement ||
                 e.target instanceof HTMLTextAreaElement ||
                 (e.target instanceof HTMLElement && e.target.isContentEditable)
             )
                 return
+            if (settingsRef.current.view === "2D" && mapControl) {
+                e.preventDefault()
+                match.mapKey(e.key, down, e.repeat)
+                return
+            }
             if (travelKey) {
                 e.preventDefault()
                 // A fresh press is required after countdown or pause.
@@ -353,8 +391,11 @@ function Arena({
             ) {
                 e.preventDefault()
                 if (down && (match.paused || match.countdown > 0)) return
-                if (down) held.add(e.key.toLowerCase())
-                else held.delete(e.key.toLowerCase())
+                if (down && !e.repeat) {
+                    // A new physical press must turn even after a missed keyup.
+                    if (held.has(e.key.toLowerCase())) match.steer(0)
+                    held.add(e.key.toLowerCase())
+                } else held.delete(e.key.toLowerCase())
                 match.steer(
                     (held.has("arrowright") || held.has("d") ? 1 : 0) -
                         (held.has("arrowleft") || held.has("a") ? 1 : 0)
@@ -517,7 +558,7 @@ function Arena({
             <div className="sg-stage">
                 <canvas
                     ref={canvas}
-                    aria-label="Snake arena. Tap to travel; Hold W or Up Arrow to move forward; hold S or Down Arrow to turn around and move. Release to stop in Stop mode. A and D or arrow keys to steer."
+                    aria-label="Snake arena. Tap to travel; Hold W or Up Arrow to move forward; hold S or Down Arrow to turn around and move. Release to stop in Stop mode. In 2D, WASD and arrows follow map directions. In 3D, controls are relative to the snake."
                     tabIndex={0}
                 />
                 <canvas
@@ -532,7 +573,7 @@ function Arena({
                     <div className="sg-map-key">
                         <span>🍎 Food</span>
                         <span>💣 Bomb</span>
-                        <span>▧ Gray blocks = obstacles</span>
+                        <span>▧ Obstacles & edges cost 1 life</span>
                         <span>✦ Glowing shells = boosts</span>
                     </div>
                 )}
@@ -711,7 +752,10 @@ function Arena({
                                     match.steer(n)
                                 }
                             }}
-                            onKeyUp={() => match.steer(0)}
+                            onKeyUp={(e) => {
+                                if (e.key === " " || e.key === "Enter")
+                                    match.steer(0)
+                            }}
                         >
                             {n === -1 ? "↶" : "↷"}
                             <small>{n === -1 ? "LEFT" : "RIGHT"}</small>
@@ -1118,8 +1162,8 @@ export default function SnakeGame() {
                                         Start adventure →
                                     </button>
                                     <small>
-                                        Starts in Stop mode · Tap to move after
-                                        countdown
+                                        Starts in Continue mode · Moves
+                                        automatically after countdown
                                     </small>
                                 </div>
                             </div>

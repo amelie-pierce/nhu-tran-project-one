@@ -42,7 +42,7 @@ Each arena is 100 × 100 world units. This supersedes the previous 150 × 150 ar
 - Forest.
 - Neon / robot / future.
 
-Food has multiple shapes appropriate to the map, such as orange, apple, and grape forms where suitable. Each match randomly places up to 12 stationary themed obstacles inside the arena, clear of the starting/tutorial area and pickups. Obstacles block the head without costing a life; steer away to resume. They remain solid during protection. Target guidance does not automatically route around obstacles. Sea uses coral, seaweed, and fish reef sculptures; Garden uses blossom trees, mossy logs, and mushrooms; Forest uses leafy trees, logs, and mushrooms; Neon uses luminous towers, rings, and crystals. Their low circular bases show the blocking footprint in 2D and 3D. The minimap includes obstacles.
+Food has multiple shapes appropriate to the map, such as orange, apple, and grape forms where suitable. Each match randomly places up to 12 stationary themed obstacles inside the arena, clear of the starting/tutorial area and pickups. Obstacles block the head and cost one life on unprotected contact; steer away to resume. They remain solid during protection. Target guidance does not automatically route around obstacles. Sea uses coral, seaweed, and fish reef sculptures; Garden uses blossom trees, mossy logs, and mushrooms; Forest uses leafy trees, logs, and mushrooms; Neon uses luminous towers, rings, and crystals. Their low circular bases show the blocking footprint in 2D and 3D. The minimap includes obstacles.
 
 Players independently select snake color and one of six suits. Every suit is usable on every map:
 
@@ -59,14 +59,14 @@ Suits differ cosmetically. All provide the same initial outer life layer; none g
 
 ## 4. Movement and input
 
-The snake starts with 3 segments and 3 lives. Each match has a 3-second opening countdown. The snake remains stationary until the first movement input; the countdown never starts movement automatically. Movement input is accepted only after the countdown finishes.
+The snake starts with 3 segments and 3 lives. Each match has a 3-second opening countdown. In Continue mode, the snake starts moving automatically when the countdown ends. In Stop mode, it waits for the first movement input. Movement input is accepted only after the countdown finishes.
 
 Click/tap movement turns immediately toward the destination, without a turning radius or approach arc; a target is reached within 0.5 world units. Left/right controls make one immediate relative 90-degree turn per press and move straight while held. Release and press again for another turn. This supersedes the previous 180-degrees/second turning cap. Held steering temporarily overrides target guidance. Two movement behaviors are selectable independently of the 2D/3D view:
 
 | Behavior | Click/tap target behavior |
 | --- | --- |
-| Stop (default) | Travel toward the selected point and stop when it is reached. The world continues running. |
-| Continue | Travel toward the selected point, then continue moving in that direction. |
+| Stop | Travel toward the selected point and stop when it is reached. The world continues running. |
+| Continue (default) | Travel toward the selected point, then continue moving in that direction. |
 
 On desktop, support mouse and keyboard. Keyboard turning uses A/D and left/right arrows, always relative to the snake's own left/right. On mobile/tablet, support touch input without requiring a keyboard.
 
@@ -74,7 +74,7 @@ A click/tap selects a map position. In 3D, it selects a point on the visible gro
 
 In Stop mode, releasing steering returns to the latest unreached target, then stops. With no target, it stops immediately. A reached target is cleared, so it is not reused after later steering. In Continue mode, releasing held steering clears the old target and continues along the current heading.
 
-At a boundary, the snake stops without losing a life. Steering away resumes movement. Contact with the player's own body has no effect.
+At a boundary, the snake stops and loses one life on unprotected contact. Steering away resumes movement. Contact with the player's own body has no effect.
 
 Stop is not Pause. While the player is stationary, robots move, hazards can hurt, and match timers continue. Pause freezes the entire match. Losing browser focus automatically pauses; returning focus leaves the match paused until the player selects Resume.
 
@@ -103,25 +103,25 @@ Protection from either damage recovery or a shield permits passing through robot
 
 ### Collision rules outside protection
 
-All player–robot head/body combinations count. The earlier body-to-body-harmless rule was superseded. Responsibility follows which snake moves into contact:
+Only head contact causes snake collision damage. Body-to-body overlap is harmless; movement direction does not determine responsibility:
 
 | Event | Result |
 | --- | --- |
-| Player moves into robot, including head/body contact | Player loses 1 life. |
-| Robot moves into player, including head/body contact | Robot dies. |
-| Simultaneous player–robot contact, including head-on | Player loses 1 life and robot dies. |
-| Robot moves into another robot | The robot initiating contact dies. |
-| Simultaneous robot–robot head-on contact | Both robots die. |
+| Player head touches robot body | Player loses 1 life. |
+| Robot head touches player body | Robot dies. |
+| Player head touches robot head | Player loses 1 life and robot dies. |
+| Robot head touches another robot body | The snake whose head touches dies. |
+| Robot head touches another robot head | Both robots die. |
 | Player contacts a bomb | Player loses 1 life; bomb explodes visually and is consumed. |
 | Robot contacts a bomb | Robot dies; bomb is consumed. |
 | Player contacts its own body | No effect. |
-| Player contacts map boundary | Stop; no damage; steer away to resume. |
+| Player contacts map boundary | Stop; lose one life unless protected; steer away to resume. |
 
-Bomb explosions have no area damage and do not affect nearby snakes. Use contact-point movement toward the other snake to identify the initiator. If both move into contact, both take their respective consequences. Apply a collision once per contact until separation. Robots ignore their own bodies and turn away from boundaries.
+Bomb explosions have no area damage and do not affect nearby snakes. Head-to-body contact affects only the snake whose head touches the other body. Head-to-head contact affects both snakes, even when one is stationary. Body-to-body overlap has no effect. Apply a collision once per contact until separation. Robots ignore their own bodies and turn away from boundaries.
 
 ## 7. Robots and marks
 
-Robots have rounded bodies and heads like the player, with distinct colors and an antenna. Robots start with 3 segments, wander randomly with immediate heading changes, and move at 80% of the player's current speed. They eat basic food and grow like the player. They can also eat robot marks. They cannot collect hearts, shields, or magnets.
+Robots have rounded bodies and heads like the player, with distinct colors and an antenna. Robots spawn with a random 3–12 segments, wander randomly with immediate heading changes, and move at 80% of the player's current speed. They eat basic food and grow like the player. They can also eat robot marks. They cannot collect hearts, shields, or magnets.
 
 Every robot death leaves one collectible mark per body segment, distributed along its body's last path. Marks are small glowing spots matching the dead robot's color. The owner calls these **marks**, rather than circles. Each mark:
 
@@ -142,7 +142,7 @@ Spawn one random heart/shield/magnet every 15 seconds, with no more than 3 uncol
 | Basic food | Add 1 segment. Shape follows the map theme. |
 | Heart | Restore 1 life, up to 3; restore skeleton → normal → selected suit appearance. At 3 lives, the heart stays on the map and is not collected. |
 | Shield | 5 seconds of pass-through protection with flickering and a visible corner countdown. |
-| Magnet | Attract only basic food within a fixed 3-world-unit radius for 5 seconds; show countdown. Radius never depends on snake length or segment dimensions. |
+| Magnet | Attract only basic food within a fixed 10-world-unit radius for 5 seconds; show countdown. Radius never depends on snake length or segment dimensions. |
 | Robot mark | 10 points and 1 added segment. |
 
 Shield and magnet can be active together. Recollecting either restarts that effect's timer at 5 seconds rather than adding time. The interaction between overlapping damage protection and shield protection is not yet specified.
@@ -169,7 +169,7 @@ Show the Snake Game name, an animated suited snake, a prominent Play button, fou
 
 ### Play setup
 
-Choose map, suit, snake color, and starting 2D/3D view. Show a snake preview whose background follows the selected map; labels remain readable on Neon’s dark background. Stop is the default movement behavior and Riding is the default 3D camera. All maps and suits are immediately available.
+Choose map, suit, snake color, and starting 2D/3D view. Show a snake preview whose background follows the selected map; labels remain readable on Neon’s dark background. Continue is the default movement behavior and Riding is the default 3D camera. All maps and suits are immediately available.
 
 ### Gameplay HUD
 
@@ -210,7 +210,7 @@ Include reduced-motion options, keyboard-accessible menus, and readable high-con
 
 Play requires no sign-in. Use `localStorage` for best scores and preferences. Maintain a separate best score for each map; 2D and 3D share that map's best score because players can switch within a match. Accounts and an online leaderboard are outside the requested scope.
 
-Save map/suit/color choices, view/camera preferences, music and effects levels, reduced motion, tutorial completion, and per-map best scores in localStorage. Every new match starts in Stop mode. Do not save unfinished matches. If storage fails, play still works; show a notice that scores and settings cannot be saved. The storage key schema remains an implementation detail. No backend is required by the agreed gameplay or local persistence requirements.
+Save map/suit/color choices, view/camera preferences, music and effects levels, reduced motion, tutorial completion, and per-map best scores in localStorage. Every new match starts in Continue mode; movement begins automatically when the 3-second countdown ends. Do not save unfinished matches. If storage fails, play still works; show a notice that scores and settings cannot be saved. The storage key schema remains an implementation detail. No backend is required by the agreed gameplay or local persistence requirements.
 
 ## 12. Open decisions — do not silently assume
 
@@ -255,9 +255,47 @@ Entering 3D initializes directly at the current follow pose, avoiding a sweep fr
 
 ### Hold W to move forward
 
-In either camera view, holding W moves straight along the current heading. In Stop mode, releasing W stops immediately unless a left/right control remains held. W clears the previous click destination; it does not resume on release. A/D and arrow keys still turn immediately while W is held, and releasing a turn keeps forward movement active. Continue mode retains forward movement after W release. Pause or focus loss clears held forward input; resuming requires a fresh W press. Countdown and game-over states ignore forward presses. Obstacles and arena boundaries still block movement without damage.
+In either camera view, holding W moves straight along the current heading. In Stop mode, releasing W stops immediately unless a left/right control remains held. W clears the previous click destination; it does not resume on release. A/D and arrow keys still turn immediately while W is held, and releasing a turn keeps forward movement active. Continue mode retains forward movement after W release. Pause or focus loss clears held forward input; resuming requires a fresh W press. Countdown and game-over states ignore forward presses. Obstacles and arena boundaries block movement and cost one life unless protected.
 
 
 ### Up/Down keyboard controls
 
 W and Up Arrow share hold-to-move behavior. S and Down Arrow turn the snake around immediately (180 degrees) once per press, then move along that heading while held. Key repeat never triggers additional turns; overlapping S/Down presses count as one held reverse control. Releasing one alias keeps movement active while another travel key is held. Releasing all travel keys stops in Stop mode unless a turn control remains held; Continue mode keeps moving. Pause/focus loss clears held keys and requires fresh presses. Both views use the same controls, and arrow keys do not scroll the page during play.
+
+
+### 2D map controls and visible contact areas
+
+In 2D, W/Up points toward the top of the map, S/Down toward the bottom, A/Left toward the left and D/Right toward the right. The latest held key wins; releasing it returns to the remaining held direction in Stop mode; Continue mode retains the latest chosen heading. Releasing all keys stops in Stop mode. 3D retains snake-relative controls. Switching views clears held input, and a fresh press is required. Pause/focus loss also clears map keys.
+
+2D food and bombs have circular badges whose outer edges define their active area. The renderer and model share screen-space sizes, including the snake body outline; contact occurs when the visible snake and badge touch. The geometry updates with viewport size. Food still requires head contact; bombs still react to any body segment. 3D keeps its existing collision distances. Decorative emoji details do not enlarge the circular badge's hit area.
+
+
+### Solid-surface damage
+
+In both 2D and 3D, player head contact with an obstacle or arena boundary stops movement, clears the destination, and costs one life. This uses the same damage event, three-second recovery protection, shield immunity, and game-over behavior as bomb damage. Solids remain impassable even when protected. Holding movement into a surface counts as one contact and cannot drain additional lives after protection expires; moving away and contacting a surface again can cause another hit. Obstacles and boundaries remain in place and do not explode. Robot avoidance is unchanged.
+
+
+### Magnet range and attraction feedback
+
+Magnet range is 10 world units and pull speed is 14 units/second. Duration remains five seconds and only basic food is attracted. Both views show a pastel range ring, highlighted affected food, and inward-moving golden particles. 2D also shows faint connecting trails. Effects follow match time, freeze on pause, and disappear when the magnet expires or food leaves range/is collected. Reduced motion keeps steady range/food highlights and omits moving particles; gameplay attraction remains active.
+
+
+### Head collision rules and Continue steering
+
+Snake collisions are determined by head contact, not which segments moved toward each other. Head-to-body costs the attacking player one life or kills the attacking robot; the other snake survives. Head-to-head costs the player one life and kills the robot, or kills both robots. Body-only overlap is harmless. Existing player shield/recovery pass-through protection still applies. Each head contact triggers once until separation.
+
+In 2D Continue mode, releasing a direction key keeps the latest chosen heading even if an older arrow remains held. Stop mode retains held-key fallback. Releasing keyboard travel in Continue clears any intervening click destination, preventing a stale target from overriding the selected heading. 3D keeps relative turning.
+
+
+### Long-match input and robot lifecycle
+
+Fresh 2D direction presses recover from missing key-release events; key repeat still does not override newer directions. In-game range sliders no longer swallow movement arrows. 3D turn releases are processed even after focus changes, and steering buttons only react to Space/Enter releases. Regression coverage includes 153-segment snakes at maximum speed and elapsed match time.
+
+Robots spawn and respawn with random lengths of 3–12 segments. Full-body placement checks avoid solids, bombs and other snakes; crowded placement is deferred. Robot head contact with obstacles/boundaries is fatal, using the same death/marks/five-second replacement lifecycle as snake or bomb contact. Robots still attempt avoidance. Head-to-body kills the attacking robot; head-to-head kills both unprotected participants (the player loses a life). Robots have one life and cannot collect shields; player protection retains pass-through behavior.
+
+
+### Special pickup contact and magnet rendering
+
+Hearts, shields, and magnets use their visible shell/halo footprint for collection: 2D shares the screen-sized shell radius with the renderer, while 3D uses the 1.11-unit outer halo radius. Both add the snake head radius for edge contact. Shell geometry stays steady; only the glow pulses, so the hit area does not fluctuate. Decorative glow and sparkles are not solid pickup geometry. Full-health hearts remain uncollected.
+
+2D no longer builds hidden 3D magnet trails, and 3D trail particles do not cast shadows. Magnet regression coverage exercises actual pickup, nearby food attraction, all keyboard directions, maximum speed, a long snake, and expiry in both views.
