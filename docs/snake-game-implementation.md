@@ -129,3 +129,8 @@ Robots spawn and respawn with random lengths of 3–12 segments. Full-body place
 Hearts, shields, and magnets use their visible shell/halo footprint for collection: 2D shares the screen-sized shell radius with the renderer, while 3D uses the 1.11-unit outer halo radius. Both add the snake head radius for edge contact. Shell geometry stays steady; only the glow pulses, so the hit area does not fluctuate. Decorative glow and sparkles are not solid pickup geometry. Full-health hearts remain uncollected.
 
 2D no longer builds hidden 3D magnet trails, and 3D trail particles do not cast shadows. Magnet regression coverage exercises actual pickup, nearby food attraction, all keyboard directions, maximum speed, a long snake, and expiry in both views.
+
+
+### Controls and long-match rendering
+
+On-screen left/right buttons have been removed. Keyboard controls and tap/click destinations remain available. The 2D canvas is now the only scene rendered in 2D: hidden Babylon dynamic meshes and shadow rendering are skipped, the hidden minimap is not drawn, and clicks use the same projection as the canvas. Switching to 3D rebuilds dynamic visuals from current match state. 3D sphere/box parts share geometry buffers and segment positions reuse vectors, reducing mesh allocation during growth. These changes reduce rendering load; they do not establish the exact cause of the intermittent input freeze.

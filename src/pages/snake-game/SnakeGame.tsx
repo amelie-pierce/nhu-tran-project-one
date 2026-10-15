@@ -180,7 +180,7 @@ const tutorialSteps = [
     ],
     [
         "Follow your own direction",
-        "Press left or right, A / D, or an arrow key to turn 90° immediately. Hold to keep moving in that direction. Hold W / Up Arrow to move straight. S / Down Arrow turns around once and moves while held. Release to stop in Stop mode. In 3D, directions are relative to your snake. In 2D, W / Up, S / Down, A / Left and D / Right follow the map directions.",
+        "Press A / D or a left/right arrow key to turn 90° immediately. Hold to keep moving in that direction. Hold W / Up Arrow to move straight. S / Down Arrow turns around once and moves while held. Release to stop in Stop mode. In 3D, directions are relative to your snake. In 2D, W / Up, S / Down, A / Left and D / Right follow the map directions.",
     ],
     [
         "Three little lives",
@@ -321,7 +321,7 @@ function Arena({
             game.draw(dt)
             if (settingsRef.current.view === "2D" && readableMap.current)
                 drawArena2D(readableMap.current, match, settingsRef.current)
-            drawMap()
+            if (settingsRef.current.view === "3D") drawMap()
             hud += dt
             if (hud > 0.08) {
                 render((n) => n + 1)
@@ -733,34 +733,6 @@ function Arena({
                             </button>
                         </>
                     )}
-                </div>
-                <div className="sg-steer">
-                    {[-1, 1].map((n) => (
-                        <button
-                            key={n}
-                            aria-label={`Turn ${n === -1 ? "left" : "right"} 90°, hold to move`}
-                            onPointerDown={(e) => {
-                                e.currentTarget.setPointerCapture(e.pointerId)
-                                match.steer(n)
-                            }}
-                            onPointerUp={() => match.steer(0)}
-                            onPointerCancel={() => match.steer(0)}
-                            onLostPointerCapture={() => match.steer(0)}
-                            onKeyDown={(e) => {
-                                if (e.key === " " || e.key === "Enter") {
-                                    e.preventDefault()
-                                    match.steer(n)
-                                }
-                            }}
-                            onKeyUp={(e) => {
-                                if (e.key === " " || e.key === "Enter")
-                                    match.steer(0)
-                            }}
-                        >
-                            {n === -1 ? "↶" : "↷"}
-                            <small>{n === -1 ? "LEFT" : "RIGHT"}</small>
-                        </button>
-                    ))}
                 </div>
                 <div className="sg-control-group">
                     <button

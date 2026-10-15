@@ -1,3 +1,4 @@
+import { arenaProjection } from "./arena2d"
 import { CameraFollow } from "./camera-follow"
 import "@babylonjs/core/Culling/ray"
 import { Engine } from "@babylonjs/core/Engines/engine"
@@ -40,6 +41,7 @@ export class GameScene {
     tilt = 0
     nodes = new Map<string, TransformNode>()
     materials = new Map<string, StandardMaterial>()
+    private templates = new Map<string, Mesh>()
     shadow: ShadowGenerator
     target: Mesh
     locator: Mesh
@@ -337,14 +339,26 @@ export class GameScene {
         color: string,
         glow = false
     ) {
-        const m =
-            shape === "sphere"
-                ? MeshBuilder.CreateSphere(
-                      "part",
-                      { diameter: 1, segments: 10 },
-                      this.scene
-                  )
-                : MeshBuilder.CreateBox("part", { size: 1 }, this.scene)
+        let template = this.templates.get(shape)
+        if (!template) {
+            template =
+                shape === "sphere"
+                    ? MeshBuilder.CreateSphere(
+                          "sphere-template",
+                          { diameter: 1, segments: 10 },
+                          this.scene
+                      )
+                    : MeshBuilder.CreateBox(
+                          "box-template",
+                          { size: 1 },
+                          this.scene
+                      )
+            template.isVisible = false
+            template.isPickable = false
+            this.templates.set(shape, template)
+        }
+        const m = new Mesh("part", this.scene)
+        template.geometry!.applyToMesh(m)
         m.parent = parent
         m.scaling = new Vector3(...scale)
         m.position = new Vector3(...pos)
@@ -490,7 +504,7 @@ export class GameScene {
                 }
             }
         }
-        n.position = new Vector3(s.body[i].x, 0, s.body[i].z)
+        n.position.set(s.body[i].x, 0, s.body[i].z)
         n.rotation.y =
             i === 0
                 ? s.heading
@@ -657,6 +671,16 @@ export class GameScene {
     }
     pick(x: number, y: number): Point | null {
         const rect = this.engine.getRenderingCanvas()!.getBoundingClientRect()
+        if (this.settings.view === "2D") {
+            const projection = arenaProjection(rect.width, rect.height)
+            const px =
+                (x - rect.left - projection.x) / projection.scale - ARENA_HALF
+            const pz =
+                ARENA_HALF - (y - rect.top - projection.y) / projection.scale
+            return Math.abs(px) <= ARENA_HALF && Math.abs(pz) <= ARENA_HALF
+                ? { x: px, z: pz }
+                : null
+        }
         const p = this.scene.pick(
             x - rect.left,
             y - rect.top,
@@ -667,6 +691,15 @@ export class GameScene {
             : null
     }
     draw(dt: number) {
+        // The canvas renderer owns 2D. Do not build or render a hidden 3D copy.
+        if (this.settings.view === "2D") {
+            if (this.nodes.size) {
+                for (const node of this.nodes.values()) node.dispose()
+                this.nodes.clear()
+            }
+            this.follow.reset()
+            return
+        }
         this.scenery.setEnabled(this.settings.view === "3D")
         const m = this.match,
             alive = new Set<string>()
@@ -856,25 +889,9 @@ export class GameScene {
         if (m.target)
             this.target.position = new Vector3(m.target.x, 0.09, m.target.z)
         const h = m.player.body[0]
-        this.locator.setEnabled(
-            this.settings.view === "2D" ||
-                (m.protected && this.settings.reduced)
-        )
+        this.locator.setEnabled(m.protected && this.settings.reduced)
         this.locator.position.set(h.x, 0.06, h.z)
-        if (this.settings.view === "2D") {
-            this.follow.reset()
-            this.camera.mode = FreeCamera.ORTHOGRAPHIC_CAMERA
-            const aspect =
-                    this.engine.getRenderWidth() /
-                    this.engine.getRenderHeight(),
-                half = ARENA_HALF + 5
-            this.camera.orthoLeft = -half * Math.max(1, aspect)
-            this.camera.orthoRight = half * Math.max(1, aspect)
-            this.camera.orthoTop = half * Math.max(1, 1 / aspect)
-            this.camera.orthoBottom = -half * Math.max(1, 1 / aspect)
-            this.camera.position.set(0, 160, -0.001)
-            this.camera.setTarget(Vector3.Zero())
-        } else {
+        {
             this.camera.mode = FreeCamera.PERSPECTIVE_CAMERA
             const pose = this.follow.update(
                 {

@@ -3,17 +3,14 @@ import {
     faGamepad,
     faArrowRight,
 } from "@fortawesome/free-solid-svg-icons"
-import { useNavigate } from "react-router"
 import styles from "./GameBanner.module.css"
 
 const GameBanner = () => {
-    const navigate = useNavigate()
-
     return (
         <button
             type="button"
             className={styles.wrapper}
-            onClick={() => navigate("/snake-game")}
+            onClick={() => window.open("/snake-game", "_blank")}
             title="Take a break! Play Snake Game"
             aria-label="Play Snake Game"
         >

@@ -664,27 +664,7 @@
     font-size: 11px;
     padding: 9px 12px;
 }
-.sg-steer {
-    display: flex;
-    gap: 12px;
-    flex-shrink: 0;
-}
-.sg-steer button {
-    width: 72px;
-    touch-action: none;
-    user-select: none;
-    font-size: 28px;
-    line-height: 1;
-    background: #fbdce3;
-    border-bottom: 4px solid #dfadba;
-    min-height: 59px;
-}
-.sg-steer small {
-    display: block;
-    font-size: 8px;
-    letter-spacing: 1px;
-    margin-top: 5px;
-}
+
 .sg-minimap {
     position: absolute;
     right: 15px;
@@ -1026,10 +1006,7 @@
         min-height: 32px;
         background: #fff9eeeb;
     }
-    .sg-steer button {
-        width: 53px;
-        padding: 8px;
-    }
+
     .sg-minimap {
         top: 50px;
         right: 12px;
@@ -1086,13 +1063,7 @@
     .sg-controls {
         padding: 5px 15px;
     }
-    .sg-steer button {
-        min-height: 43px;
-        padding: 3px;
-    }
-    .sg-steer small {
-        display: none;
-    }
+
     .sg-lesson {
         max-width: 260px;
         padding: 10px;
