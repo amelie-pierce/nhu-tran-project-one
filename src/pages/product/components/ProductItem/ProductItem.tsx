@@ -35,14 +35,19 @@ const ProductItem = ({ product }: Props) => {
             }}
         >
             <img
-                src={transformImage(product.img_url || fallbackImg, 270)}
+                src={product.img_url || fallbackImg}
                 srcSet={`
-                    ${transformImage(product.img_url || fallbackImg, 160)} 160w,
                     ${transformImage(product.img_url || fallbackImg, 200)} 200w,
-                    ${transformImage(product.img_url || fallbackImg, 270)} 270w
-                    ${transformImage(product.img_url || fallbackImg, 500)} 500w
+                    ${transformImage(product.img_url || fallbackImg, 350)} 350w,
                 `}
-                sizes={getImgSizeWidth(160, 200, 270, 500)}
+                sizes={getImgSizeWidth(200, 200, 350, 350)}
+                // srcSet={`
+                //     ${transformImage(product.img_url || fallbackImg, 160)} 160w,
+                //     ${transformImage(product.img_url || fallbackImg, 200)} 200w,
+                //     ${transformImage(product.img_url || fallbackImg, 270)} 270w
+                //     ${transformImage(product.img_url || fallbackImg, 500)} 500w
+                // `}
+                // sizes={getImgSizeWidth(160, 200, 270, 500)}
                 alt={product.name}
                 className={styles["product-item-image"]}
                 loading="lazy"

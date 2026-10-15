@@ -10,7 +10,7 @@ const Product = () => {
     return (
         <div className={`${styles["wrapper"]} page-padding page-layout`}>
             <img
-                src={transformImage(img, 1200)}
+                src={img}
                 srcSet={`
                     ${transformImage(img, 330)} 330w,
                     ${transformImage(img, 640)} 640w,
