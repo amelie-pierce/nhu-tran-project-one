@@ -3,7 +3,7 @@ import React, {
     useCallback,
     useContext,
     useEffect,
-    useMemo,
+    useRef,
     useState,
 } from "react"
 import { useUser } from "@/contexts/UserContext"
@@ -18,10 +18,8 @@ import {
 } from "@/storages/compareStorage"
 import { useToast } from "@/contexts/ToastContext"
 import { getUserCart } from "@/apis/cart/getUserCart"
-import { createUserCart } from "@/apis/cart/createUserCart"
 import { updateUserCart } from "@/apis/cart/updateUserCart"
 import { deleteUserCart } from "@/apis/cart/deleteUserCart"
-import { debounce } from "@/utils/debounce"
 import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 import {
     getUserCompare,
@@ -30,6 +28,7 @@ import {
 import { deleteUserCompare } from "@/apis/compare/deleteUserCompare"
 import { createUserCompare } from "@/apis/compare/createUserCompare"
 import type { Product } from "@/types/product"
+import { upsertUserCart } from "@/apis/cart/upsertUserCart"
 
 type UserDataType = {
     cartList: CartProduct[]
@@ -39,11 +38,12 @@ type UserDataType = {
         quantity: number,
         debounceEnabled?: boolean
     ) => void
-    addToCartList: (product: CartProduct, quantity: number) => void
+    addToCartList: (product: CartProduct, quantity: number) => Promise<void>
     removeFromCartList: (id: number) => void
     toggleCompareItem: (product?: Product) => void
     removeAllCompareItems: () => void
     isCartFetching: boolean
+    isCartError: boolean
     isCompareFetching: boolean
 }
 
@@ -63,23 +63,46 @@ export const UserDataProvider = ({ children }: Props) => {
 
     const queryClient = useQueryClient()
 
-    const { data: userCart, isFetching: isCartFetching } = useQuery({
+    const {
+        data: userCart,
+        isFetching: isCartFetching,
+        isError: isCartError,
+    } = useQuery({
         queryKey: [QUERY_KEY_USER_CART],
         queryFn: getUserCart,
         // staleTime: 1000 * 60 * 5,
         enabled: isLoggedIn,
     })
 
-    const { mutate: createCart } = useMutation({
-        mutationFn: createUserCart,
+    const { mutateAsync: upsertCartAsync } = useMutation({
+        mutationFn: upsertUserCart,
         onSuccess: (data) => {
-            setCartList((prevCartList) => [
-                ...prevCartList,
-                {
-                    ...data?.[0]?.product,
-                    quantity: data?.[0]?.quantity || 1,
-                },
-            ])
+            const updatedItem = data?.[0]
+            if (!updatedItem) return
+
+            setCartList((prevCartList) => {
+                const exists = prevCartList.some(
+                    (item) => item.id === updatedItem.product_id
+                )
+
+                if (exists) {
+                    return prevCartList.map((item) =>
+                        item.id === updatedItem.product_id
+                            ? { ...item, quantity: updatedItem.quantity }
+                            : item
+                    )
+                } else {
+                    return [
+                        ...prevCartList,
+                        {
+                            ...updatedItem.product,
+                            id: updatedItem.product_id,
+                            quantity: updatedItem.quantity,
+                        },
+                    ]
+                }
+            })
+
             queryClient.invalidateQueries({
                 queryKey: [QUERY_KEY_USER_CART],
             })
@@ -225,69 +248,63 @@ export const UserDataProvider = ({ children }: Props) => {
         return false
     }
 
-    const debouncedUpdateCart = useMemo(
-        () =>
-            debounce((product_id: number, quantity: number) => {
+    // Note: AI guide to fix TC-44
+    const cartTimers = useRef<any>({})
+
+    const updateCartList = useCallback(
+        (product_id: number, quantity: number, debounceEnabled?: boolean) => {
+            if (!quantity || !product_id) return
+
+            setCartList((prevCartList) =>
+                prevCartList?.map((item) =>
+                    item.id === product_id ? { ...item, quantity } : item
+                )
+            )
+
+            if (debounceEnabled) {
+                if (cartTimers.current[product_id]) {
+                    clearTimeout(cartTimers.current[product_id])
+                }
+
+                cartTimers.current[product_id] = setTimeout(() => {
+                    updateCart({
+                        product_id,
+                        quantity,
+                    })
+                }, 1000)
+            } else {
                 updateCart({
                     product_id,
                     quantity,
                 })
-            }, 1000),
+            }
+        },
         [updateCart]
     )
 
-    const updateCartList = (
-        product_id: number,
-        quantity: number,
-        debounceEnabled?: boolean
-    ) => {
-        if (!quantity || !product_id) return
-
-        if (debounceEnabled) {
-            debouncedUpdateCart(product_id, quantity)
-        } else {
-            updateCart({
-                product_id,
-                quantity,
-            })
-        }
-
-        setCartList((prevCartList) =>
-            prevCartList?.map((item) =>
-                item.id === product_id
-                    ? {
-                          ...item,
-                          quantity,
-                      }
-                    : item
-            )
-        )
-    }
-
     const addToCartList = useCallback(
-        (product: CartProduct, quantity: number) => {
+        async (product: CartProduct, quantity: number) => {
+            const productId = product.id || 0
+
             const isSuccess = checkConditionAddToCart(
-                product.id || 0,
+                productId,
                 quantity,
                 cartList
             )
             if (!isSuccess) return
 
-            const existingItem = cartList.find((item) => item.id === product.id)
+            const existingItem = cartList.find((item) => item.id === productId)
 
-            if (existingItem) {
-                updateCartList(
-                    product.id || 0,
-                    existingItem.quantity + quantity
-                )
-            } else {
-                createCart({
-                    product_id: product.id || 0,
-                    quantity,
-                })
-            }
+            const finalQuantity = existingItem
+                ? existingItem.quantity + quantity
+                : quantity
+
+            await upsertCartAsync({
+                product_id: productId,
+                quantity: finalQuantity,
+            })
         },
-        [cartList, checkConditionAddToCart, createCart, updateCartList]
+        [cartList, checkConditionAddToCart, upsertCartAsync]
     )
 
     const removeFromCartList = (product_id: number) => {
@@ -345,6 +362,7 @@ export const UserDataProvider = ({ children }: Props) => {
                 removeAllCompareItems,
                 isCompareFetching,
                 isCartFetching,
+                isCartError,
             }}
         >
             {children}

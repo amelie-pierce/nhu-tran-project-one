@@ -14,7 +14,7 @@ type Props = {
 
 const ProductActions = ({ product }: Props) => {
     const [quantity, setQuantity] = useState<number | string>(1)
-    const { handleProductAction } = useProductAction()
+    const { handleProductAction, isPending } = useProductAction()
     const location = useLocation()
     const { maxQtyPerProduct } = useFeatureFlags()
 
@@ -35,6 +35,7 @@ const ProductActions = ({ product }: Props) => {
                         redirectTo: location.pathname + location.search,
                     })
                 }
+                disabled={isPending}
                 className={styles["action-item"]}
                 icon={<FontAwesomeIcon icon={faCartPlus} />}
             >
@@ -48,6 +49,7 @@ const ProductActions = ({ product }: Props) => {
                         redirectTo: "/checkout",
                     })
                 }
+                disabled={isPending}
                 className={styles["action-item"]}
                 icon={
                     <FontAwesomeIcon

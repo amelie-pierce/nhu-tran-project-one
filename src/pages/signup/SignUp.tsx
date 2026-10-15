@@ -9,12 +9,14 @@ import styles from "./SignUp.module.css"
 import { validateEmail } from "@/utils/validateEmail"
 import { useUser } from "@/contexts/UserContext"
 import { useRef } from "react"
+import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 
 const SignUp = () => {
     const { showToast } = useToast()
     const navigate = useNavigate()
     const { isLoggedIn } = useUser()
     const isRedirectingRef = useRef(false)
+    const { isSignupEnabled } = useFeatureFlags()
 
     const location = useLocation()
     const action = location.state
@@ -62,7 +64,7 @@ const SignUp = () => {
         signUpMutation(values)
     }
 
-    if (isLoggedIn && !isRedirectingRef.current) {
+    if (!isSignupEnabled || (isLoggedIn && !isRedirectingRef.current)) {
         return <Navigate to={"/"} replace />
     }
 

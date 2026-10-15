@@ -2,13 +2,13 @@ import { supabase } from "@/lib/supabase"
 import { getUser } from "../auth/getUser"
 import type { UserCart } from "@/types/cart"
 
-export type CreateUserCartRequest = {
+export type UpsertUserCartRequest = {
     product_id: number
     quantity: number
 }
 
-export const createUserCart = async (
-    values: CreateUserCartRequest
+export const upsertUserCart = async (
+    values: UpsertUserCartRequest
 ): Promise<UserCart[] | null> => {
     const user = await getUser()
 
@@ -18,11 +18,14 @@ export const createUserCart = async (
 
     const { data, error } = await supabase
         .from("user_cart")
-        .insert({
-            user_id: user?.id,
-            product_id: values.product_id,
-            quantity: values.quantity,
-        })
+        .upsert(
+            {
+                user_id: user.id,
+                product_id: values.product_id,
+                quantity: values.quantity,
+            },
+            { onConflict: "user_id, product_id" }
+        )
         .select("*")
 
     if (error) {

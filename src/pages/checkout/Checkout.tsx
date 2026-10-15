@@ -10,6 +10,7 @@ import { useToast } from "@/contexts/ToastContext"
 import { validateEmail } from "@/utils/validateEmail"
 import { deleteUserCart } from "@/apis/cart/deleteUserCart"
 import { QUERY_KEY_USER_CART } from "@/apis/cart/getUserCart"
+import { useUser } from "@/contexts/UserContext"
 
 const Checkout = () => {
     const location = useLocation()
@@ -17,6 +18,7 @@ const Checkout = () => {
     const queryClient = useQueryClient()
     const { showToast } = useToast()
     const navigate = useNavigate()
+    const { isLoggedIn, isAuthChecking } = useUser()
 
     const { mutate: deleteCart } = useMutation({
         mutationFn: deleteUserCart,
@@ -79,7 +81,7 @@ const Checkout = () => {
         upsertContact(values)
     }
 
-    if (!state) {
+    if (!isLoggedIn && !isAuthChecking) {
         return <Navigate to="/login" />
     }
 

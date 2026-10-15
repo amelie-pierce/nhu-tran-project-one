@@ -31,7 +31,7 @@ const VirtualColumn = ({
 }: Props) => {
     const navigate = useNavigate()
     const { toggleCompareItem } = useUserData()
-    const { handleProductAction } = useProductAction()
+    const { handleProductAction, isPending } = useProductAction()
     const { fallbackImg } = useFeatureFlags()
 
     return (
@@ -85,6 +85,7 @@ const VirtualColumn = ({
                                 variant="secondary"
                                 icon={<FontAwesomeIcon icon={faCartPlus} />}
                                 className={styles["button-action"]}
+                                disabled={isPending}
                                 onClick={(e) => {
                                     e.stopPropagation()
                                     handleProductAction({

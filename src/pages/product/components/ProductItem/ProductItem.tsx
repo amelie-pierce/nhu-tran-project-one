@@ -20,7 +20,7 @@ interface Props {
 }
 
 const ProductItem = ({ product }: Props) => {
-    const { handleProductAction } = useProductAction()
+    const { handleProductAction, isPending } = useProductAction()
     const { compareList, toggleCompareItem } = useUserData()
     const location = useLocation()
     const navigate = useNavigate()
@@ -92,6 +92,7 @@ const ProductItem = ({ product }: Props) => {
                         }}
                         icon={<FontAwesomeIcon icon={faCartPlus} />}
                         className={styles["product-item-action-button"]}
+                        disabled={isPending}
                     >
                         Add
                     </Button>
@@ -111,6 +112,7 @@ const ProductItem = ({ product }: Props) => {
                             />
                         }
                         className={styles["product-item-action-button"]}
+                        disabled={isPending}
                     >
                         Buy
                     </Button>

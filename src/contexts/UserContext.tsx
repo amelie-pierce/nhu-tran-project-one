@@ -3,21 +3,26 @@ import { supabase } from "@/lib/supabase"
 
 type UserContextType = {
     isLoggedIn: boolean
+    isAuthChecking: boolean
 }
 
 const UserContext = createContext<UserContextType | null>(null)
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+    const [isAuthChecking, setIsAuthChecking] = useState<boolean>(true)
 
     useEffect(() => {
         const { data } = supabase.auth.onAuthStateChange((event, session) => {
             if (event === "INITIAL_SESSION") {
                 setIsLoggedIn(!!session?.user?.id)
+                setIsAuthChecking(false)
             } else if (event === "SIGNED_IN") {
                 setIsLoggedIn(!!session?.user?.id)
+                setIsAuthChecking(false)
             } else if (event === "SIGNED_OUT") {
                 setIsLoggedIn(false)
+                setIsAuthChecking(false)
             }
         })
 
@@ -27,7 +32,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }, [])
 
     return (
-        <UserContext.Provider value={{ isLoggedIn }}>
+        <UserContext.Provider value={{ isLoggedIn, isAuthChecking }}>
             {children}
         </UserContext.Provider>
     )

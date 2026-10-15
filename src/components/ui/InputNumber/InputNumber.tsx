@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Input } from "@/components/ui"
 
 const STEP = 1
@@ -21,12 +22,21 @@ const InputNumber = ({
     allowClear = true,
     ...props
 }: Props) => {
+    const [localValue, setLocalValue] = useState<number | string>(value)
+
+    const updateValue = (newValue: number | string) => {
+        setLocalValue(newValue)
+        onChange(newValue)
+    }
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value
 
         if (input === "") {
             if (allowClear) {
-                onChange("")
+                updateValue("")
+            } else {
+                setLocalValue("")
             }
             return
         }
@@ -38,32 +48,32 @@ const InputNumber = ({
         const number = Number(input)
 
         if (number > max) {
-            onChange(max)
+            updateValue(max)
             return
         }
 
-        onChange(number)
+        updateValue(number)
     }
 
     const handleBlur = () => {
-        if (value === "") {
-            onChange(defaultValue ?? MIN)
+        if (localValue === "") {
+            updateValue(defaultValue ?? MIN)
             return
         }
 
-        const number = Number(value)
+        const number = Number(localValue)
 
         if (number > max) {
-            onChange(max)
+            updateValue(max)
             return
         }
 
         if (number < MIN) {
-            onChange(MIN)
+            updateValue(MIN)
             return
         }
 
-        onChange(number)
+        updateValue(number)
     }
 
     return (
@@ -73,7 +83,7 @@ const InputNumber = ({
             min={MIN}
             max={max}
             step={STEP}
-            value={value}
+            value={localValue}
             onChange={handleChange}
             onBlur={handleBlur}
             {...props}

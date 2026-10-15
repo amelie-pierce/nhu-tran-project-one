@@ -10,7 +10,7 @@ import { useScreenWidth } from "@/hooks/useScreenWidth"
 import { useFeatureFlags } from "@/hooks/useFeatureFlags"
 import { getImgSizeWidth } from "@/utils/getImgSizeWidth"
 import { transformImage } from "@/utils/transformImage"
-import React from "react"
+import React, { useState } from "react"
 
 type Props = {
     item: CartProduct
@@ -25,9 +25,15 @@ const CartItem = React.memo(
         const { maxQtyPerProduct } = useFeatureFlags()
         const screenWidth = useScreenWidth()
         const navigate = useNavigate()
+        const [isDeleting, setIsDeleting] = useState(false)
 
         const handleChangeQuantity = (value: number | string) => {
             updateCartList(item.id || 0, Number(value), true)
+        }
+
+        const handleRemove = () => {
+            setIsDeleting(true)
+            onRemove(item.id || 0)
         }
 
         return (
@@ -68,7 +74,8 @@ const CartItem = React.memo(
                 <Button
                     variant="secondary"
                     icon={<FontAwesomeIcon icon={faTrash} />}
-                    onClick={() => onRemove(item.id || 0)}
+                    onClick={handleRemove}
+                    disabled={isDeleting}
                 />
             </div>
         )

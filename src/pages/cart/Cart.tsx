@@ -6,36 +6,17 @@ import Empty from "@/components/Empty/Empty"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useUser } from "@/contexts/UserContext"
 import { useUserData } from "@/contexts/UserDataContext"
-import {
-    getListProduct,
-    QUERY_KEY_PRODUCTS,
-} from "@/apis/product/getListProduct"
-import { useQuery } from "@tanstack/react-query"
 import { Loader } from "@/components/ui"
 import { Error, Breadcrumb } from "@/components"
 
 const Cart = () => {
-    const { isLoggedIn } = useUser()
-    const { cartList, isCartFetching, removeFromCartList } = useUserData()
+    const { isLoggedIn, isAuthChecking } = useUser()
+    const { cartList, isCartFetching, isCartError, removeFromCartList } =
+        useUserData()
     const [selectedItemIds, setSelectedItemIds] = useState<Set<number>>(
         new Set()
     )
     const [isSelectAllChecked, setIsSelectAllChecked] = useState(false)
-
-    const productIds = useMemo(
-        () => cartList?.map((item) => Number(item.id)) ?? [],
-        [cartList]
-    )
-
-    const { data: products, isError } = useQuery({
-        queryKey: [QUERY_KEY_PRODUCTS, productIds],
-        queryFn: () =>
-            getListProduct({
-                product_ids: productIds,
-            }),
-        staleTime: 1000 * 60 * 5,
-        enabled: productIds.length > 0,
-    })
 
     const cartProductItems: CartProduct[] = useMemo(
         () =>
@@ -45,7 +26,7 @@ const Cart = () => {
                     checked: selectedItemIds.has(cartItem?.id || 0),
                 }))
                 ?.filter((item) => !!item),
-        [cartList, products?.data, selectedItemIds]
+        [cartList, selectedItemIds]
     )
 
     const onRemoveItem = useCallback(
@@ -104,11 +85,11 @@ const Cart = () => {
         return `${cartList?.length} ${cartList?.length === 1 ? "item" : "items"}`
     }, [cartList])
 
-    if (!isLoggedIn) {
+    if (!isLoggedIn && !isAuthChecking) {
         return <Navigate to="/login" replace />
     }
 
-    if (isError) {
+    if (isCartError) {
         return <Error />
     }
 
@@ -141,7 +122,7 @@ const Cart = () => {
                                 <CartItem
                                     key={item.id}
                                     item={item}
-                                    onRemove={() => onRemoveItem(item.id || 0)}
+                                    onRemove={onRemoveItem}
                                     onToggleCheck={handleToggleSelectItem}
                                 />
                             ))}

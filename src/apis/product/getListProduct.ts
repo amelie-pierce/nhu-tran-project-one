@@ -43,7 +43,7 @@ export const getListProduct = async (
         query.filter("id", "in", `(${params.product_ids?.join(",")})`)
     }
 
-    const { data, error, count } = await query
+    const { data, error, count } = await query.order("id", { ascending: true })
 
     if (error) {
         throw error
