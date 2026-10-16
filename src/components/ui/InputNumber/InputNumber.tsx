@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Input } from "@/components/ui"
 
 const STEP = 1
@@ -75,6 +75,10 @@ const InputNumber = ({
 
         updateValue(number)
     }
+
+    useEffect(() => {
+        setLocalValue(value)
+    }, [value])
 
     return (
         <Input

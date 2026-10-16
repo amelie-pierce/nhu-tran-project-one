@@ -83,10 +83,6 @@ const ProductList = () => {
         setSearchParams(params)
     }
 
-    if (isError) {
-        return <Error />
-    }
-
     const productItems = useMemo(() => {
         if (!products?.data?.length) {
             return (
@@ -103,6 +99,10 @@ const ProductList = () => {
             </div>
         )
     }, [products?.data])
+
+    if (isError) {
+        return <Error />
+    }
 
     return (
         <>

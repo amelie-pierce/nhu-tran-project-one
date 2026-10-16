@@ -81,7 +81,7 @@ const Checkout = () => {
         upsertContact(values)
     }
 
-    if (!isLoggedIn && !isAuthChecking) {
+    if ((!isLoggedIn && !isAuthChecking) || !state) {
         return <Navigate to="/login" />
     }
 
